@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "base": {
+    "name": "HCU-TrainFlow",
+    "revision": "0f2e883b101fc1cebf627d9203b03068827a6a5a",
+    "url": "https://github.com/yuguo-Jack/HCU-TrainFlow",
+    "derived_modules": [
+      "core",
+      "flow",
+      "team",
+      "execution",
+      "command_group",
+      "coordination",
+      "admission",
+      "environment",
+      "analysis",
+      "file_questions",
+      "chat_guidance",
+      "technical_board"
+    ],
+    "derived_tests": [
+      "test_execution.py",
+      "test_source_transfer.py",
+      "test_command_group.py",
+      "test_team.py",
+      "test_file_questions.py"
+    ]
+  },
+  "references": [
+    {
+      "name": "infra-agent-v2",
+      "revision": "c319b5b8b9156d11c7781fd692ff3650a6a6aecc",
+      "reuse": "profile-driven direction selection; frozen workload and quality gates; skill and knowledge binding design"
+    },
+    {
+      "name": "dcu-infer-pilot",
+      "revision": "0db7359c1ed72523eb5900c7af0d2a78144a484c",
+      "url": "https://developer.sourcefind.cn/codes/OpenDAS/dcu-infer-pilot.git"
+    },
+    {
+      "name": "hcu-knowledge",
+      "revision": "d5ba70e31fc48d6e252f2c4da9ddbf9f16338158",
+      "url": "http://42.228.13.241:10068/yangyn1/hcu-knowledge.git"
+    }
+  ],
+  "scope": "Source-based reuse of general workflow infrastructure; inference contracts, benchmark, bindings, monitoring, demo, CLI and Skills are implemented in this repository."
+}

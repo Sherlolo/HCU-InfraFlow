@@ -1,0 +1,74 @@
+[
+  {
+    "module": "core",
+    "source_sha256": "546c6fb144ae9d6b5bf2694901c20cc21c934fa501f6e3474bcc077eefb92fc0",
+    "derived_sha256": "a15d919a5c3a471c5d0ac6d3d59db61f12134c9ddf675aadab38053ffbf31ac2",
+    "similarity": 0.9931
+  },
+  {
+    "module": "flow",
+    "source_sha256": "b22b0519be2de546b7f50a2916bf6d82c09ca2f565c4e3be5fb0b4d124425cdd",
+    "derived_sha256": "096d0d2506efa19e7af8fc8b99f8075b28acd09059e653d98feebd3720f63721",
+    "similarity": 0.9844
+  },
+  {
+    "module": "team",
+    "source_sha256": "8f85cd40865b9868856e397072e85d6db71e5a4aaba0e2300b5d7629ed48ba61",
+    "derived_sha256": "8f85cd40865b9868856e397072e85d6db71e5a4aaba0e2300b5d7629ed48ba61",
+    "similarity": 1.0
+  },
+  {
+    "module": "execution",
+    "source_sha256": "f89ee05f762e4f05d0298afb5363834f28dc82cfcd0d8f18fa5fd54dd43ece4d",
+    "derived_sha256": "5f372812e6d7215febb4aefcfcee2dee4edbba195f64028e1edbca8b03163a6c",
+    "similarity": 0.9995
+  },
+  {
+    "module": "command_group",
+    "source_sha256": "282e83a69d6c03274106327fe288355880701d7e36500fce807ef9835ebf7309",
+    "derived_sha256": "46a7202333075192a9d852c14425520d128c7ccc66e98fe988dc3345416402ab",
+    "similarity": 0.9998
+  },
+  {
+    "module": "coordination",
+    "source_sha256": "6d20c330133f4f80bc3d154d61e70529cf02f8463b2f55a9fe075b7b0345d02d",
+    "derived_sha256": "f1a85a540a572de3d932a9fdc64b45134adf37c88ee36d9766954514ef8f8262",
+    "similarity": 0.9995
+  },
+  {
+    "module": "admission",
+    "source_sha256": "1d511a8c8cde15406d0b017ecc0ad4b3aaff96d45b903781811d874ea9d1b261",
+    "derived_sha256": "761100a5560e4f5c170dd32b57ff8a978738d3eb2bfc07e35d9c6c1687def97b",
+    "similarity": 0.9994
+  },
+  {
+    "module": "environment",
+    "source_sha256": "f40d1f40f17710e96ed27636eea9827d886f2873ccd7b25eb5ff79eccd73bd39",
+    "derived_sha256": "79d3c062f3982ddd9015aeab38a88c1a5174e8404800af9143c3d8f6c4287072",
+    "similarity": 0.9973
+  },
+  {
+    "module": "analysis",
+    "source_sha256": "e0249a71390569e975f70e8106fcdb9558782ef451a7d67c9763eebbf8994ab1",
+    "derived_sha256": "4a65b781165f044c3f5ee95d750d8081b769501cd0c251d386d8a4ff299f89be",
+    "similarity": 0.9992
+  },
+  {
+    "module": "file_questions",
+    "source_sha256": "6925bfe6eed384552ef1e0b7ff215e7494e714cd187d142505ad0c6293a10dd4",
+    "derived_sha256": "fff5cb8d17ef6d720303bbdfcb81c25b9918a1ea75518bdd861a869884fcf753",
+    "similarity": 0.9982
+  },
+  {
+    "module": "chat_guidance",
+    "source_sha256": "3100a19b5abc1e0ba22fe05031cc16baeb04283ae06d00ab633d23e73c2ccb61",
+    "derived_sha256": "3100a19b5abc1e0ba22fe05031cc16baeb04283ae06d00ab633d23e73c2ccb61",
+    "similarity": 1.0
+  },
+  {
+    "module": "technical_board",
+    "source_sha256": "7fdef3f2688c5b515cb61876b284231f7e32ef6c598c59df9c95ce9d34192394",
+    "derived_sha256": "046fce3f5f924de9541c3648941cb051cba96580c77b167ceada3bac7ed1948b",
+    "similarity": 0.999
+  }
+]

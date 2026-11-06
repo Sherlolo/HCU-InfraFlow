@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "scope": "inference-only routes; no mirrored training corpus",
+  "sources": [
+    {
+      "id": "pilot",
+      "url": "https://developer.sourcefind.cn/codes/OpenDAS/dcu-infer-pilot.git",
+      "bindings": "pilot_root",
+      "roles": [
+        "benchmark",
+        "profile",
+        "incident",
+        "gemm",
+        "moe",
+        "kernel"
+      ]
+    },
+    {
+      "id": "hcu-knowledge",
+      "bindings": "knowledge_root",
+      "entry": "kb.py",
+      "mode": "local query; no implicit source updates"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+........................................................................ [ 35%]
+........................................................s............... [ 70%]
+...............s...............................
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_source_transfer.py:125: Windows path semantics
+SKIPPED [1] tests/test_source_transfer.py:399: Case-insensitive Windows selection
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/usr/lib/python3.10/threading.py:320: KeyboardInterrupt
+(to show a full traceback on KeyboardInterrupt use --full-trace)
+189 passed, 2 skipped in 309.05s (0:05:09)

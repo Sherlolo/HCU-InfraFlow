@@ -1,0 +1,8 @@
+{
+  "max_age_seconds": 60,
+  "ttft_ms": 500,
+  "tpot_ms": 100,
+  "latency_p95_ms": 5000,
+  "error_rate": 0.01,
+  "queue_depth": 100
+}

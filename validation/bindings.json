@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "roots": {
+    "pilot_root": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot",
+    "knowledge_root": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge"
+  },
+  "items": {
+    "benchmark": {
+      "path": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/llm-serving-auto-benchmark/SKILL.md",
+      "sha256": "9d0bb4f2b3ac8c2f6914af78e3858712ec1c576b2293143e04fe16e25f8c314d"
+    },
+    "profile": {
+      "path": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/llm-torch-profiler-analysis/SKILL.md",
+      "sha256": "640ec6d43090193b1d921d34493e3a3739d829ef62884703e2ea46a59490c282"
+    },
+    "incident": {
+      "path": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/sglang-prod-incident-triage/SKILL.md",
+      "sha256": "7f0cfc4c682909a0ea2506357a62fdf6348571fd5dd074a2c685d25476041af5"
+    },
+    "loop": {
+      "path": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/sglang-sota-humanize-loop/SKILL.md",
+      "sha256": "53c61aebb237bad1d90dcd125bdab780daf7357f19e364c0a93cd7ac0e3c3bca"
+    },
+    "gemm": {
+      "path": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/hipblaslt-rocblas-tuning/SKILL.md",
+      "sha256": "f685be67ac62342c4d04cd53fc25f4daefca5949a4c09f8b8de6baa00279196a"
+    },
+    "moe": {
+      "path": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/hcu-aiter-moe-tuning/SKILL.md",
+      "sha256": "197afd88393f60bfedcc48b703b819dc000f392ee8c5a6a54a4205bb196fa3e8"
+    },
+    "kernel": {
+      "path": "/public/home/yangyn1/work_space/2026/agent/lightop-skiils/knowledge/SKILL.md",
+      "sha256": "f024b26ed268be89ca10cfc678551593d8297ecda27a29aa88e96f2a44ce3f98"
+    },
+    "knowledge": {
+      "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/kb.py",
+      "sha256": "dda0f3817d7333df79fe9d6c4fc3beef5807d0a2bfbe9a889129cc8c4518b5bf"
+    }
+  },
+  "knowledge_python": "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.venv/bin/python",
+  "unavailable": [],
+  "source_mutations": false,
+  "identity": "94512ea28c727740e258bff0c98e2bd22b649a41fa7eebf1c139429bdd13b88a"
+}

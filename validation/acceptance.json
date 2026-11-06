@@ -1,0 +1,419 @@
+{
+  "schema_version": 1,
+  "assessed_on": "2026-11-07",
+  "requirements_source": "/public4/home/yangyn1/work_space/2026/agent/agent_work/hcu-agent-1107.txt",
+  "requirements_sha256": "a3a15bb3b7a9635a8deff488eaeef80f1b1016b84e34e5e19b48bc8499998125",
+  "target": "/public4/home/yangyn1/work_space/2026/agent/hcu-infra-agent",
+  "requirements": [
+    {
+      "id": 1,
+      "status": "complete",
+      "result": "Source-based reuse of twelve HCU-TrainFlow workflow modules",
+      "evidence": [
+        "provenance.json",
+        "validation/base-reuse.json"
+      ]
+    },
+    {
+      "id": 2,
+      "status": "complete",
+      "result": "Adapted profile-led inference direction selection and fixed workload/feature/quality gates from infra-agent-v2 reference design",
+      "evidence": [
+        "docs/optimization.md",
+        "src/hcu_infra_agent/quality.py",
+        "src/hcu_infra_agent/flow.py",
+        "provenance.json"
+      ]
+    },
+    {
+      "id": 3,
+      "status": "complete",
+      "result": "Recorded actual pilot remote route and bound seven available inference skills, including explicit local LightOp override",
+      "evidence": [
+        "knowledge/catalog/sources.json",
+        "examples/site-nmz26.json",
+        "validation/bindings-check.json"
+      ]
+    },
+    {
+      "id": 4,
+      "status": "complete",
+      "result": "Bound specified HCU knowledge checkout and exercised pinned read-only Markdown retrieval; native index query separately incomplete",
+      "evidence": [
+        "validation/knowledge-native.json",
+        "validation/knowledge-discovery.json"
+      ]
+    },
+    {
+      "id": 5,
+      "status": "complete",
+      "result": "Inference deployment/optimization/operation stages, quality/performance/stream benchmark/monitor; no mirrored training corpus",
+      "evidence": [
+        "README.md",
+        "skills",
+        "tests/test_inference.py",
+        "tests/test_benchmark.py",
+        "validation/demo.json"
+      ]
+    },
+    {
+      "id": 6,
+      "status": "complete",
+      "result": "Initialized independent Git repository at user-requested target",
+      "evidence": [
+        ".git",
+        "README.md"
+      ]
+    }
+  ],
+  "verification": {
+    "remote_linux_python": "3.10.12",
+    "remote_tests": {
+      "passed": 202,
+      "skipped": 2,
+      "skip_scope": "Windows path semantics and case-insensitive Windows selection",
+      "log": "validation/pytest.log"
+    },
+    "local_tests": {
+      "passed": 202,
+      "skipped": 2,
+      "python": "3.12"
+    },
+    "skills": "six passed skill-creator quick_validate and isolated installation",
+    "wheel": "built and installed in an isolated environment; full CPU demo completed",
+    "demo": "real CPU subprocess with synthetic inference records and fixture reviewer"
+  },
+  "limitations": [
+    "hardware-not-run: no HCU model, GPU performance, full model accuracy, actual multi-Agent session or production recovery validation claimed",
+    "Native HCU-Knowledge query returned incomplete; direct tracked Markdown discovery is partial coverage",
+    "NFS-backed concurrent SQLite WAL test was interrupted; final concurrency tests used explicit container-local scratch",
+    "Target host Python 3.6.8 is unsupported; use verified Python 3.10 container and project-local .venv"
+  ],
+  "scratch_mapping": {
+    "source_and_logs": "/public4/home/yangyn1/work_space/2026/agent/hcu-infra-agent",
+    "remote_cpu_test_scratch": "container yangyn_sglang_plugin_1022:/tmp/hcu-infra-agent-1107-validation",
+    "authorization": "Task-owned isolated validation scratch; no running services or reference checkouts modified"
+  },
+  "files": [
+    {
+      "path": ".github/workflows/test.yml",
+      "bytes": 516,
+      "sha256": "599e696e8f3b679690a41375af5d33d8632b6da98342f11599cffbb218543f64"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 98,
+      "sha256": "d92ce72b227c84750ec77772521083e4edf3d1f3d245fbc83ab0353dbf0e8f8a"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 1180,
+      "sha256": "0b2ef31d16a6a3d5bbb05f43c00c83797caa07edf39aedee84661af2401d5dd6"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1083,
+      "sha256": "c9e96737e4624646db689eaaaa0865aab145009cd2a65419451059f772533c29"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5059,
+      "sha256": "69ed150a9bad98a791bcf6be777cf1fa84bfb3b2bc6193401c31b02a3d59ae9a"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 692,
+      "sha256": "93afa5a86d976509710f05ac26345ff3d5d1cbd4af57856b6087731afb43dd10"
+    },
+    {
+      "path": "docs/acceptance.md",
+      "bytes": 896,
+      "sha256": "e0b20fbc5251baaf9191977521d7f36490ad531f7c5bcde3b7435b6825d0b086"
+    },
+    {
+      "path": "docs/architecture.md",
+      "bytes": 2573,
+      "sha256": "0302f4937a6a8ba56eb36a8914fa459d222fdab27871562839236ed5a1f41b70"
+    },
+    {
+      "path": "docs/contracts.md",
+      "bytes": 2898,
+      "sha256": "36516df991ef360139614a267b47bc56bb16393bea7505110abbe4b320b2ea38"
+    },
+    {
+      "path": "docs/deployment.md",
+      "bytes": 1157,
+      "sha256": "ab5a6fc80740edc06a7cfa9647ffd60dda0e06723e4d5ee17c360edcb374a7d3"
+    },
+    {
+      "path": "docs/knowledge.md",
+      "bytes": 2149,
+      "sha256": "1a5f5cc50f7bd95ed7477dfc5fd0157b5e98b63ebad948557dac1f9100655182"
+    },
+    {
+      "path": "docs/operations.md",
+      "bytes": 1138,
+      "sha256": "1b2b0a23108df442652182151c2ec9f0056555e22a9fa768bce9261b79168a0a"
+    },
+    {
+      "path": "docs/optimization.md",
+      "bytes": 1832,
+      "sha256": "43ae1190511716492191fc4c1bdf4a9c82ee4480c536d22c8c98f5b46337c190"
+    },
+    {
+      "path": "examples/benchmark.json",
+      "bytes": 745,
+      "sha256": "d7fff5420f09d5375b8a420ecbdc6d4c5ea878f8ec80eb27839308b6fd5dd1e0"
+    },
+    {
+      "path": "examples/command-local.json",
+      "bytes": 249,
+      "sha256": "ddd3f08f89f612dc76c12c7d64cc011fafd4622b92fa193bad5f2e7dc3d6522c"
+    },
+    {
+      "path": "examples/command-ssh-docker.json",
+      "bytes": 353,
+      "sha256": "126b6578d6f3f983623ea0f35ccc0b76feb66656fe9973fe37f30c1f78c92786"
+    },
+    {
+      "path": "examples/flow.json",
+      "bytes": 303,
+      "sha256": "10d071ec93ff36fa5b2d39b4ee3553b95e9a97aae84a02ec18154688e53d00ea"
+    },
+    {
+      "path": "examples/monitor-policy.json",
+      "bytes": 134,
+      "sha256": "a62ff1b1b364abb265adcd232ca5748bf742ab952d76f9289356d796098848db"
+    },
+    {
+      "path": "examples/site-nmz26.json",
+      "bytes": 259,
+      "sha256": "8a88a1e73e4137295dc2fb89da21010d20e809492a63113246837e4a68be1db2"
+    },
+    {
+      "path": "examples/task.json",
+      "bytes": 420,
+      "sha256": "246401b28b8fcc1ad3cc3468fefcb4ff1c10e31a8e54d74e5f0afd116abd454d"
+    },
+    {
+      "path": "knowledge/catalog/sources.json",
+      "bytes": 549,
+      "sha256": "6d7c6c183d75b93220cd1d1c17be9d4db43885808464509af0f2f64f9a560f6d"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 1425,
+      "sha256": "ca828d380e7872b293c7d2c08fb3182fcd6dbea80c475849e0cc871202afb05d"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 584,
+      "sha256": "d68bf48acec6e9ae391d6090f24a60c2e7262f91138d41a9e48e59251fb0c88e"
+    },
+    {
+      "path": "scripts/bootstrap.py",
+      "bytes": 1175,
+      "sha256": "e823adedeb82300d2dca50cf350169ef73ef28859319292fc3174c37a4d75920"
+    },
+    {
+      "path": "scripts/install_skills.py",
+      "bytes": 1156,
+      "sha256": "4db536873a945525ebf3e6b40a7d579a90c679c98b29fc0d637bf9d3a8120c82"
+    },
+    {
+      "path": "skills/hcu-infer-analyze-and-optimize/SKILL.md",
+      "bytes": 1771,
+      "sha256": "7da393876e4b0d36ecedf64e46c7a417c2cec5cb1a301473e803c59f21d90ea1"
+    },
+    {
+      "path": "skills/hcu-infer-check-and-deploy/SKILL.md",
+      "bytes": 1607,
+      "sha256": "e0d8995d6a19b87ac35cc5d3a6433f8376ab60e2b9bbd71205378ca0a2adc978"
+    },
+    {
+      "path": "skills/hcu-infer-knowledge-curate/SKILL.md",
+      "bytes": 1332,
+      "sha256": "78e73eeff78e23970bd12c3728ba8d4e47363ec03948d90ead29aa83d4bce604"
+    },
+    {
+      "path": "skills/hcu-infer-knowledge-search/SKILL.md",
+      "bytes": 1332,
+      "sha256": "5d6207ff928034de2a1167c71402b1b78f77ca17bc8d5ab444e42502f48e8c7f"
+    },
+    {
+      "path": "skills/hcu-infer-scale-and-operate/SKILL.md",
+      "bytes": 1501,
+      "sha256": "7bdce1c7b4ecd25539823568514b852090208e89d6cf149508e0eeed5561241a"
+    },
+    {
+      "path": "skills/hcu-infra-agent/SKILL.md",
+      "bytes": 2040,
+      "sha256": "10c6096bf90d760448d10d5b00e4193302276ddc07ea8a62be0a0199ef573aa9"
+    },
+    {
+      "path": "src/hcu_infra_agent/__init__.py",
+      "bytes": 69,
+      "sha256": "d9a4dbcd02aa499473e067c8ca55e3055fdbc7197c51db36fba6ffa7701b66f3"
+    },
+    {
+      "path": "src/hcu_infra_agent/__main__.py",
+      "bytes": 47,
+      "sha256": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4"
+    },
+    {
+      "path": "src/hcu_infra_agent/admission.py",
+      "bytes": 14927,
+      "sha256": "761100a5560e4f5c170dd32b57ff8a978738d3eb2bfc07e35d9c6c1687def97b"
+    },
+    {
+      "path": "src/hcu_infra_agent/analysis.py",
+      "bytes": 18462,
+      "sha256": "4a65b781165f044c3f5ee95d750d8081b769501cd0c251d386d8a4ff299f89be"
+    },
+    {
+      "path": "src/hcu_infra_agent/benchmark.py",
+      "bytes": 6415,
+      "sha256": "46e9a57252a7ca50f96091a1bef91fc9ecad2df0560b1644f17d5abcc3a2d3cc"
+    },
+    {
+      "path": "src/hcu_infra_agent/bindings.py",
+      "bytes": 5397,
+      "sha256": "67411fe7e952c749883dc08e65cb0ae8bec913e8d47b41d0f8a7733b0c8bbc19"
+    },
+    {
+      "path": "src/hcu_infra_agent/chat_guidance.py",
+      "bytes": 2097,
+      "sha256": "3100a19b5abc1e0ba22fe05031cc16baeb04283ae06d00ab633d23e73c2ccb61"
+    },
+    {
+      "path": "src/hcu_infra_agent/cli.py",
+      "bytes": 12209,
+      "sha256": "3e91a65fba7c3ca056c6cd05b41872b25ce853bf80be1628a78b0505599ea262"
+    },
+    {
+      "path": "src/hcu_infra_agent/command_group.py",
+      "bytes": 22408,
+      "sha256": "46a7202333075192a9d852c14425520d128c7ccc66e98fe988dc3345416402ab"
+    },
+    {
+      "path": "src/hcu_infra_agent/coordination.py",
+      "bytes": 7135,
+      "sha256": "f1a85a540a572de3d932a9fdc64b45134adf37c88ee36d9766954514ef8f8262"
+    },
+    {
+      "path": "src/hcu_infra_agent/core.py",
+      "bytes": 24417,
+      "sha256": "a15d919a5c3a471c5d0ac6d3d59db61f12134c9ddf675aadab38053ffbf31ac2"
+    },
+    {
+      "path": "src/hcu_infra_agent/demo.py",
+      "bytes": 5048,
+      "sha256": "0fdff1e417bd46d76f5e195536ace377cdf9dcb0c45490e907011e5ef9daf61b"
+    },
+    {
+      "path": "src/hcu_infra_agent/environment.py",
+      "bytes": 6384,
+      "sha256": "79d3c062f3982ddd9015aeab38a88c1a5174e8404800af9143c3d8f6c4287072"
+    },
+    {
+      "path": "src/hcu_infra_agent/execution.py",
+      "bytes": 37879,
+      "sha256": "5f372812e6d7215febb4aefcfcee2dee4edbba195f64028e1edbca8b03163a6c"
+    },
+    {
+      "path": "src/hcu_infra_agent/experience.py",
+      "bytes": 617,
+      "sha256": "41342fed6a2194904b8fa0ad6ffdaf84acb9f7628b07e68e78e1ae2566e68228"
+    },
+    {
+      "path": "src/hcu_infra_agent/file_questions.py",
+      "bytes": 19013,
+      "sha256": "fff5cb8d17ef6d720303bbdfcb81c25b9918a1ea75518bdd861a869884fcf753"
+    },
+    {
+      "path": "src/hcu_infra_agent/flow.py",
+      "bytes": 45536,
+      "sha256": "096d0d2506efa19e7af8fc8b99f8075b28acd09059e653d98feebd3720f63721"
+    },
+    {
+      "path": "src/hcu_infra_agent/monitor.py",
+      "bytes": 3469,
+      "sha256": "09cc2db9ed5610264d95b103c723acab5da587eb88798b3ca1a80c12e8f9998a"
+    },
+    {
+      "path": "src/hcu_infra_agent/quality.py",
+      "bytes": 11104,
+      "sha256": "e0131004aba6d85bb95fdfdb5986c7b7b8fd14490ff78c55a61ee788fb00f873"
+    },
+    {
+      "path": "src/hcu_infra_agent/report.py",
+      "bytes": 1566,
+      "sha256": "e3cce45b5314cf5bc022a3685405814ef9bd6ba42fc45931ccb60f20e285dfef"
+    },
+    {
+      "path": "src/hcu_infra_agent/skill_registry.py",
+      "bytes": 393,
+      "sha256": "96138352e5474ea292e9583be0fd481282a85afee558d09c7c06d683d58153ce"
+    },
+    {
+      "path": "src/hcu_infra_agent/team.py",
+      "bytes": 30818,
+      "sha256": "8f85cd40865b9868856e397072e85d6db71e5a4aaba0e2300b5d7629ed48ba61"
+    },
+    {
+      "path": "src/hcu_infra_agent/technical_board.py",
+      "bytes": 6615,
+      "sha256": "046fce3f5f924de9541c3648941cb051cba96580c77b167ceada3bac7ed1948b"
+    },
+    {
+      "path": "tests/test_benchmark.py",
+      "bytes": 1913,
+      "sha256": "189870e0a40f298f07cedd5d4929d1fb4b27e8aa60d55c8d1e80d040ddabfc56"
+    },
+    {
+      "path": "tests/test_bindings.py",
+      "bytes": 1735,
+      "sha256": "eeef509fd10e3b15c6c24d87567a655f745ff6fddac8f22ca25efceb425556c1"
+    },
+    {
+      "path": "tests/test_command_group.py",
+      "bytes": 17203,
+      "sha256": "c8bcb5b3016d7c9366895892452a85eef7f7d7b225725aedc39e4e583943b9d7"
+    },
+    {
+      "path": "tests/test_examples.py",
+      "bytes": 1343,
+      "sha256": "8e4b4751a0f0bcfc9f69b81af6707be98188be4c7d68fe777ad81fa4c3e9d0a5"
+    },
+    {
+      "path": "tests/test_execution.py",
+      "bytes": 16733,
+      "sha256": "d5156c84209f867e6a8e6d3a888d69d105e3ac0a746992cc66e3175abec5135f"
+    },
+    {
+      "path": "tests/test_file_questions.py",
+      "bytes": 14018,
+      "sha256": "746f52952ad0c95a32d393b447412ba12712157e15bdbf05716fbfc2d0fa8e99"
+    },
+    {
+      "path": "tests/test_inference.py",
+      "bytes": 5265,
+      "sha256": "3f728183cc0a00ad352d08f930fdef318a6b050a9e20d77094757024b7d2d935"
+    },
+    {
+      "path": "tests/test_source_transfer.py",
+      "bytes": 24420,
+      "sha256": "ed2be5eb8b0534d406632d7eb1ca4d43c388e6fcba54f25c2550f103e3b6338b"
+    },
+    {
+      "path": "tests/test_team.py",
+      "bytes": 20298,
+      "sha256": "434369b5c8b52f40d73eae5c8fe2291b8151672d09aaa86a116d31b95f077cc2"
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 67,
+      "sha256": "f9f6803dc5075588696b02c4798f3704bbc640a6d938113c45e989c48e908896"
+    }
+  ]
+}

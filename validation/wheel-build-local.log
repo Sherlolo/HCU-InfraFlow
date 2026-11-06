@@ -1,0 +1,12 @@
+Processing /private/tmp/hcu-infra-development/repo
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: hcu-infra-agent
+  Building wheel for hcu-infra-agent (pyproject.toml): started
+  Building wheel for hcu-infra-agent (pyproject.toml): finished with status 'done'
+  Created wheel for hcu-infra-agent: filename=hcu_infra_agent-0.1.0-py3-none-any.whl size=92744 sha256=bc84817c1b9c2a3b87f9899b8b27163d0ca716f70e10e3ea7ed111d7f01a4fec
+  Stored in directory: /private/var/folders/zw/w3j0lpds4nd72jhcgr8h8y3m0000gn/T/pip-ephem-wheel-cache-tuboqfdo/wheels/13/29/c3/ebd24dead76b0151510aa336b4659fbb7f56ccbfad8048690c
+Successfully built hcu-infra-agent
+
+[notice] A new release of pip is available: 25.0.1 -> 26.3
+[notice] To update, run: /tmp/hcu-infra-development/venv/bin/python -m pip install --upgrade pip

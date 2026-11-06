@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "task_id": "inference-demo",
+  "mode": "full",
+  "objective": "Deploy and optimize the specified HCU inference workload",
+  "context": {
+    "model": "replace-with-model-manifest",
+    "engine": "replace-with-fixed-source",
+    "workload": "replace-with-request-contract"
+  },
+  "permissions": [
+    "execute"
+  ],
+  "recovery_owner": "site-owner",
+  "budget": {
+    "max_seconds": 3600
+  }
+}

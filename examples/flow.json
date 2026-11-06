@@ -1,0 +1,9 @@
+{
+  "acceptance": {
+    "deployment": "Reproducible serving launch and initial quality baseline",
+    "optimization": "Fixed-workload quality, feature and repeated SLA/performance evidence",
+    "operations": "Scoped scale and recovery observations"
+  },
+  "max_rounds": 20,
+  "max_stalled_rounds": 3
+}

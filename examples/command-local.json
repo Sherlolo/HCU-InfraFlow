@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "backend": "local",
+  "argv": [
+    "python3",
+    "-c",
+    "print(\"explicit CPU smoke\")"
+  ],
+  "cwd": "/absolute/task/workspace",
+  "env": {},
+  "timeout_seconds": 30,
+  "basis": "CPU tool smoke; no GPU validation"
+}

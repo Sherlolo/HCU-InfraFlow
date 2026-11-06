@@ -1,0 +1,5 @@
+{
+  "pilot_root": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot",
+  "knowledge_root": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge",
+  "kernel_skill": "/public/home/yangyn1/work_space/2026/agent/lightop-skiils/knowledge/SKILL.md"
+}

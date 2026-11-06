@@ -1,0 +1,14 @@
+{
+  "status": "complete",
+  "state": "completed",
+  "rounds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "report": "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.work/acceptance-demo/report.html",
+  "qualification": "synthetic evidence and real CPU subprocess; no HCU benchmark, model accuracy or independent Agent claim"
+}

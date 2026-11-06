@@ -1,0 +1,103 @@
+{
+  "status": "partial",
+  "coverage": "tracked knowledge Markdown only; unindexed materials and online sources excluded",
+  "hits": [
+    {
+      "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/foundation/inference/pending/documents/90f4f7ce2ba324a1517e2f3e.md",
+      "sha256": "d2170389670b5d98fd8af55ef840192ebb03c7e08917d34e258c141cf6fd73b9",
+      "score": 9,
+      "lines": [
+        {
+          "line": 19,
+          "text": "SGLang 多级 KV Cache（L2 / L3 / L4）使用文"
+        },
+        {
+          "line": 10,
+          "text": "- 原始来源：D:\\data\\hcu-knowledge\\materials\\infernce\\SGLang 多级 KV Cache（L2 _ L3 _ L4）使用文档.pdf"
+        },
+        {
+          "line": 8,
+          "text": "# SGLang 多级 KV Cache（L2 _ L3 _ L4）使用文档.pdf"
+        }
+      ]
+    },
+    {
+      "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/foundation/systems/inference-cookbook-das/local/changes/gh-inference-cookbook-das-152.md",
+      "sha256": "a9076ac8eb79b9552fa0dcc02511cfb9ddd8dd136104c80c31e5d6ab263dea99",
+      "score": 9,
+      "lines": [
+        {
+          "line": 182,
+          "text": "+export SGLANG_CREATE_CHUNKED_PREFIX_CACHE_KV_INDICES=1"
+        },
+        {
+          "line": 133,
+          "text": "+export SGLANG_CREATE_CHUNKED_PREFIX_CACHE_KV_INDICES=1"
+        },
+        {
+          "line": 85,
+          "text": "+export SGLANG_CREATE_CHUNKED_PREFIX_CACHE_KV_INDICES=1"
+        }
+      ]
+    },
+    {
+      "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/foundation/systems/inference-cookbook-das/local/changes/gh-inference-cookbook-das-182.md",
+      "sha256": "c96f2982d45147b047d9aefa455556f22db9bad1edda4a2893812dfe6abc3156",
+      "score": 9,
+      "lines": [
+        {
+          "line": 10053,
+          "text": "-1. 使用 `fake-prefill` 方式绕过真实 Prefill 计算和 KV Cache 传输，使测试负载集中在 Decode。具体启动参数应以当前使用的 SGLang 版本为准；官方 PD 参数中的 fake transfer backend 可用于此类测试。"
+        },
+        {
+          "line": 9939,
+          "text": "-- 测试记录：模型与权重版本、SGLang 版本、HCU 型号、精度或量化方式、设备与网络配置、P/D 启动参数、KV Cache 传输后端、缓存及 MTP 配置"
+        },
+        {
+          "line": 4792,
+          "text": " export SGLANG_CREATE_CHUNKED_PREFIX_CACHE_KV_INDICES=1"
+        }
+      ]
+    },
+    {
+      "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/foundation/systems/inference-cookbook-das/local/changes/gh-inference-cookbook-das-185.md",
+      "sha256": "149e28dce4851ee3de2aef0954023056856480e1e142b21993b9d1e41ad7d468",
+      "score": 9,
+      "lines": [
+        {
+          "line": 9492,
+          "text": "-1. 使用 `fake-prefill` 方式绕过真实 Prefill 计算和 KV Cache 传输，使测试负载集中在 Decode。具体启动参数应以当前使用的 SGLang 版本为准；官方 PD 参数中的 fake transfer backend 可用于此类测试。"
+        },
+        {
+          "line": 9378,
+          "text": "-- 测试记录：模型与权重版本、SGLang 版本、HCU 型号、精度或量化方式、设备与网络配置、P/D 启动参数、KV Cache 传输后端、缓存及 MTP 配置"
+        },
+        {
+          "line": 4413,
+          "text": " export SGLANG_CREATE_CHUNKED_PREFIX_CACHE_KV_INDICES=1"
+        }
+      ]
+    },
+    {
+      "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/foundation/systems/inference-cookbook-das/local/changes/gh-inference-cookbook-das-195.md",
+      "sha256": "4d6fdb2791cc65d6de7b5e4999fc912be17ded33c6b59b450e2081048a07b527",
+      "score": 9,
+      "lines": [
+        {
+          "line": 9444,
+          "text": "-1. 使用 `fake-prefill` 方式绕过真实 Prefill 计算和 KV Cache 传输，使测试负载集中在 Decode。具体启动参数应以当前使用的 SGLang 版本为准；官方 PD 参数中的 fake transfer backend 可用于此类测试。"
+        },
+        {
+          "line": 9330,
+          "text": "-- 测试记录：模型与权重版本、SGLang 版本、HCU 型号、精度或量化方式、设备与网络配置、P/D 启动参数、KV Cache 传输后端、缓存及 MTP 配置"
+        },
+        {
+          "line": 4480,
+          "text": " export SGLANG_CREATE_CHUNKED_PREFIX_CACHE_KV_INDICES=1"
+        }
+      ]
+    }
+  ],
+  "source_mutations": false,
+  "limits": "Lexical discovery; Agent must read bodies and judge inference/version applicability."
+}

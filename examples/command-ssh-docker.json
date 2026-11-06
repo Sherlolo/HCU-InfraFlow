@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "backend": "ssh-docker",
+  "ssh_target": "NMZ_zz_26",
+  "container": "yangyn_sglang_plugin_1022",
+  "argv": [
+    "python3",
+    "--version"
+  ],
+  "cwd": "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent",
+  "env": {},
+  "timeout_seconds": 30,
+  "basis": "Read interpreter version in the verified user container"
+}

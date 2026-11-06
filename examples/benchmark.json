@@ -1,0 +1,26 @@
+{
+  "base_url": "http://127.0.0.1:30000",
+  "model": "replace-with-served-model-name",
+  "context": "replace-with-task-context-hash",
+  "candidate_snapshot": "replace-with-retained-snapshot-artifact",
+  "identities": {
+    "model": "replace-with-model-fingerprint",
+    "tokenizer": "replace-with-tokenizer-fingerprint",
+    "quantization": "replace-with-quantization-fingerprint",
+    "workload": "replace-with-workload-fingerprint",
+    "driver": "replace-with-driver-fingerprint"
+  },
+  "repeats": 3,
+  "warmup": true,
+  "request_timeout": 300,
+  "scenarios": [
+    {
+      "name": "prefill-decode",
+      "prompts": [
+        "Explain how an inference scheduler works."
+      ],
+      "output_tokens": 32,
+      "concurrency": 1
+    }
+  ]
+}
