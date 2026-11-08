@@ -1,0 +1,6 @@
+{
+  "status": "incomplete",
+  "reason": "reference-search-timeout",
+  "hits": [],
+  "coverage": "tracked text only"
+}

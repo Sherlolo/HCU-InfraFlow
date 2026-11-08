@@ -1,78 +1,178 @@
 # HCU Infra Agent
 
-面向 HCU 大模型推理的 Agent 工作流：环境验收与部署 → profile 驱动分析优化 → 扩容与服务守护。
-基于 HCU-TrainFlow 的持久任务、独立复核、快照、租约、命令卡与协作协议开发，推理契约重新实现。
-参考 infra-agent-v2 的实测驱动方向选择与固定 workload 比较，绑定 DCU-Infer-Pilot Skills 和 HCU-Knowledge。
-来源、固定修订及派生模块见 [provenance.json](provenance.json)；保留上游 MIT 许可。
+面向 HCU 大模型推理的 Agent 工作流，当前版本 **0.2.0**。围绕 **Prof 性能分析、性能优化、性能仿真、Cookbook 查询、知识库查询**五个模块组织工作。
 
-## 快速开始
+采用 HCU-TrainFlow 的运行方式：**本地主控 Agent → 阶段 Skill → 工具与持久证据 → 独立复核 → 修正或推进**。
+实际模型和引擎在获准环境执行，CLI 不隐藏启动 LLM，也不把生成报告当作模型提速。
 
-Python **3.10+**。无 GPU 的协议演示不安装模型或启动推理服务：
+## 五个模块
+
+| 模块 | 做什么 | CLI / 主要产物 |
+| --- | --- | --- |
+| **Prof 性能分析** | 导入真实 `.json/.json.gz` rank trace；检查 GPU 事件、rank 身份和组覆盖；统计墙钟、空泡、重叠与热点，可调用原生 profiler triage | `prof-analyze`；原始 trace 哈希、rank 分析、原生 Markdown/日志、当前 analysis artifact |
+| **性能优化** | 基于当前 profile 观测提出假设，检查已有实现，再进行隔离实验、固定输出/特性、重复性能和 SLA 验收 | `optimization-plan` / `optimization-check`；计划与质量/性能报告，之后仍需 flow 独立复核 |
+| **性能仿真** | 接入真实 **DCUSim** 离线工具，根据模型、HCU、P/D 并行与精度配置预测延迟、TPS、显存 | `simulate`；预测值、模型配置哈希、工具版本、完整生效参数、原始日志；不是实测 |
+| **Cookbook 查询** | 定位模型/框架/HCU 配方，读取正文和命令片段，核对版本、量化、并行与依赖 | `cookbook-search` / `cookbook-read`；路径、行号、正文 SHA256、Git 修订、来源类型 |
+| **知识库查询** | 查询 HCU 实现、原理、诊断、PR 与优化资料；无派生索引时也可查 Git 跟踪正文 | `knowledge-query` / `knowledge-read`；引用与原文。原生索引入口 `knowledge-search` 仍保留 |
+
+五个模块可按问题独立进入，也可组成：
+
+```text
+Cookbook / 知识查询 → 配方与源码核对 → 仿真评估资源/并行假设
+                  → 真实部署基线 → Prof → 优化计划 → 实验与质量/性能验收
+                  → 独立复核 → 扩容与服务守护
+```
+
+查询结果和仿真提供参考；优化方向由真实 profile 与源码判断，不运行预设旋钮穷举。
+详细输入和边界见 [五模块指南](docs/modules.md)。
+
+## 安装与准备
+
+通用工作流要求 Python **3.10+**；DCUSim 提供的 wheel 要求 **CPython 3.10 / Linux x86_64**。
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -e '.[test]'
 .venv/bin/hcu-infra-agent --help
-.venv/bin/hcu-infra-agent demo /absolute/path/to/new-demo
-.venv/bin/python -m pytest -q
-```
-
-`demo` 运行真实 CPU 子进程和合成质量/性能数据，完成全流程状态与结构化 review，生成 `result.json`、`report.html` 和 Store。
-演示中的 reviewer 是测试身份，不是实际独立 Agent。它不证明 HCU 推理精度、性能、真实多 Agent 或生产恢复已通过。
-
-将六个工作流 Skill 安装到明确选定的目录（不会修改参考仓或隐式覆盖现有 Skill）：
-
-```bash
 .venv/bin/python scripts/install_skills.py --target /absolute/path/to/task-skills
 ```
 
-在宿主 Agent 中使用：
+六个自有 Skill：统一主控、部署、优化、运维、知识搜索和知识整理。安装记录工程路径，不覆盖已有同名 Skill；新会话使用新安装目录。
+普通任务只读绑定外部知识/Skill，不隐式更新源码或全局安装。
 
-> `$hcu-infra-agent` 在指定 HCU 环境部署并优化某模型的推理服务，模型、容器和资源范围在任务资料中；目标 workload 与 SLA 如下……
+### 在 NMZ_zz_26 上使用
 
-宿主负责推理、派发专家和独立复核；CLI 返回下一步动作，不会自行调用模型 API。完整与独立 environment/adapt/analyze/optimize/diagnose/operate 模式均支持。
+主机 Python 3.6.8 不满足条件；用户容器 `yangyn_sglang_plugin_1022` 已核对为 Python 3.10.12。
+进入容器后，在指定仓库运行后续命令：
 
-## 功能
+```bash
+docker exec -it yangyn_sglang_plugin_1022 bash
+cd /public/home/yangyn1/work_space/2026/agent/hcu-infra-agent
 
-- 发现 HCU 环境、加载库、设备占用与通信条件；保持健康证据和性能预期可比。
-- 固定源码字节快照与传输校验；local、SSH、SSH+Docker、已有 Slurm allocation 和 K8s Pod 命令卡。
-- 实施/独立复核/修正循环、预算与停滞限制、BOARD/GUIDANCE/QUESTIONS 文件指导。
-- 团队依赖、原子领取、会话 token、修改范围与资源预约、消息回执、报告验收。
-- 对显式指定的 OpenAI-compatible `/v1/completions` 服务进行有界 streaming benchmark；记录固定请求、重复样本、吞吐、TTFT、TPOT 和 p95 延迟。
-- 推理输出（文本或数值）、必需服务特性与 baseline 已通过特性的回归检查。
-- 对冻结 workload、模型/tokenizer/量化/驱动身份的重复性能数据重算验收，检查所有场景回退与 SLA。
-- profile 采样计划与时间线分析；优化提交必须携带当前 context 的 profile 原件引用、观测、假设及目标。原生 TraceLens 与现场采集按绑定 Skill 驱动，通过命令卡记录，而非冒充内置分析已运行。
-- 持久服务观测、阈值事件、outbox 与显式消费者回执；未知执行先 reconcile，恢复仍由 recovery_owner 负责。
-- 本地绑定并校验 DCU-Infer-Pilot Skill 与 HCU-Knowledge 入口哈希，原生知识查询，明确报告知识索引/权限失败。
-- 当前证据 HTML 报告和私有经验归档；不复制训练 Wiki、训练 loss/反向/优化器验收代码及大型原始材料。
+# 项目独立环境；缺少 ensurepip 时也可引导，不改系统包
+python3 scripts/bootstrap.py --test
 
-## 工作流
+# 并发 SQLite Store 需位于节点/容器本地盘；源码和导出报告可留共享盘
+export HCU_INFRA_WORKSPACE=/tmp/hcu-infra-agent-session/store
+```
+
+当前 `/public/home/yangyn1` 是 NFS；Store 的本地目录要按任务独立登记并安排备份。不要将多个节点各自的本地 Store 当成一个数据库。
+
+### 绑定外部入口
+
+`examples/site-nmz26.json` 是基础绑定；`examples/site-modules-nmz26.json` 增加 Cookbook 和 DCUSim。
+DCUSim 安装在独立环境中；当前 NumPy 只读复用容器已安装版本，openpyxl 和工具包只装到新环境：
+
+```bash
+python3 scripts/setup_simulation.py \
+  --wheel ../DCUSimTools/dcusim-2.0.0-cp310-cp310-linux_x86_64.whl \
+  --environment .work/simulation-env
+
+# 无网络时可给上条命令追加 --wheelhouse /path/to/wheels
+.venv/bin/hcu-infra-agent bind examples/site-modules-nmz26.json .work/modules-bindings.json
+.venv/bin/hcu-infra-agent bindings-check .work/modules-bindings.json
+```
+
+站点绑定包括 DCU-Infer-Pilot 的 benchmark/profiler/优化循环/BLAS/MoE、模型计算说明及实际 LightOp 入口，外加 HCU-Knowledge。
+当前 pilot 内 Cookbook submodule 为空，因此示例明确使用 **HCU-Knowledge 的 inference-cookbook 镜像**；不会称为上游最新 Cookbook。
+换站点时修改示例中的绝对路径；没有 DCUSim 时可先使用基础绑定运行其他模块。
+
+## 通过 Agent 使用
+
+在支持 Skill 的宿主中给出模型、资料和目标，主控选择相应模块：
+
+- **只分析 Prof**：`$hcu-infra-agent 分析这些 TP2 trace，给出各 rank 的 GEMM、通信和空泡证据；这次不改代码。`
+- **优化性能**：`$hcu-infra-agent 以已有基线和 trace 优化这个 HCU SGLang 模型，保持 workload、输出质量与 SLA，先查现有路径再提候选。`
+- **性能仿真**：`$hcu-infra-agent 用 DCUSim 比较这个模型在 NMZ 上 TP2/TP4 的 prefill、decode 和显存预测，列出配置假设，暂不占用 GPU。`
+- **查询 Cookbook**：`$hcu-infra-agent 查找这个模型的 HCU vLLM/SGLang 部署配方，读正文并核对量化、并行与当前框架版本。`
+- **查询知识**：`$hcu-infra-agent 查 SGLang KV cache 和 TP 通信的 HCU 实现，返回版本、源码/PR 和适用条件。`
+
+宿主负责实际 Agent 会话、实施与独立复核。完整任务使用 task-create / flow-start / flow-next，独立查询无需强制走完整状态机。
+
+## 直接使用 CLI
+
+以下命令在工程根执行，所有新模块均可用 `--output FILE` 保存结果。
+查询返回 `partial` / **退出码 2** 表示只覆盖本机跟踪文本，仍可能有有效命中；输入/运行错误为 1，完成为 0。
+
+### 1. Cookbook 与知识查询
+
+```bash
+.venv/bin/hcu-infra-agent cookbook-search .work/modules-bindings.json "Qwen SGLang" --limit 5 --output .work/cookbook.json
+.venv/bin/hcu-infra-agent knowledge-query .work/modules-bindings.json "SGLang KV cache" --limit 5 --output .work/knowledge.json
+# 需要原始/上游正文时显式扩大范围和预算
+.venv/bin/hcu-infra-agent knowledge-query .work/modules-bindings.json "具体模型与机制" --scope all --timeout 180 --limit 5
+
+# PATH 填搜索返回的 relative_path；按需指定正文范围
+.venv/bin/hcu-infra-agent cookbook-read .work/modules-bindings.json PATH --start 1 --lines 100
+.venv/bin/hcu-infra-agent knowledge-read .work/modules-bindings.json PATH --start 1 --lines 100
+```
+
+读正文后核对来源和现场 CLI help，再采用启动参数。返回的命令片段不会自动执行。
+若需要原生索引/知识库自身检索，使用 `knowledge-search BINDINGS QUERY`；索引失败会明确返回 incomplete。
+
+### 2. 性能仿真
+
+```bash
+.venv/bin/hcu-infra-agent simulate .work/modules-bindings.json examples/modules/simulation.json --output .work/prediction.json
+```
+
+示例使用工具模型别名 `qwen3_5`、NMZ、TP2、batch=4、输入 1024、输出 128、KV/attention BF16。
+它不是当前 INT8 服务的校准值。修改 arguments 可比较 P/D 并行；预测值和生效默认参数全部保留，不将预测填入实测报告。
+
+### 3. Prof 性能分析
+
+```bash
+# 先将 task.json 的模型/引擎/workload 身份改为实际值
+.venv/bin/hcu-infra-agent task-create examples/modules/task.json
+.venv/bin/hcu-infra-agent flow-start modules-example examples/modules/flow.json
+
+# prof.json 填实际 trace、各 rank 代表性窗口与真实进程组
+.venv/bin/hcu-infra-agent prof-analyze modules-example examples/modules/prof.json --output .work/prof.json
+```
+
+给 prof.json 增加 `"triage_bindings": ".work/modules-bindings.json"` 可运行绑定的原生 profiler triage。
+这条命令分析已有材料；新采集和服务操作由获准命令卡及 profiler Skill 单独执行。
+shape、dtype、Graph replay 归属或上限缺失保持未完成，不会因报告生成而伪造性能结论。
+
+### 4. 性能优化
+
+```bash
+# plan.json 的 analysis 填 prof 返回的 analysis artifact；填写实际观测、假设、目标与验证项
+.venv/bin/hcu-infra-agent optimization-plan modules-example examples/modules/plan.json --output .work/plan.json
+
+# 实际候选实验完成后，使用同一 Store 中保留的比较输入
+# CHECK.json: {"plan":"计划artifact", "quality_inputs":"质量比较输入artifact", "performance_inputs":"性能比较输入artifact"}
+.venv/bin/hcu-infra-agent optimization-check modules-example CHECK.json --output .work/assessment.json
+```
+
+质量和性能必须对应同一 snapshot、context、模型和 workload；失败会替换当前 pass 报告，防止误用旧结果。
+通过只产生待复核报告；仍需原有 flow-submit（含局部迭代输入）、flow-review 和 flow-advance。计划、仿真或 query 命中都不代表已提速。
+
+## 已执行的使用验证
+
+2026-11-09 在 NMZ_zz_26 用户容器完成了以下离线调用，记录见 [本次验证](validation/1109/README.md)：
+
+- 读取已有 HCU TP2 capture，两 rank 各 **15,843 个 GPU kernel 事件**；保留原 trace、分析和实际原生 triage 报告。
+- 根据该 profile 生成优化计划；没有新启动模型服务或宣称候选提速。
+- 真实调用 **DCUSim 2.0.0**，记录 NMZ 示例配置的延迟、TPS、显存预测、配置哈希和完整默认参数。
+- 实际查询并读取 Cookbook 镜像和知识正文，返回可核对的路径、行号、SHA256 与 revision。
+- 质量/性能评估路径另由固定合成输入回归覆盖，不冒充真实模型 A/B 优化。
+
+## 其他能力与架构
+
+持续保留环境/设备占用验收、源码快照传输、local/SSH/Docker/Slurm/K8s 命令卡、资源租约、未知执行 reconcile、
+团队依赖/会话绑定/消息、人的指导文件、服务观测/outbox、streaming benchmark 和当前证据 HTML 报告。
+
+完整任务状态：
 
 ```text
 prepared → environment_checked → baseline_validated → profiling
          → optimizing → serving_ready → serving → completed
 ```
 
-见 [架构](docs/architecture.md)、[契约与调用示例](docs/contracts.md)、[部署验收](docs/deployment.md)、
-[优化方法](docs/optimization.md)、[运维](docs/operations.md)、[知识接入](docs/knowledge.md)、[验证范围](docs/acceptance.md)。
+CPU 协议演示：`hcu-infra-agent demo /absolute/new-directory`。演示是合成质量/性能数据与 fixture reviewer，不是真实 HCU 验收。
+回归：`.venv/bin/python -m pytest -q -rs`，使用本地临时目录。
 
-## 在指定远端环境使用
+[阅读导航](docs/skill-reading-map.md) · [架构](docs/architecture.md) · [模块输入与边界](docs/modules.md) · [契约](docs/contracts.md) · [优化方法](docs/optimization.md) · [知识接入](docs/knowledge.md) · [验证范围](docs/acceptance.md)
 
-站点绑定样例见 `examples/site-nmz26.json`；路径是用户指定的参考根，先 `bind` 校验，不自动更新这些来源。
-NMZ_zz_26 主机 Python 3.6.8 不满足项目条件；已检查用户容器 `yangyn_sglang_plugin_1022` 有 Python 3.10.12，
-且 `/public/home/yangyn1` 为可写映射。使用项目独立 venv，不改服务环境：
-
-```bash
-docker exec yangyn_sglang_plugin_1022 bash -lc '
-  cd /public/home/yangyn1/work_space/2026/agent/hcu-infra-agent
-  python3 scripts/bootstrap.py --test
-  .venv/bin/hcu-infra-agent bind examples/site-nmz26.json .work/bindings.json
-'
-```
-
-本仓开发和 CPU 验证不会占用 GPU、重启已有服务或变更参考仓。新站点、真实模型、采集和恢复均须按任务范围执行验收；没有在本仓进行过的实测不继承为新仓性能结论。
-
-容器缺少 ensurepip 时，`scripts/bootstrap.py` 用已有 pip 的 `--python` 功能引导项目内 venv；可加 `--wheelhouse /path/to/wheels` 离线安装。不会安装系统 apt 包。
-
-**站点存储选择：** 指定共享盘为 NFS；并发控制 Store 需放节点/容器本地文件系统，显式使用 `--workspace` 或 `HCU_INFRA_WORKSPACE`。
-源码和导出报告可留共享盘。站点并发与持久性边界见 [架构说明](docs/architecture.md#实际站点文件系统限制)。
+基础源码来自 HCU-TrainFlow，参考 infra-agent-v2 的 profile 驱动方法；固定来源与派生记录见 [provenance.json](provenance.json)。保留上游 MIT 许可，DCUSim 与知识/Skill 作为外部绑定，不复制原生工具或训练语料。

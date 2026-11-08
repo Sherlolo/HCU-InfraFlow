@@ -1,0 +1,26 @@
+{
+  "arguments": {
+    "prefill_dp": 1,
+    "prefill_pp": 1,
+    "prefill_ep": 1,
+    "prefill_cp": 1,
+    "decode_dp": 1,
+    "decode_pp": 1,
+    "decode_ep": 1,
+    "decode_cp": 1,
+    "prefill_nodes": 1,
+    "decode_nodes": 1,
+    "model": "qwen3_5",
+    "gpu": "nmz",
+    "batch_size": 4,
+    "seq_len": 1024,
+    "output_length": 128,
+    "prefill_tp": 2,
+    "decode_tp": 2,
+    "dp_attention": false,
+    "kv_cache_dtype": "bf16",
+    "attention_compute_dtype": "bf16",
+    "framework": "sglang"
+  },
+  "timeout": 120
+}

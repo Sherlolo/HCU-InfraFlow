@@ -7,3 +7,7 @@ TrainFlow 或 infra-agent-v2 的历史硬件结果仅作参考，不继承为本
 发布检查：运行完整测试、CPU full demo、Skill quick_validate、安装 Skill 到隔离目录、wheel 构建/隔离安装与 CLI smoke，
 核对文档链接和无训练领域知识目录。目标远端使用独立环境复跑，不更改正在运行的模型服务。
 实际执行证据和需求逐项结论保存在 `validation/acceptance.json` 及相邻日志，缺少的硬件验收明确记录 hardware-not-run。
+
+## 五模块扩展（2026-11-09）
+
+0.1.0 的验证原件保留在 validation 根目录，包含当时的源码哈希，并非当前版本清单。五模块扩展的实际使用、当前测试和文件哈希见 `validation/1109/README.md` 与 `validation/1109/summary.json`。真实旧 trace 分析、离线仿真、资料读取和新服务性能实测分别陈述。

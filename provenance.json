@@ -43,5 +43,17 @@
       "url": "http://42.228.13.241:10068/yangyn1/hcu-knowledge.git"
     }
   ],
-  "scope": "Source-based reuse of general workflow infrastructure; inference contracts, benchmark, bindings, monitoring, demo, CLI and Skills are implemented in this repository."
+  "scope": "Source-based reuse of general workflow infrastructure; inference contracts, benchmark, bindings, monitoring, demo, CLI and Skills are implemented in this repository.",
+  "inference_modules": {
+    "date": "2026-11-09",
+    "base_workflow": "HCU-TrainFlow task/flow/evidence design retained",
+    "dcusim": {
+      "version": "2.0.0",
+      "external": true,
+      "wheel_sha256": "19d9f5c3f12032808aace1717880e94877962f6020e03392c3c963c34b9cb509",
+      "source": "User-supplied sibling DCUSimTools; package not redistributed"
+    },
+    "profiler": "External bound llm-torch-profiler-analysis offline runner; original trace inputs retained privately",
+    "cookbook": "Explicitly bound inference-cookbook knowledge mirror or selected checkout; no implicit upstream refresh"
+  }
 }

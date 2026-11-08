@@ -1,0 +1,65 @@
+{
+  "syntax": "pass",
+  "python_files": [
+    "src/hcu_infra_agent/simulation.py",
+    "src/hcu_infra_agent/execution.py",
+    "src/hcu_infra_agent/monitor.py",
+    "src/hcu_infra_agent/benchmark.py",
+    "src/hcu_infra_agent/analysis.py",
+    "src/hcu_infra_agent/simulation_worker.py",
+    "src/hcu_infra_agent/references.py",
+    "src/hcu_infra_agent/chat_guidance.py",
+    "src/hcu_infra_agent/command_group.py",
+    "src/hcu_infra_agent/optimization.py",
+    "src/hcu_infra_agent/experience.py",
+    "src/hcu_infra_agent/__init__.py",
+    "src/hcu_infra_agent/flow.py",
+    "src/hcu_infra_agent/core.py",
+    "src/hcu_infra_agent/file_questions.py",
+    "src/hcu_infra_agent/team.py",
+    "src/hcu_infra_agent/module_cli.py",
+    "src/hcu_infra_agent/cli.py",
+    "src/hcu_infra_agent/technical_board.py",
+    "src/hcu_infra_agent/bindings.py",
+    "src/hcu_infra_agent/environment.py",
+    "src/hcu_infra_agent/admission.py",
+    "src/hcu_infra_agent/skill_registry.py",
+    "src/hcu_infra_agent/demo.py",
+    "src/hcu_infra_agent/quality.py",
+    "src/hcu_infra_agent/coordination.py",
+    "src/hcu_infra_agent/evidence.py",
+    "src/hcu_infra_agent/__main__.py",
+    "src/hcu_infra_agent/report.py",
+    "src/hcu_infra_agent/profiling.py",
+    "scripts/bootstrap.py",
+    "scripts/setup_simulation.py",
+    "scripts/install_skills.py"
+  ],
+  "readme_and_document_links": "pass",
+  "skills": [
+    {
+      "skill": "hcu-infer-scale-and-operate",
+      "status": "pass"
+    },
+    {
+      "skill": "hcu-infer-check-and-deploy",
+      "status": "pass"
+    },
+    {
+      "skill": "hcu-infer-knowledge-search",
+      "status": "pass"
+    },
+    {
+      "skill": "hcu-infer-knowledge-curate",
+      "status": "pass"
+    },
+    {
+      "skill": "hcu-infer-analyze-and-optimize",
+      "status": "pass"
+    },
+    {
+      "skill": "hcu-infra-agent",
+      "status": "pass"
+    }
+  ]
+}

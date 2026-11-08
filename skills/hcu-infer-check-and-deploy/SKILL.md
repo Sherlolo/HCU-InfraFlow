@@ -14,3 +14,7 @@ Deliver fixed command cards and source snapshot, effective env, resource/health 
 ## Project resources
 
 For CLI schemas and stage gates read `docs/contracts.md` and the relevant deployment/optimization/operations document from the selected project root. Installed Skills locate that root in adjacent `workspace.json.project_root`; in a source checkout use the repository root. Keep task evidence in its separate private workspace.
+
+## Recipe and capacity inputs
+
+Use `cookbook-search` then `cookbook-read` to inspect the actual page, source kind and revision before adopting a recipe. The site binding may be a knowledge mirror, not the current upstream checkout. Use `simulate` for explicit offline model/parallelism memory and latency predictions, then calibrate against actual serving. See `docs/modules.md` for inputs and provenance.

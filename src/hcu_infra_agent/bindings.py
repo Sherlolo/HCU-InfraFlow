@@ -9,7 +9,7 @@ from .core import FlowError, fingerprint, write_json
 SKILLS = {'benchmark': 'skills/llm-serving-auto-benchmark', 'profile': 'skills/llm-torch-profiler-analysis',
           'incident': 'skills/sglang-prod-incident-triage', 'loop': 'skills/sglang-sota-humanize-loop',
           'gemm': 'skills/hipblaslt-rocblas-tuning', 'moe': 'skills/hcu-aiter-moe-tuning',
-          'kernel': 'skills/lightop-skills/knowledge'}
+          'kernel': 'skills/lightop-skills/knowledge', 'simulation': 'skills/model-compute-simulation'}
 
 
 def bind(config, destination):
@@ -17,8 +17,8 @@ def bind(config, destination):
     items = {}; unavailable = []
     for key, relative in SKILLS.items():
         path = Path(config['kernel_skill']).resolve(strict=True) if key == 'kernel' and config.get('kernel_skill') else roots['pilot_root'] / relative / 'SKILL.md'
-        if key == 'kernel' and not path.is_file() and not config.get('kernel_skill'):
-            unavailable.append({'role':key,'reason':'LightOp submodule not populated; set kernel_skill to a verified SKILL.md'});continue
+        if key in {'kernel','simulation'} and not path.is_file() and not (key == 'kernel' and config.get('kernel_skill')):
+            unavailable.append({'role':key,'reason':'Optional source not populated; bind its verified local entry before use'});continue
         if not path.is_file(): raise FlowError('Required inference skill missing: ' + str(path))
         items[key] = {'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
     kb = roots['knowledge_root'] / 'kb.py'
@@ -26,6 +26,18 @@ def bind(config, destination):
     items['knowledge'] = {'path': str(kb), 'sha256': hashlib.sha256(kb.read_bytes()).hexdigest()}
     record = {'schema_version': 1, 'roots': {k: str(v) for k,v in roots.items()}, 'items': items,
               'knowledge_python': config.get('knowledge_python', sys.executable), 'unavailable': unavailable, 'source_mutations': False}
+    if config.get('cookbook_root'):
+        cookbook = Path(config['cookbook_root']).resolve(strict=True)
+        if not cookbook.is_dir(): raise FlowError('cookbook_root must be a directory')
+        record['cookbook_root'] = str(cookbook)
+        record['cookbook_source_kind'] = config.get('cookbook_source_kind', 'checkout')
+    if config.get('simulation_python'):
+        python = Path(config['simulation_python']).expanduser().absolute()
+        if not python.is_file(): raise FlowError('simulation_python does not exist')
+        record['simulation_python'] = str(python)
+    if config.get('simulation_wheel'):
+        wheel = Path(config['simulation_wheel']).resolve(strict=True)
+        record['items']['simulation_wheel'] = {'path':str(wheel), 'sha256':hashlib.sha256(wheel.read_bytes()).hexdigest()}
     record['identity'] = fingerprint(record)
     write_json(destination, record)
     return record
@@ -51,7 +63,7 @@ def search(record, query, limit=5):
     except subprocess.TimeoutExpired:
         return {'status': 'incomplete', 'reason': 'native-knowledge-search-timeout', 'command': command}
     if result.returncode:
-        return {'status': 'incomplete', 'reason': 'native-knowledge-search-failed', 'exit_code': result.returncode, 'stderr': result.stderr[-1000:]}
+        return {'status': 'incomplete', 'reason': 'native-knowledge-search-failed', 'exit_code': result.returncode, 'stderr': result.stderr[-1000:], 'stdout': result.stdout[-2000:]}
     try: output = json.loads(result.stdout)
     except json.JSONDecodeError: return {'status': 'incomplete', 'reason': 'native-knowledge-search-non-json'}
     if not isinstance(output, dict): return {'status': 'incomplete', 'reason': 'native-knowledge-search-non-object'}

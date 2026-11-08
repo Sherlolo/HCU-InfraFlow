@@ -12,3 +12,7 @@ If native index, permission or runtime is unavailable, report the gap; direct so
 ## Project resources
 
 For CLI schemas and stage gates read `docs/contracts.md` and the relevant deployment/optimization/operations document from the selected project root. Installed Skills locate that root in adjacent `workspace.json.project_root`; in a source checkout use the repository root. Keep task evidence in its separate private workspace.
+
+## Search without a derived index
+
+Use `knowledge-query`/`knowledge-read` for tracked text and `cookbook-search`/`cookbook-read` for the separately bound recipe scope. These commands do not create a Store or mutate the bound repository; partial/exit 2 preserves usable hits but indicates limited coverage. Read matching bodies, not only snippets. `knowledge-search` retains the separate native index path. Commands and examples are in `docs/modules.md` and README.

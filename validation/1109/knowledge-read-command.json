@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.venv/bin/hcu-infra-agent",
+    "knowledge-read",
+    "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.work/1109/bindings.json",
+    "projects/sglang/knowledgebase/local/overview/engineering-guide.md",
+    "--start",
+    "1",
+    "--lines",
+    "80",
+    "--output",
+    "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/validation/1109/knowledge-read.json"
+  ],
+  "exit_code": 0
+}

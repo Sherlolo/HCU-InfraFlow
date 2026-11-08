@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "task_id": "modules-example",
+  "mode": "optimize",
+  "objective": "Analyze existing inference traces and prepare a scoped optimization plan",
+  "context": {
+    "model": "replace-with-actual-model-and-quantization",
+    "engine": "replace-with-fixed-source",
+    "workload": "replace-with-capture-workload"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "status": "partial",
+  "kind": "knowledge",
+  "query": "SGLang KV cache",
+  "hits": [
+    {
+      "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/projects/sglang/knowledgebase/local/overview/engineering-guide.md",
+      "sha256": "7d8d4cc30f41ffdd93dccb29273a984168bd31f1749e74c40b0fc3ef092a9d86",
+      "relative_path": "projects/sglang/knowledgebase/local/overview/engineering-guide.md",
+      "score": 199,
+      "lines": [
+        {
+          "line": 3,
+          "text": "title: SGLang：HCU 服务链路、稀疏 Attention 与 MegaMoE 源码详解"
+        },
+        {
+          "line": 4,
+          "text": "project: sglang"
+        },
+        {
+          "line": 16,
+          "text": "- KV-cache"
+        },
+        {
+          "line": 25,
+          "text": "- sglang-scheduling-eplb-plugin-materials"
+        }
+      ]
+    },
+    {
+      "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/projects/sglang/knowledgebase/local/overview/source-handbook.md",
+      "sha256": "7f94a429bc5cf90797c25be8de20ec51cb74679f7ef6673d89699873ac605fc9",
+      "relative_path": "projects/sglang/knowledgebase/local/overview/source-handbook.md",
+      "score": 146,
+      "lines": [
+        {
+          "line": 3,
+          "text": "project: sglang"
+        },
+        {
+          "line": 7,
+          "text": "# sglang：工程结构、使用与调优资料汇编"
+        },
+        {
+          "line": 13,
+          "text": "## gh-sglang：源码导航"
+        },
+        {
+          "line": 40,
+          "text": "匹配到 35 个路径；下列最多显示 60 个，完整树保存在 `state/repos/gh-sglang-tree.json`，按固定提交可恢复。"
+        }
+      ]
+    },
+    {
+      "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/projects/sglang/knowledgebase/local/cases/sglang-unified-kv-metadata.md",
+      "sha256": "d1261719feebb9bc1d22fc022b13e37516cf945ca0780f339bf61e21cb22bba5",
+      "relative_path": "projects/sglang/knowledgebase/local/cases/sglang-unified-kv-metadata.md",
+      "score": 111,
+      "lines": [
+        {
+          "line": 3,
+          "text": "title: SGLang DSV4：复用请求映射并保护 Unified KV 的边界"
+        },
+        {
+          "line": 4,
+          "text": "project: sglang"
+        },
+        {
+          "line": 29,
+          "text": "- sglang-hcu-engineering"
+        },
+        {
+          "line": 43,
+          "text": "  repo_id: gh-sglang"
+        }
+      ]
+    }
+  ],
+  "root": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge",
+  "revision": "d5ba70e31fc48d6e252f2c4da9ddbf9f16338158",
+  "source_kind": "knowledge-checkout",
+  "coverage": "Curated tracked local tutorials/topics/cases/overview and concepts only; use --scope all for raw/upstream pages",
+  "search_scope": "curated",
+  "next": "Read matching pages, verify version/hardware/quantization/parallelism, then validate flags in the actual engine."
+}

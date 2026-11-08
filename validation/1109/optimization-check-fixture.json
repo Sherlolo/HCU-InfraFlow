@@ -1,0 +1,56 @@
+{
+  "status": "pass",
+  "task": "fixture",
+  "plan": "752dc2080a8d58af7243faa38c4461bfcaca77822b87d674287d008781d072fa",
+  "candidate_snapshot": "301e28576cb4c3d681c134502a68d71cb97e3e92f4b702789d2b22fa9c888e0b",
+  "quality": {
+    "status": "pass",
+    "executed": 1,
+    "failures": [],
+    "contract": "0852f868579ac774729caee6917de8e88444e81a33e5e73c337433e0cc53d438",
+    "limits": "Only declared samples and features; not a full model accuracy benchmark."
+  },
+  "performance": {
+    "status": "pass",
+    "executed": 4,
+    "failures": [],
+    "metrics": {
+      "fixture:throughput_tok_s": {
+        "baseline_median": 10,
+        "candidate_median": 10,
+        "relative_gain": 0.0,
+        "baseline_stdev": 0.0,
+        "candidate_stdev": 0.0
+      },
+      "fixture:ttft_ms": {
+        "baseline_median": 1,
+        "candidate_median": 1,
+        "relative_gain": 0.0,
+        "baseline_stdev": 0.0,
+        "candidate_stdev": 0.0
+      },
+      "fixture:tpot_ms": {
+        "baseline_median": 1,
+        "candidate_median": 1,
+        "relative_gain": 0.0,
+        "baseline_stdev": 0.0,
+        "candidate_stdev": 0.0
+      },
+      "fixture:latency_p95_ms": {
+        "baseline_median": 3,
+        "candidate_median": 3,
+        "relative_gain": 0.0,
+        "baseline_stdev": 0.0,
+        "candidate_stdev": 0.0
+      }
+    },
+    "limits": "Matched repetitions, not a statistical-significance or production-readiness claim."
+  },
+  "reports": {
+    "inference-quality": "77a1f77935b78da2f08076570f32769b23c6f2b0f4471c592fc38098fcd21901",
+    "performance": "e0bdabdfe760008c9bfc74f2f7f1c44d0c0ac1dd2c7a70dc7a0a43c1530958aa"
+  },
+  "accepted_by_flow": false,
+  "next": "Submit the candidate and iteration experiment through flow-submit; independent review and flow-advance remain required.",
+  "artifact": "127ef444e4da5ce9c71bdb417b7223b534261c4bbdd3a571153e3b030df85a0f"
+}

@@ -1,0 +1,7 @@
+{
+  "path": "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.work/1109/store-backup.tar.gz",
+  "sha256": "f78b7e393edd118ef2e794fd49d20b17cec999c7d9517c230af173fa6eea0772",
+  "bytes": 27105832,
+  "status": "archived-with-no-active-writers",
+  "restore": "Extract into an explicitly selected node-local task directory, then pass the restored store path as --workspace; do not run the database directly on NFS."
+}

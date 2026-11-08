@@ -1,0 +1,32 @@
+{
+  "status": "complete",
+  "plan": "5faa9bcdc3d13ac34d2001db0c372f621f3c00c7027303919092f4e4ba7f81a3",
+  "record": {
+    "task": "modules-real-1109",
+    "context": "4a0d4ba6f16fd1530bedc8938f3bc660e039b3b9e78ea6042bcfb9912d0ed7fb",
+    "analysis": "224a85c8d221f9769449fc09bc219eb0756a3b3ee012340d4bfafd064c31a0a3",
+    "observation": "Rank 0: Cijk_Alik_Bljk_I8II_BH_MT64x64x128_TT4x4_WG16x16_Squant accounts for 22.61% of its selected GPU wall window; void aiter::cross_device_reduce_1stage_naive<unsigned short, 2, false>(aiter::RankData*, aiter::RankData*, aiter::RankSignals, aiter::Signal*, unsigned short*, int, int) accounts for 22.50%. Actual shape/dtype/phase attribution remains incomplete.",
+    "hypothesis": "Inspect whether the INT8 linear path and cross-device reduction scheduling are the intended implementations; the observed rank busy-time difference may require dependency/host evidence before attributing the cause. This is a diagnostic hypothesis, not a speedup claim.",
+    "target": "Actual SGLang INT8 linear/GEMM dispatch and AITER TP reduction call sites for the retained workload",
+    "validation": [
+      "Recover exact local GEMM shape/dtype and source dispatch before choosing BLAS tuning or a new kernel",
+      "Check recipe and knowledge applicability to the exact serving source and checkpoint; references are not adopted defaults",
+      "Capture missing CPU/GPU phase and dependencies in an authorized experiment",
+      "Preserve initial outputs, required features and unchanged profiler-off repeated SLA/throughput measurements"
+    ],
+    "references": [
+      "2dbfdb1257436a557e6fe896bc0658d039d26b4cce170235a9bde75e24bf916f",
+      "2472af9393ca4cdf89a6d03db49fcdd46948b46dc3133e858734055d55c10f9f"
+    ],
+    "stopping_condition": "Do not change serving until a new experiment has matching workload, model, source and resource scope; request more evidence if attribution remains missing.",
+    "status": "planned",
+    "execution_started": false,
+    "profile_evidence": {
+      "artifact": "224a85c8d221f9769449fc09bc219eb0756a3b3ee012340d4bfafd064c31a0a3",
+      "observation": "Rank 0: Cijk_Alik_Bljk_I8II_BH_MT64x64x128_TT4x4_WG16x16_Squant accounts for 22.61% of its selected GPU wall window; void aiter::cross_device_reduce_1stage_naive<unsigned short, 2, false>(aiter::RankData*, aiter::RankData*, aiter::RankSignals, aiter::Signal*, unsigned short*, int, int) accounts for 22.50%. Actual shape/dtype/phase attribution remains incomplete.",
+      "hypothesis": "Inspect whether the INT8 linear path and cross-device reduction scheduling are the intended implementations; the observed rank busy-time difference may require dependency/host evidence before attributing the cause. This is a diagnostic hypothesis, not a speedup claim.",
+      "target": "Actual SGLang INT8 linear/GEMM dispatch and AITER TP reduction call sites for the retained workload"
+    },
+    "next": "Agent inspects existing engine/source paths, runs authorized isolated experiments, retains quality/performance inputs, then submits for independent flow review."
+  }
+}

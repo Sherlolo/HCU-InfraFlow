@@ -1,0 +1,12 @@
+{
+  "analysis": "replace-with-current-analysis-artifact",
+  "observation": "Describe the measured rank/operator/phase and its wall-clock contribution",
+  "hypothesis": "Explain the suspected cause and how to distinguish it from alternatives",
+  "target": "Name the actual engine path or operator implementation to inspect",
+  "validation": [
+    "Confirm current dispatch and dependencies",
+    "Compare fixed-sample outputs and required serving features",
+    "Repeat unchanged profiler-off workloads and check SLA/dispersion"
+  ],
+  "references": []
+}

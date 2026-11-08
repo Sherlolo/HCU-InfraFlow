@@ -189,7 +189,7 @@ def analyze_trace(trace, window, models=None, target=0.9, attribution=None):
         if captured_rank == 'unknown' and attribution is not None and attribution.get('rank') is not None:
             captured_rank = attribution['rank']
         rank = str(args.get('rank', captured_rank))
-        communication = category == "communication" or bool(re.search(r"nccl|rccl|all_?reduce|all_?gather|all_?to_?all|reduce_?scatter", name, re.I))
+        communication = category == "communication" or bool(re.search(r"nccl|rccl|cross_device_reduce|all_?reduce|all_?gather|all_?to_?all|reduce_?scatter", name, re.I))
         by_rank[rank].append({"index": index, "key": key, "name": name, "shape": shape, "dtype": dtype, 'input_strides': strides,
                               "begin": left, "end": right, "duration": duration, "communication": communication,
                               "phase": phase, "clipped": left != begin or right != begin + duration,

@@ -16,3 +16,7 @@ Follow existing budget and resource reservations. Stop progression on numerical/
 ## Project resources
 
 For CLI schemas and stage gates read `docs/contracts.md` and the relevant deployment/optimization/operations document from the selected project root. Installed Skills locate that root in adjacent `workspace.json.project_root`; in a source checkout use the repository root. Keep task evidence in its separate private workspace.
+
+## Five-module routing
+
+Read `docs/skill-reading-map.md` for the selected scope, then `docs/modules.md` for executable module contracts. Cookbook and knowledge search/read establish version-scoped references; `simulate` supplies conditional DCUSim predictions. `prof-analyze` retains real rank evidence, `optimization-plan` records Agent hypotheses, and `optimization-check` recomputes candidate qualification. Route only the modules needed for the task; keep existing flow review and resource rules. See README for commands and measured validation scope.

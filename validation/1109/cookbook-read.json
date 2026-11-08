@@ -1,0 +1,332 @@
+{
+  "status": "complete",
+  "kind": "cookbook",
+  "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/foundation/systems/inference-cookbook-das/local/changes/gh-inference-cookbook-das-435.md",
+  "relative_path": "local/changes/gh-inference-cookbook-das-435.md",
+  "sha256": "bb4c2cbce2eac2462308a056a8b0e4811f7ce46e569910e4d65af295c93250da",
+  "total_lines": 19992,
+  "lines": [
+    {
+      "line": 5,
+      "text": "status: source-reported"
+    },
+    {
+      "line": 6,
+      "text": "---"
+    },
+    {
+      "line": 7,
+      "text": ""
+    },
+    {
+      "line": 8,
+      "text": "# inference-cookbook-das PR #435: docs(sglang): add Qwen3.8 Flash Next deployment recipes v1"
+    },
+    {
+      "line": 9,
+      "text": ""
+    },
+    {
+      "line": 10,
+      "text": "来源：https://github.com/HYGON-AI/inference-cookbook-das/pull/435"
+    },
+    {
+      "line": 11,
+      "text": "状态：closed；更新：2026-09-10T02:56:30Z"
+    },
+    {
+      "line": 12,
+      "text": ""
+    },
+    {
+      "line": 13,
+      "text": "## 改动说明（上游原文）"
+    },
+    {
+      "line": 14,
+      "text": ""
+    },
+    {
+      "line": 15,
+      "text": "上游没有提供说明；不能仅凭标题推断动机。"
+    },
+    {
+      "line": 16,
+      "text": ""
+    },
+    {
+      "line": 17,
+      "text": "## 讨论与验证记录（上游原文）"
+    },
+    {
+      "line": 18,
+      "text": ""
+    },
+    {
+      "line": 19,
+      "text": ""
+    },
+    {
+      "line": 20,
+      "text": ""
+    },
+    {
+      "line": 21,
+      "text": "## Review 总结（独立审查记录）"
+    },
+    {
+      "line": 22,
+      "text": ""
+    },
+    {
+      "line": 23,
+      "text": ""
+    },
+    {
+      "line": 24,
+      "text": ""
+    },
+    {
+      "line": 25,
+      "text": "## Diff"
+    },
+    {
+      "line": 26,
+      "text": ""
+    },
+    {
+      "line": 27,
+      "text": "```diff"
+    },
+    {
+      "line": 28,
+      "text": ".github/workflows/issue-lifecycle.yml"
+    },
+    {
+      "line": 29,
+      "text": "@@ -0,0 +1,93 @@"
+    },
+    {
+      "line": 30,
+      "text": "+name: Issue lifecycle"
+    },
+    {
+      "line": 31,
+      "text": "+"
+    },
+    {
+      "line": 32,
+      "text": "+on:"
+    },
+    {
+      "line": 33,
+      "text": "+  issue_comment:"
+    },
+    {
+      "line": 34,
+      "text": "+    types: [created]"
+    },
+    {
+      "line": 35,
+      "text": "+"
+    },
+    {
+      "line": 36,
+      "text": "+  schedule:"
+    },
+    {
+      "line": 37,
+      "text": "+    # 每天北京时间 09:17 执行一次（GitHub cron 使用 UTC）"
+    },
+    {
+      "line": 38,
+      "text": "+    - cron: \"17 1 * * *\""
+    },
+    {
+      "line": 39,
+      "text": "+"
+    },
+    {
+      "line": 40,
+      "text": "+  workflow_dispatch:"
+    },
+    {
+      "line": 41,
+      "text": "+"
+    },
+    {
+      "line": 42,
+      "text": "+permissions:"
+    },
+    {
+      "line": 43,
+      "text": "+  contents: read"
+    },
+    {
+      "line": 44,
+      "text": "+  issues: write"
+    },
+    {
+      "line": 45,
+      "text": "+  pull-requests: read"
+    },
+    {
+      "line": 46,
+      "text": "+"
+    },
+    {
+      "line": 47,
+      "text": "+jobs:"
+    },
+    {
+      "line": 48,
+      "text": "+  clear-awaiting-user:"
+    },
+    {
+      "line": 49,
+      "text": "+    name: Clear awaiting-user after author reply"
+    },
+    {
+      "line": 50,
+      "text": "+    if: >-"
+    },
+    {
+      "line": 51,
+      "text": "+      github.event_name == 'issue_comment' &&"
+    },
+    {
+      "line": 52,
+      "text": "+      github.event.issue.pull_request == null &&"
+    },
+    {
+      "line": 53,
+      "text": "+      github.event.comment.user.login == github.event.issue.user.login &&"
+    },
+    {
+      "line": 54,
+      "text": "+      contains("
+    },
+    {
+      "line": 55,
+      "text": "+        github.event.issue.labels.*.name,"
+    },
+    {
+      "line": 56,
+      "text": "+        'status:awaiting-user'"
+    },
+    {
+      "line": 57,
+      "text": "+      )"
+    },
+    {
+      "line": 58,
+      "text": "+    runs-on: ubuntu-latest"
+    },
+    {
+      "line": 59,
+      "text": "+"
+    },
+    {
+      "line": 60,
+      "text": "+    steps:"
+    },
+    {
+      "line": 61,
+      "text": "+      - name: Remove waiting labels"
+    },
+    {
+      "line": 62,
+      "text": "+        uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553 # v9"
+    },
+    {
+      "line": 63,
+      "text": "+        with:"
+    },
+    {
+      "line": 64,
+      "text": "+          script: |"
+    },
+    {
+      "line": 65,
+      "text": "+            const issue = context.payload.issue;"
+    },
+    {
+      "line": 66,
+      "text": "+            const labels = issue.labels.map(label =>"
+    },
+    {
+      "line": 67,
+      "text": "+              typeof label === \"string\" ? label : label.name"
+    },
+    {
+      "line": 68,
+      "text": "+            );"
+    },
+    {
+      "line": 69,
+      "text": "+"
+    },
+    {
+      "line": 70,
+      "text": "+            for (const name of ["
+    },
+    {
+      "line": 71,
+      "text": "+              \"status:awaiting-user\","
+    },
+    {
+      "line": 72,
+      "text": "+              \"status:auto-close\""
+    },
+    {
+      "line": 73,
+      "text": "+            ]) {"
+    },
+    {
+      "line": 74,
+      "text": "+              if (!labels.includes(name)) {"
+    },
+    {
+      "line": 75,
+      "text": "+                continue;"
+    },
+    {
+      "line": 76,
+      "text": "+              }"
+    },
+    {
+      "line": 77,
+      "text": "+"
+    },
+    {
+      "line": 78,
+      "text": "+              await github.rest.issues.removeLabel({"
+    },
+    {
+      "line": 79,
+      "text": "+                owner: context.repo.owner,"
+    },
+    {
+      "line": 80,
+      "text": "+                repo: context.repo.repo,"
+    },
+    {
+      "line": 81,
+      "text": "+                issue_number: issue.number,"
+    },
+    {
+      "line": 82,
+      "text": "+                name"
+    },
+    {
+      "line": 83,
+      "text": "+              });"
+    },
+    {
+      "line": 84,
+      "text": "+            }"
+    }
+  ],
+  "source_kind": "knowledge-mirror",
+  "execution": "none; examples are reference text, not validated launch commands"
+}

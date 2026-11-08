@@ -1,0 +1,84 @@
+{
+  "status": "partial",
+  "kind": "cookbook",
+  "query": "Qwen SGLang",
+  "hits": [
+    {
+      "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/foundation/systems/inference-cookbook-das/local/changes/gh-inference-cookbook-das-435.md",
+      "sha256": "bb4c2cbce2eac2462308a056a8b0e4811f7ce46e569910e4d65af295c93250da",
+      "relative_path": "local/changes/gh-inference-cookbook-das-435.md",
+      "score": 2909,
+      "lines": [
+        {
+          "line": 8,
+          "text": "# inference-cookbook-das PR #435: docs(sglang): add Qwen3.8 Flash Next deployment recipes v1"
+        },
+        {
+          "line": 153,
+          "text": "+- 模型部署文档相关的 Git 提交信息使用小写框架前缀，格式：`vllm/<model>: <summary>` 或 `sglang/<model>: <summary>`，例如：`vllm/qwen3.5-35b-a3b: add deployment doc` 或 `sglang/qwen3.5-35b-a3b: add deployment doc`"
+        },
+        {
+          "line": 156,
+          "text": " - 使用框架默认端口，不要自定义 `--port`：vLLM 默认 `8000`，SGLang 默认 `30000`"
+        },
+        {
+          "line": 163,
+          "text": "-      <td rowspan=\"22\" align=\"center\"><img src=\"https://cdn-avatars.huggingface.co/v1/production/uploads/620760a26e3b7210c2ff1943/-s1gyJfvbE1RgO5iBeNOi.png\" height=\"40\"/><br/>Qwen</td>"
+        }
+      ]
+    },
+    {
+      "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/foundation/systems/inference-cookbook-das/local/changes/gh-inference-cookbook-das-441.md",
+      "sha256": "0b273b4306deb69cd754557b67177f84cd5b370d5c268f06c49274e442ec1960",
+      "relative_path": "local/changes/gh-inference-cookbook-das-441.md",
+      "score": 2001,
+      "lines": [
+        {
+          "line": 8,
+          "text": "# inference-cookbook-das PR #441: docs(sglang): add DeepSeek-V4 and Qwen3-VL deployment guides"
+        },
+        {
+          "line": 15,
+          "text": "## Summary`n- Add DeepSeek-V4 SGLang deployment guidance.`n- Add Qwen3-VL SGLang deployment guidance.`n`n## Verification`n- Ran git diff --check."
+        },
+        {
+          "line": 28,
+          "text": "diff --git a/docs/model-deployment/sglang/deepseek-v4.md b/docs/model-deployment/sglang/deepseek-v4.md"
+        },
+        {
+          "line": 30,
+          "text": "--- a/docs/model-deployment/sglang/deepseek-v4.md"
+        }
+      ]
+    },
+    {
+      "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/foundation/systems/inference-cookbook-das/upstream/gh-inference-cookbook-das/e5181fb1a1138b36708140db.md",
+      "sha256": "5697a7382a411de2cb9db6fe23596a0ed4f32c8def789923bf8400e8d73898f2",
+      "relative_path": "upstream/gh-inference-cookbook-das/e5181fb1a1138b36708140db.md",
+      "score": 1673,
+      "lines": [
+        {
+          "line": 8,
+          "text": "# DeepSeek-V4 on SGLang"
+        },
+        {
+          "line": 12,
+          "text": "DeepSeek-V4 是 DeepSeek 系列的混合专家模型。本页汇总 DeepSeek-V4 系列模型在 HCU 平台上使用 SGLang 的部署方式."
+        },
+        {
+          "line": 16,
+          "text": "| 模型权重 | 量化方式 | SGLang 镜像 | 推荐硬件 | 卡数 | 部署方式 | 启动命令 |"
+        },
+        {
+          "line": 18,
+          "text": "| [hygon/DeepSeek-V4-Flash-Channel-INT8-w8a8](https://www.modelscope.cn/models/hygon/DeepSeek-V4-Flash-Channel-INT8-w8a8) | INT8 W8A8 | 0.5.12 | BW1100 | 8 | IFB | [**`>_`**](#deepseek-v4-flash-channel-int8-w8a8-ifb-bw1100-8x-sglang-0512) |"
+        }
+      ]
+    }
+  ],
+  "root": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/foundation/systems/inference-cookbook-das",
+  "revision": "d5ba70e31fc48d6e252f2c4da9ddbf9f16338158",
+  "source_kind": "knowledge-mirror",
+  "coverage": "Tracked Markdown/MDX/YAML in selected scope; local working bytes, no online freshness or full corpus claim",
+  "next": "Read matching pages, verify version/hardware/quantization/parallelism, then validate flags in the actual engine."
+}

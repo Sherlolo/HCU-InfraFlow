@@ -1,2 +1,3 @@
 # Preserve raw command logs verbatim.
 validation/*.log -whitespace
+validation/**/*.log -whitespace

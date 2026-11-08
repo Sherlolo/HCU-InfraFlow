@@ -1,0 +1,9 @@
+{
+  "pilot_root": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot",
+  "knowledge_root": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge",
+  "kernel_skill": "/public/home/yangyn1/work_space/2026/agent/lightop-skiils/knowledge/SKILL.md",
+  "cookbook_root": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/foundation/systems/inference-cookbook-das",
+  "cookbook_source_kind": "knowledge-mirror",
+  "simulation_python": "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.work/simulation-env/bin/python",
+  "simulation_wheel": "/public/home/yangyn1/work_space/2026/agent/DCUSimTools/dcusim-2.0.0-cp310-cp310-linux_x86_64.whl"
+}

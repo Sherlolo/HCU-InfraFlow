@@ -1,0 +1,37 @@
+Processing ./.
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+  /public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.venv/lib/python3.10/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: BuildBackendWarning: `project.license` as a TOML table is deprecated
+  !!
+  
+          ********************************************************************************
+          Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+  
+          By 2027-Feb-18, you need to update your project and remove deprecated calls
+          or your builds will no longer be supported.
+  
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+  
+  !!
+    corresp(dist, value, root_dir)
+Building wheels for collected packages: hcu-infra-agent
+  Building wheel for hcu-infra-agent (pyproject.toml): started
+  Building wheel for hcu-infra-agent (pyproject.toml): finished with status 'done'
+  /public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.venv/lib/python3.10/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: BuildBackendWarning: `project.license` as a TOML table is deprecated
+  !!
+  
+          ********************************************************************************
+          Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+  
+          By 2027-Feb-18, you need to update your project and remove deprecated calls
+          or your builds will no longer be supported.
+  
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+  
+  !!
+    corresp(dist, value, root_dir)
+  Created wheel for hcu-infra-agent: filename=hcu_infra_agent-0.2.0-py3-none-any.whl size=106885 sha256=0d4d6a1a63ae3d1b8bc4480a54c1034f322cae5a4c295d41e39e0e843c5e088b
+  Stored in directory: /tmp/pip-ephem-wheel-cache-x1a_g4ow/wheels/9c/cc/eb/cedab703f75dcd8b61a1e0ea85e2a206f36d1a2f16d3ab07c7
+Successfully built hcu-infra-agent

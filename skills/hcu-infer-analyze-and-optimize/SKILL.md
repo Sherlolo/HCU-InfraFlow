@@ -14,3 +14,7 @@ Use bound benchmark, BLAS, MoE or LightOp Skills only when their scope matches t
 ## Project resources
 
 For CLI schemas and stage gates read `docs/contracts.md` and the relevant deployment/optimization/operations document from the selected project root. Installed Skills locate that root in adjacent `workspace.json.project_root`; in a source checkout use the repository root. Keep task evidence in its separate private workspace.
+
+## Executable module chain
+
+Read `docs/modules.md` before first use. Import actual traces with `prof-analyze`; inspect its unknowns and original triage output. Use current analysis ID with `optimization-plan`, then execute scoped implementation/measurement through existing command cards. Use `optimization-check` on retained fixed-input comparisons; a pass still requires independent flow review. `simulate` invokes DCUSim for model/hardware/parallelism hypotheses, never as measured performance. Search/read Cookbook and knowledge to confirm existing mechanisms before implementing.

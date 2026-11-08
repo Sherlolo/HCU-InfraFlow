@@ -1,0 +1,12 @@
+{
+  "status": "complete",
+  "installed": [
+    "hcu-infer-analyze-and-optimize",
+    "hcu-infer-check-and-deploy",
+    "hcu-infer-knowledge-curate",
+    "hcu-infer-knowledge-search",
+    "hcu-infer-scale-and-operate",
+    "hcu-infra-agent"
+  ],
+  "target": "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.work/1109/skills"
+}

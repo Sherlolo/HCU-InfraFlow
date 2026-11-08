@@ -1,0 +1,332 @@
+{
+  "status": "complete",
+  "kind": "knowledge",
+  "path": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge/knowledge/projects/sglang/knowledgebase/local/overview/engineering-guide.md",
+  "relative_path": "projects/sglang/knowledgebase/local/overview/engineering-guide.md",
+  "sha256": "7d8d4cc30f41ffdd93dccb29273a984168bd31f1749e74c40b0fc3ef092a9d86",
+  "total_lines": 732,
+  "lines": [
+    {
+      "line": 1,
+      "text": "---"
+    },
+    {
+      "line": 2,
+      "text": "id: sglang-engineering-handbook"
+    },
+    {
+      "line": 3,
+      "text": "title: SGLang：HCU 服务链路、稀疏 Attention 与 MegaMoE 源码详解"
+    },
+    {
+      "line": 4,
+      "text": "project: sglang"
+    },
+    {
+      "line": 5,
+      "text": "domain: frameworks"
+    },
+    {
+      "line": 6,
+      "text": "status: synthesized"
+    },
+    {
+      "line": 7,
+      "text": "knowledge_type: engineering-guide"
+    },
+    {
+      "line": 8,
+      "text": "schema: project-engineering-v1"
+    },
+    {
+      "line": 9,
+      "text": "verification: source-inspected; hardware-not-run"
+    },
+    {
+      "line": 10,
+      "text": "project_type: source-project"
+    },
+    {
+      "line": 11,
+      "text": "topics:"
+    },
+    {
+      "line": 12,
+      "text": "- frameworks"
+    },
+    {
+      "line": 13,
+      "text": "- sparse-attention"
+    },
+    {
+      "line": 14,
+      "text": "- DSA"
+    },
+    {
+      "line": 15,
+      "text": "- CP"
+    },
+    {
+      "line": 16,
+      "text": "- KV-cache"
+    },
+    {
+      "line": 17,
+      "text": "- MegaMoE"
+    },
+    {
+      "line": 18,
+      "text": "- graph-replay"
+    },
+    {
+      "line": 19,
+      "text": "related:"
+    },
+    {
+      "line": 20,
+      "text": "- flashmla-engineering-handbook"
+    },
+    {
+      "line": 21,
+      "text": "- moe-engineering-handbook"
+    },
+    {
+      "line": 22,
+      "text": "- deepgemm-engineering-handbook"
+    },
+    {
+      "line": 23,
+      "text": "- mooncake-engineering-handbook"
+    },
+    {
+      "line": 24,
+      "text": "- aiter-engineering-handbook"
+    },
+    {
+      "line": 25,
+      "text": "- sglang-scheduling-eplb-plugin-materials"
+    },
+    {
+      "line": 26,
+      "text": "- sglang-tiered-kv-pd-materials"
+    },
+    {
+      "line": 27,
+      "text": "sources:"
+    },
+    {
+      "line": 28,
+      "text": "- id: 163d45e3949c68322e59b01a"
+    },
+    {
+      "line": 29,
+      "text": "  sha256: d3706c545c81d03fe9af368488fa20b036359b44bf97033d783bdd335edd72a5"
+    },
+    {
+      "line": 30,
+      "text": "  revision: ebe659200a2131033f2fcabe86bc61c225bbfdc5"
+    },
+    {
+      "line": 31,
+      "text": "- id: eb9adfe24d86579d92d95807"
+    },
+    {
+      "line": 32,
+      "text": "  sha256: b9bbd28c208d603bf6d102d4d3f9277f2b71ff1b9ebebb1662f6cdea726e08bf"
+    },
+    {
+      "line": 33,
+      "text": "  revision: ebe659200a2131033f2fcabe86bc61c225bbfdc5"
+    },
+    {
+      "line": 34,
+      "text": "- id: 4e42e5641319ddad40fc9acb"
+    },
+    {
+      "line": 35,
+      "text": "  sha256: 93e4bdf49a8a9eb168ec382733a59c2fbb80daed6ef9c1181f29316be473d4cb"
+    },
+    {
+      "line": 36,
+      "text": "  revision: ebe659200a2131033f2fcabe86bc61c225bbfdc5"
+    },
+    {
+      "line": 37,
+      "text": "- id: 8c8d3ee19912791d028cee12"
+    },
+    {
+      "line": 38,
+      "text": "  sha256: 3d449f5f830c1bc5ed2939f802dcbafd39b440e740bdc25bdd3070fa93d02f0a"
+    },
+    {
+      "line": 39,
+      "text": "  revision: ebe659200a2131033f2fcabe86bc61c225bbfdc5"
+    },
+    {
+      "line": 40,
+      "text": "- id: 2625efd991a37d5f1b07bcd6"
+    },
+    {
+      "line": 41,
+      "text": "  sha256: e3931461d3c2f2b84b8291904ba36e679908805ee53908a8508ba9e41b84f7cf"
+    },
+    {
+      "line": 42,
+      "text": "  revision: ebe659200a2131033f2fcabe86bc61c225bbfdc5"
+    },
+    {
+      "line": 43,
+      "text": "- id: 3961038943ac33c30f299f62"
+    },
+    {
+      "line": 44,
+      "text": "  sha256: 8ca6c68094cd69e4411378d04258d716fef1b9dfc1387a2aa6c1ab767767cfad"
+    },
+    {
+      "line": 45,
+      "text": "  revision: ebe659200a2131033f2fcabe86bc61c225bbfdc5"
+    },
+    {
+      "line": 46,
+      "text": "- id: 19e2028629177333505d8945"
+    },
+    {
+      "line": 47,
+      "text": "  sha256: 017322dd7eee22ee360d61c14f35085bb7736cf7a0044775e6077c6549de7196"
+    },
+    {
+      "line": 48,
+      "text": "  revision: ebe659200a2131033f2fcabe86bc61c225bbfdc5"
+    },
+    {
+      "line": 49,
+      "text": "- id: 2ffd614acf5bd12e907c5d8d"
+    },
+    {
+      "line": 50,
+      "text": "  sha256: 287a1a8f96970a57b26b80bc1df59994786ee59efac6638bc2537f6aae1df06f"
+    },
+    {
+      "line": 51,
+      "text": "  revision: ebe659200a2131033f2fcabe86bc61c225bbfdc5"
+    },
+    {
+      "line": 52,
+      "text": "- id: 8b9d21e8dae38205699c0fc6"
+    },
+    {
+      "line": 53,
+      "text": "  sha256: 7473704b2c6d9dd270e9ed582741e0b3cbb775e26474e88ac24c9798e5b45f66"
+    },
+    {
+      "line": 54,
+      "text": "  revision: ebe659200a2131033f2fcabe86bc61c225bbfdc5"
+    },
+    {
+      "line": 55,
+      "text": "- id: 7dfd7ec51b7f00103cf9168e"
+    },
+    {
+      "line": 56,
+      "text": "  sha256: 2c65b47f07ca8c0abb107513ab5e596d3f671630748063daf3814083a23e3f72"
+    },
+    {
+      "line": 57,
+      "text": "  revision: ebe659200a2131033f2fcabe86bc61c225bbfdc5"
+    },
+    {
+      "line": 58,
+      "text": "- id: 8ef2d216fd6270f3d445f888"
+    },
+    {
+      "line": 59,
+      "text": "  sha256: 5e3ae900384494e23bcccba256bf7cdb56eca8248c54ff87734a0ec8e921f9b8"
+    },
+    {
+      "line": 60,
+      "text": "  revision: ebe659200a2131033f2fcabe86bc61c225bbfdc5"
+    },
+    {
+      "line": 61,
+      "text": "- id: 00c40c955aa85d32f440914c"
+    },
+    {
+      "line": 62,
+      "text": "  sha256: 62fe042f79df9aeab15a2ae761940ad2a1cbe2a4a7ed1627bc634cf7d22af8d2"
+    },
+    {
+      "line": 63,
+      "text": "  revision: 6c8c3f26ad17735fcf1588aeb17b66d16d47b4fd"
+    },
+    {
+      "line": 64,
+      "text": "  repo_id: gh-sglang"
+    },
+    {
+      "line": 65,
+      "text": "  path: python/sglang/srt/layers/moe/token_dispatcher/deepep.py"
+    },
+    {
+      "line": 66,
+      "text": "  kind: code"
+    },
+    {
+      "line": 67,
+      "text": "- id: 515b5dc61c318c17d135ab2e"
+    },
+    {
+      "line": 68,
+      "text": "  sha256: b08551795f7d76fdedc2b23724efcdf356456860c3744803e66f3c8b7e102ae0"
+    },
+    {
+      "line": 69,
+      "text": "  revision: 6c8c3f26ad17735fcf1588aeb17b66d16d47b4fd"
+    },
+    {
+      "line": 70,
+      "text": "  repo_id: gh-sglang"
+    },
+    {
+      "line": 71,
+      "text": "  path: python/sglang/srt/layers/moe/fused_moe_triton/layer.py"
+    },
+    {
+      "line": 72,
+      "text": "  kind: code"
+    },
+    {
+      "line": 73,
+      "text": "- id: 457e9a0294ed5250d28a3029"
+    },
+    {
+      "line": 74,
+      "text": "  sha256: 1c059cfd481d72fe32e000390237f4b7449527d55af2c41915fceb864ea6e200"
+    },
+    {
+      "line": 75,
+      "text": "  revision: 6c8c3f26ad17735fcf1588aeb17b66d16d47b4fd"
+    },
+    {
+      "line": 76,
+      "text": "  repo_id: gh-sglang"
+    },
+    {
+      "line": 77,
+      "text": "  path: python/sglang/srt/model_executor/runner_utils/deepep_adapter.py"
+    },
+    {
+      "line": 78,
+      "text": "  kind: code"
+    },
+    {
+      "line": 79,
+      "text": "- id: 2530cfe2b4aeeea2a615fa5a"
+    },
+    {
+      "line": 80,
+      "text": "  sha256: c1d8ebc8a29a34b0ddbc813420e22b22b8d08d5fe1417bd8a1a4ef0285da6394"
+    }
+  ],
+  "source_kind": "knowledge-checkout",
+  "execution": "none; examples are reference text, not validated launch commands"
+}

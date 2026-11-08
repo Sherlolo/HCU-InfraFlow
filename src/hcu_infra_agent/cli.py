@@ -3,6 +3,7 @@ import argparse
 import json
 import os
 import sqlite3
+import subprocess
 import sys
 from pathlib import Path
 from . import __version__
@@ -56,12 +57,17 @@ def parser():
         if name=='flow-answer':q.add_argument('--version',required=True);q.add_argument('--file-hash',required=True);q.add_argument('--author',required=True)
         if name=='inbox':q.add_argument('--action',default='list',choices=['list','claim','complete','retry']);q.add_argument('--event');q.add_argument('--owner')
         if name=='events-export':q.add_argument('--after',type=int,default=0)
+    from .module_cli import configure
+    configure(subs)
     return p
 
 
 def execute(a):
     from . import flow, team, execution, coordination, command_group, quality, analysis, monitor, bindings
     from . import admission, environment
+    from .module_cli import dispatch, COMMANDS
+    if a.command in COMMANDS:
+        return dispatch(a)
     s=Store(a.workspace);c=a.command
     if c=='init':return {'workspace':str(s.root),'version':__version__}
     if c=='task-create':return s.create(read_json(a.file))
@@ -165,7 +171,7 @@ def main(argv=None):
         result=execute(parser().parse_args(argv));print(json.dumps(result,ensure_ascii=False,allow_nan=False,indent=2))
         status=result.get('status') if isinstance(result,dict) else None
         return 2 if status in {'fail','failed','incomplete','rejected','unknown','attention','needs-repair','partial'} else 0
-    except (FlowError,OSError,ValueError,KeyError,TypeError,sqlite3.Error) as exc:
+    except (FlowError,OSError,ValueError,KeyError,TypeError,sqlite3.Error,subprocess.SubprocessError) as exc:
         print(json.dumps({'status':'error','error':str(exc)},ensure_ascii=False),file=sys.stderr);return 1
     except KeyboardInterrupt:return 130
 

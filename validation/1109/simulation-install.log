@@ -1,0 +1,9 @@
+Looking in links: /public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.work/1109/wheels
+Processing /public/home/yangyn1/work_space/2026/agent/DCUSimTools/dcusim-2.0.0-cp310-cp310-linux_x86_64.whl
+Processing ./.work/1109/wheels/openpyxl-3.1.5-py2.py3-none-any.whl
+Processing ./.work/1109/wheels/et_xmlfile-2.0.0-py3-none-any.whl
+Installing collected packages: openpyxl, et_xmlfile, dcusim
+
+Successfully installed dcusim-2.0.0 et_xmlfile-2.0.0 openpyxl-3.1.5
+2.0.0
+{"simulation_python": "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.work/1109/simulation-env/bin/python", "simulation_wheel": "/public/home/yangyn1/work_space/2026/agent/DCUSimTools/dcusim-2.0.0-cp310-cp310-linux_x86_64.whl", "wheel_sha256": "19d9f5c3f12032808aace1717880e94877962f6020e03392c3c963c34b9cb509"}
