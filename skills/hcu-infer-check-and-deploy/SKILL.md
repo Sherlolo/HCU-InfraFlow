@@ -18,3 +18,7 @@ For CLI schemas and stage gates read `docs/contracts.md` and the relevant deploy
 ## Recipe and capacity inputs
 
 Use `cookbook-search` then `cookbook-read` to inspect the actual page, source kind and revision before adopting a recipe. Cookbook queries use the official HYGON-AI/inference-cookbook-das site and pinned commits. Use `simulate` for explicit offline model/parallelism memory and latency predictions, then calibrate against actual serving. See `docs/modules.md` for inputs and provenance.
+
+## Installed runtime
+
+Resolve the project from workspace.json.project_root. Reuse .work/setup/status.json, site.json and components.json when present; use the recorded Python with `-m hcu_infra_agent` so the user need not manage PATH, JSON bindings or internal commands. Inspect gaps in the selected container. The user provides goals and existing materials; the Agent maintains task specifications and tool inputs.

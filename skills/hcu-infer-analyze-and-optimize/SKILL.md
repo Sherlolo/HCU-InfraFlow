@@ -18,3 +18,7 @@ For CLI schemas and stage gates read `docs/contracts.md` and the relevant deploy
 ## Executable module chain
 
 Read `docs/modules.md` before first use. Import actual traces with `prof-analyze`; inspect its unknowns and original triage output. Use current analysis ID with `optimization-plan`, then execute scoped implementation/measurement through existing command cards. Use `optimization-check` on retained fixed-input comparisons; a pass still requires independent flow review. `simulate` invokes DCUSim for model/hardware/parallelism hypotheses, never as measured performance. Search/read Cookbook and knowledge to confirm existing mechanisms before implementing.
+
+## Installed runtime
+
+Resolve the project from workspace.json.project_root. Reuse .work/setup/status.json, site.json and components.json when present; use the recorded Python with `-m hcu_infra_agent` so the user need not manage PATH, JSON bindings or internal commands. Inspect gaps in the selected container. The user provides goals and existing materials; the Agent maintains task specifications and tool inputs.

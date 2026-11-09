@@ -1,0 +1,119 @@
+{
+  "status": "incomplete",
+  "components": [
+    {
+      "component": "execution-container",
+      "status": "ready",
+      "detail": {
+        "detected_container": true,
+        "declared": {
+          "kind": "container"
+        },
+        "python": "/usr/bin/python3"
+      },
+      "action": null
+    },
+    {
+      "component": "workflow-python",
+      "status": "ready",
+      "detail": "3.10.12",
+      "action": null
+    },
+    {
+      "component": "git",
+      "status": "ready",
+      "detail": "/usr/bin/git",
+      "action": null
+    },
+    {
+      "component": "skill:benchmark",
+      "status": "ready",
+      "detail": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/llm-serving-auto-benchmark/SKILL.md",
+      "action": null
+    },
+    {
+      "component": "skill:profile",
+      "status": "ready",
+      "detail": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/llm-torch-profiler-analysis/SKILL.md",
+      "action": null
+    },
+    {
+      "component": "skill:incident",
+      "status": "ready",
+      "detail": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/sglang-prod-incident-triage/SKILL.md",
+      "action": null
+    },
+    {
+      "component": "skill:loop",
+      "status": "ready",
+      "detail": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/sglang-sota-humanize-loop/SKILL.md",
+      "action": null
+    },
+    {
+      "component": "skill:gemm",
+      "status": "ready",
+      "detail": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/hipblaslt-rocblas-tuning/SKILL.md",
+      "action": null
+    },
+    {
+      "component": "skill:moe",
+      "status": "ready",
+      "detail": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/hcu-aiter-moe-tuning/SKILL.md",
+      "action": null
+    },
+    {
+      "component": "skill:kernel",
+      "status": "ready",
+      "detail": "/public/home/yangyn1/work_space/2026/agent/lightop-skiils/knowledge/SKILL.md",
+      "action": null
+    },
+    {
+      "component": "skill:simulation",
+      "status": "ready",
+      "detail": "/public/home/yangyn1/work_space/2026/agent/dcu-infer-pilot/skills/model-compute-simulation/SKILL.md",
+      "action": null
+    },
+    {
+      "component": "knowledge-manual",
+      "status": "ready",
+      "detail": "/public/home/yangyn1/work_space/2026/agent/hcu-knowledge",
+      "action": null
+    },
+    {
+      "component": "simulation-runtime",
+      "status": "ready",
+      "detail": {
+        "python": [
+          3,
+          10
+        ],
+        "numpy": "1.25.0",
+        "dcusim": "2.0.0"
+      },
+      "action": null
+    },
+    {
+      "component": "serving-runtime",
+      "status": "ready",
+      "detail": {
+        "torch": true,
+        "sglang": true,
+        "vllm": true
+      },
+      "action": null
+    },
+    {
+      "component": "official-cookbook",
+      "status": "missing",
+      "detail": {
+        "status": "unreachable",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das",
+        "reason": "HTTP Error 403: rate limit exceeded"
+      },
+      "action": "Run doctor --online in the selected container and verify GitHub connectivity; no knowledge mirror fallback is used"
+    }
+  ],
+  "knowledge_installation": "manual-only",
+  "container_hint": "Run installation, checks and offline simulations in the same selected container. GPU devices/DTK and real model serving require their own deployment checks.",
+  "hardware_validated": false
+}

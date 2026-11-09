@@ -1,20 +1,20 @@
 ---
 name: hcu-infra-agent-install
-description: Check and prepare HCU Infra Agent dependencies in a user-selected container, fetch official SimTools, and guide manual knowledge installation.
+description: Install or update HCU Infra Agent and check its components in the selected Python/container, with optional SimTools acquisition and manual knowledge installation.
 ---
 
-# HCU Infra Agent installation and readiness
+# Installation and component readiness
 
-Identify the user's actual container and mapped project/workspace paths before running installation. Prompt the user to select a container only if it cannot be inferred from their environment; do not reuse a historical person's container. Run checks inside the selected container. Distinguish a declared container name from verified runtime context.
+Locate the checkout using workspace.json.project_root or the source root. Read scripts/setup_hcu_infra.py --help and README. The user supplies their environment and available knowledge location; manage flags, config files, checks and internal commands yourself.
 
-Locate the project from adjacent workspace.json.project_root after installation, or the checkout root. Read README and docs/modules.md for the current commands.
+Use `python scripts/setup_hcu_infra.py` with the selected existing Python >=3.10. It installs the package and seven Skills directly, records that interpreter and component paths, and creates no virtual environment. Use --skills-dir for the actual Agent host's Skill directory. A remote container tool installation may use --tools-only while Agent Skills remain on their actual host. Reuse recorded paths in .work/setup rather than asking for them again.
 
-Run `hcu-infra-agent doctor CONFIG --online --output REPORT`. Inspect every missing or unverified component, including Python, Git, inference/profiler Skills, service interpreter, simulation runtime and official Cookbook connectivity. A missing optional use case need not block independent available work; state its scope. Passing package checks is not GPU or model qualification.
+Use --replace only for updating this project's managed Skill copies; do not overwrite a foreign checkout binding. The installer refuses a Python package owned by another installation. If that happens, select a suitable existing environment; do not uninstall another project silently.
 
-For SimTools use `component-fetch simtools NEW_DIRECTORY`, which fetches https://developer.sourcefind.cn/codes/OpenDAS/DCUSimTools. Inspect available wheels and the source's requirements, then explicitly run scripts/setup_simulation.py with a compatible wheel and a task-owned isolated environment. Do not modify the container's shared serving packages, upgrade its base image, overwrite an existing checkout or retry a partial fetch blindly.
+For SimTools select a compatible CPython 3.10 Linux container, then use --with-simtools. The source is https://developer.sourcefind.cn/codes/OpenDAS/DCUSimTools; --simtools-root can reuse an existing selected source. Installation uses the same selected interpreter. Do not silently downgrade an incompatible NumPy or upgrade the base image/shared serving stack.
 
-HCU-Knowledge must be installed by the user. Report the missing path/content/access and ask the user to provide their installation. Never clone, bootstrap, update or rebuild it as an installation side effect. Once provided, bind knowledge_root and verify it.
+HCU-Knowledge is manually installed by the user. Pass --knowledge-root to reuse it, or discover an existing sibling checkout. Never clone, bootstrap, update or rebuild the knowledge repository as a setup side effect. Missing knowledge is a component gap; independent Cookbook queries can still proceed.
 
-Cookbook queries use https://github.com/HYGON-AI/inference-cookbook-das directly. Read pinned official links and check applicable images, hardware and framework versions before recommending an image or launch command. Do not silently replace this source with a local knowledge mirror.
+Read .work/setup/components.json and use doctor with the generated site.json for further checks, adding --online when connectivity must be checked. Missing paths and unavailable features stay explicit. Passing package checks does not validate GPU access, a model or performance. Cookbook reads come directly from https://github.com/HYGON-AI/inference-cookbook-das at pinned commits.
 
-After setup rerun doctor in the same container and report what is ready, missing or unverified, the selected interpreters and source revisions. Preserve existing user authorization and continue reversible task-local work without repeated permission questions.
+Before real serving, confirm the user's actual HCU/DTK container and workspace mapping. Do not reuse another person's container or infer that a declared name is an inspected identity. End with the installed components, outstanding gaps and a simple next prompt such as `$hcu-infra-agent 分析这些 trace`.

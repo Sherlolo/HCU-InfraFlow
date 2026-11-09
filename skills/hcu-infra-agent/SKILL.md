@@ -20,3 +20,7 @@ For CLI schemas and stage gates read `docs/contracts.md` and the relevant deploy
 ## Five-module routing
 
 Read `docs/skill-reading-map.md` for the selected scope, then `docs/modules.md` for executable module contracts. Cookbook and knowledge search/read establish version-scoped references; `simulate` supplies conditional DCUSim predictions. `prof-analyze` retains real rank evidence, `optimization-plan` records Agent hypotheses, and `optimization-check` recomputes candidate qualification. Route only the modules needed for the task; keep existing flow review and resource rules. See README for commands and measured validation scope.
+
+## Installed runtime
+
+Resolve the project from workspace.json.project_root. Reuse .work/setup/status.json, site.json and components.json when present; use the recorded Python with `-m hcu_infra_agent` so the user need not manage PATH, JSON bindings or internal commands. Inspect gaps in the selected container. The user provides goals and existing materials; the Agent maintains task specifications and tool inputs.

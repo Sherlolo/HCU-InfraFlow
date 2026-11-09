@@ -7,3 +7,5 @@ build/
 dist/
 .work/
 workspace.local.json
+
+.deps/

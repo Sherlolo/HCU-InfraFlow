@@ -1,0 +1,23 @@
+{
+  "status": "installed",
+  "project_root": "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent",
+  "python": "/usr/bin/python3",
+  "skills": {
+    "status": "complete",
+    "installed": [
+      "hcu-infer-analyze-and-optimize",
+      "hcu-infer-check-and-deploy",
+      "hcu-infer-knowledge-curate",
+      "hcu-infer-knowledge-search",
+      "hcu-infer-scale-and-operate",
+      "hcu-infra-agent",
+      "hcu-infra-agent-install"
+    ],
+    "target": "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.work/simple-setup/skills"
+  },
+  "config": "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.work/setup/site.json",
+  "components_status": "incomplete",
+  "bindings_ready": true,
+  "knowledge_installation": "manual-only",
+  "next": "Start a new Agent session and use $hcu-infra-agent. The Agent reads .work/setup/site.json and components.json; missing knowledge must be supplied by the user."
+}

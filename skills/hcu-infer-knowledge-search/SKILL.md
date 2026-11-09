@@ -16,3 +16,7 @@ For CLI schemas and stage gates read `docs/contracts.md` and the relevant deploy
 ## Search without a derived index
 
 Use `knowledge-query`/`knowledge-read` for tracked text and `cookbook-search`/`cookbook-read` for the official online Cookbook. These commands do not create a Store or mutate the bound repository; partial/exit 2 preserves usable hits but indicates limited coverage. Read matching bodies, not only snippets. `knowledge-search` retains the separate native index path. Commands and examples are in `docs/modules.md` and README.
+
+## Installed runtime
+
+Resolve the project from workspace.json.project_root. Reuse .work/setup/status.json, site.json and components.json when present; use the recorded Python with `-m hcu_infra_agent` so the user need not manage PATH, JSON bindings or internal commands. Inspect gaps in the selected container. The user provides goals and existing materials; the Agent maintains task specifications and tool inputs.
