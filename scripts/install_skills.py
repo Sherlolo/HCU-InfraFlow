@@ -1,4 +1,4 @@
-"""Install this checkout's six workflow Skills into an explicitly selected directory."""
+"""Install this checkout's workflow and installation Skills into an explicitly selected directory."""
 import argparse
 import json
 import shutil

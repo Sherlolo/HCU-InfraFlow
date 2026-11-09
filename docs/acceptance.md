@@ -1,6 +1,6 @@
 # 能力与验证范围
 
-本仓交付包含可运行 CLI、持久 flow/team/execution、推理质量与性能验收、streaming benchmark、绑定/查询、观测与报告、六个 Skills、测试及 CPU demo。
+本仓交付包含可运行 CLI、持久 flow/team/execution、推理质量与性能验收、streaming benchmark、绑定/查询、观测与报告、七个 Skills（含安装检查）、测试及 CPU demo。
 自动化回归验证协议和模拟 endpoint，不代表 HCU 模型精度、真实推理性能、全量多机 profile、真实多 Agent 或长期生产恢复。
 TrainFlow 或 infra-agent-v2 的历史硬件结果仅作参考，不继承为本仓实测。
 

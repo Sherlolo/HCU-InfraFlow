@@ -8,16 +8,16 @@ from .core import FlowError
 
 
 def scope(record, kind):
+    if kind != 'knowledge':raise FlowError('Cookbook uses its official online source')
     from .bindings import verify
     verify(record)
-    if kind == 'cookbook':
-        if not record.get('cookbook_root'):
-            raise FlowError('No Cookbook root bound; set cookbook_root to a checked-out source or explicit knowledge mirror')
-        return Path(record['cookbook_root']).resolve(strict=True)
     return Path(record['roots']['knowledge_root']).resolve(strict=True) / 'knowledge'
 
 
 def read(record, kind, relative, start=1, count=80):
+    if kind == 'cookbook':
+        from . import cookbook
+        return cookbook.read(relative,start,count,record.get('cookbook_revision'))
     root = scope(record, kind)
     path = (root / relative).resolve(strict=True)
     if not path.is_relative_to(root) or path.suffix.lower() not in {'.md','.mdx','.rst','.txt','.json','.yaml','.yml','.sh','.py'}:
@@ -35,6 +35,9 @@ def read(record, kind, relative, start=1, count=80):
 
 
 def search(record, kind, query, limit=5, search_scope="curated", timeout=45):
+    if kind == 'cookbook':
+        from . import cookbook
+        return cookbook.search(query,limit)
     root = scope(record, kind)
     if search_scope not in {'curated','all'} or type(timeout) is not int or not 1 <= timeout <= 300:
         raise FlowError('Use scope curated/all and timeout 1..300 seconds')

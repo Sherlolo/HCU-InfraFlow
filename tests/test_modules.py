@@ -70,7 +70,7 @@ def make_binding(tmp_path):
 def test_cookbook_search_read_and_escape(tmp_path):
     record=make_binding(tmp_path)
     found=references.search(record,'cookbook','SGLang KV')
-    assert len(found['hits'])==1 and found['source_kind']=='knowledge-mirror'
+    assert len(found['hits'])==1 and found['source']=='https://github.com/HYGON-AI/inference-cookbook-das'
     page=references.read(record,'cookbook',found['hits'][0]['relative_path'])
     assert page['lines'][3]['text']=='python -m sglang.launch_server'
     assert page['sha256']==found['hits'][0]['sha256']
@@ -177,3 +177,13 @@ def test_external_tool_timeout_preserves_failed_invocation(store):
     result=run_tool(store,'timeout-fixture',[sys.executable,'-c','import time;print("start",flush=True);time.sleep(20)'],timeout=1)
     assert result['status']=='incomplete' and result['timed_out'] is True
     assert b'start' in store.artifact(result['stdout']['sha256'])
+
+
+@pytest.fixture(autouse=True)
+def official_cookbook_fixture(monkeypatch):
+    from hcu_infra_agent import cookbook
+    def fake(url):
+        if '/commits/' in url:return json.dumps({'sha':'a'*40}).encode()
+        if '/git/trees/' in url:return json.dumps({'tree':[{'path':'qwen-sglang-kv.md'}]}).encode()
+        return b'# Qwen\nSGLang KV cache recipe\n```bash\npython -m sglang.launch_server\n```\n'
+    monkeypatch.setattr(cookbook,'fetch',fake)

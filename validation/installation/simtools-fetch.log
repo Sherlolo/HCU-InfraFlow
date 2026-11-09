@@ -1,0 +1,10 @@
+{
+  "status": "complete",
+  "source": "https://developer.sourcefind.cn/codes/OpenDAS/DCUSimTools",
+  "revision": "ec550bdeb341806048fa1962da03f4673474cf28",
+  "destination": "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.work/install-check/DCUSimTools",
+  "wheels": [
+    "/public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.work/install-check/DCUSimTools/dcusim-2.0.0-cp310-cp310-linux_x86_64.whl"
+  ],
+  "next": "Select a compatible CPython 3.10/Linux wheel and explicitly run scripts/setup_simulation.py; knowledge remains manually installed"
+}

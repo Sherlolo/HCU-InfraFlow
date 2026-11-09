@@ -17,4 +17,4 @@ For CLI schemas and stage gates read `docs/contracts.md` and the relevant deploy
 
 ## Recipe and capacity inputs
 
-Use `cookbook-search` then `cookbook-read` to inspect the actual page, source kind and revision before adopting a recipe. The site binding may be a knowledge mirror, not the current upstream checkout. Use `simulate` for explicit offline model/parallelism memory and latency predictions, then calibrate against actual serving. See `docs/modules.md` for inputs and provenance.
+Use `cookbook-search` then `cookbook-read` to inspect the actual page, source kind and revision before adopting a recipe. Cookbook queries use the official HYGON-AI/inference-cookbook-das site and pinned commits. Use `simulate` for explicit offline model/parallelism memory and latency predictions, then calibrate against actual serving. See `docs/modules.md` for inputs and provenance.

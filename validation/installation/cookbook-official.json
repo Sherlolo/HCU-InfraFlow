@@ -1,0 +1,574 @@
+{
+  "search": {
+    "status": "partial",
+    "kind": "cookbook",
+    "source": "https://github.com/HYGON-AI/inference-cookbook-das",
+    "revision": "92b2f6a3e695c58e22779820157b39d1e9843140",
+    "hits": [
+      {
+        "relative_path": "docs/model-deployment/sglang/qwen3.8.md",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md",
+        "sha256": "8cae0d453ca09c8e0eca081639d084e91223f698776d605c31495fbc3078ecad",
+        "score": 2,
+        "lines": [
+          {
+            "line": 1,
+            "text": "# Qwen3.8 on SGLang"
+          },
+          {
+            "line": 5,
+            "text": "Qwen3.8 系列模型面向长上下文推理与工具调用场景，支持 SGLang 部署。"
+          },
+          {
+            "line": 9,
+            "text": "| 模型权重 | 量化方式 | SGLang 镜像 | 推荐硬件 | 卡数 | 部署方式 | 启动命令 |"
+          },
+          {
+            "line": 11,
+            "text": "| [Qwen/Qwen3.8-27B](https://www.modelscope.cn/models/Qwen/Qwen3.8-27B) | BF16 | [0.5.18](../docker_images.md) | BW1100 | 2 | IFB | [**`>_`**](#qwen38-27b-ifb-bw1100-2x-sglang-0518) |"
+          }
+        ]
+      },
+      {
+        "relative_path": "docs/frameworks/sglang-multilevel-kv-cache.md",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/frameworks/sglang-multilevel-kv-cache.md",
+        "sha256": "49344b54899294ea9a39b346a40f5f32f7302ba716ef641f24ed35d05f93d5c3",
+        "score": 1,
+        "lines": [
+          {
+            "line": 1,
+            "text": "# SGLang 多级 KV Cache（L2 / L3 / L4）使用文档"
+          },
+          {
+            "line": 3,
+            "text": "SGLang 目前有六档 KV 缓存的存储配置："
+          },
+          {
+            "line": 19,
+            "text": "|档位|数据路径|Mooncake|SGLang 开关|"
+          },
+          {
+            "line": 28,
+            "text": "> 有 Mooncake 的档位：先起 master。L3 容量可以由独立 `mooncake_client` 出，也可以由 SGLang 自己当 client 出。"
+          }
+        ]
+      }
+    ],
+    "coverage": "Official repository Markdown paths matched against query; selected bodies fetched at the pinned commit, not exhaustive semantic search"
+  },
+  "read": {
+    "status": "complete",
+    "kind": "cookbook",
+    "source": "https://github.com/HYGON-AI/inference-cookbook-das",
+    "revision": "92b2f6a3e695c58e22779820157b39d1e9843140",
+    "relative_path": "docs/model-deployment/sglang/qwen3.8.md",
+    "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md",
+    "sha256": "8cae0d453ca09c8e0eca081639d084e91223f698776d605c31495fbc3078ecad",
+    "total_lines": 757,
+    "lines": [
+      {
+        "line": 1,
+        "text": "# Qwen3.8 on SGLang"
+      },
+      {
+        "line": 2,
+        "text": ""
+      },
+      {
+        "line": 3,
+        "text": "## 模型简介"
+      },
+      {
+        "line": 4,
+        "text": ""
+      },
+      {
+        "line": 5,
+        "text": "Qwen3.8 系列模型面向长上下文推理与工具调用场景，支持 SGLang 部署。"
+      },
+      {
+        "line": 6,
+        "text": ""
+      },
+      {
+        "line": 7,
+        "text": "## 模型列表"
+      },
+      {
+        "line": 8,
+        "text": ""
+      },
+      {
+        "line": 9,
+        "text": "| 模型权重 | 量化方式 | SGLang 镜像 | 推荐硬件 | 卡数 | 部署方式 | 启动命令 |"
+      },
+      {
+        "line": 10,
+        "text": "| -------- | -------- | ----------- | -------- | ---- | -------- | -------- |"
+      },
+      {
+        "line": 11,
+        "text": "| [Qwen/Qwen3.8-27B](https://www.modelscope.cn/models/Qwen/Qwen3.8-27B) | BF16 | [0.5.18](../docker_images.md) | BW1100 | 2 | IFB | [**`>_`**](#qwen38-27b-ifb-bw1100-2x-sglang-0518) |"
+      },
+      {
+        "line": 12,
+        "text": "|  | BF16 | [0.5.18](../docker_images.md) | BW1000 | 2 | IFB | [**`>_`**](#qwen38-27b-ifb-bw1000-2x-sglang-0518) |"
+      },
+      {
+        "line": 13,
+        "text": "|  | BF16 | 0.5.18 | K100_AI | 2 | IFB | [**`>_`**](#qwen38-27b-ifb-k100_ai-2x-sglang-0518) |"
+      },
+      {
+        "line": 14,
+        "text": "|   | BF16 | 0.5.12 | BW1100 | 1 | IFB | [**`>_`**](#qwen38-27b-ifb-bw1100-1x-sglang-0512) |"
+      },
+      {
+        "line": 15,
+        "text": "|  | BF16 | [0.5.12](../docker_images.md) | BW1100 | 2 | IFB | [**`>_`**](#qwen38-27b-ifb-bw1100-2x-sglang-0512) |"
+      },
+      {
+        "line": 16,
+        "text": "|  | BF16 | [0.5.12](../docker_images.md) | BW1000 | 2 | IFB | [**`>_`**](#qwen38-27b-ifb-bw1000-2x-sglang-0512) |"
+      },
+      {
+        "line": 17,
+        "text": "|  | BF16 | [0.5.12](../docker_images.md) | K100_AI | 2 | IFB | [**`>_`**](#qwen38-27b-ifb-k100_ai-2x-sglang-0512) |"
+      },
+      {
+        "line": 18,
+        "text": "| [hygon/Qwen3.8-27B-Channel-INT8-w8a8](https://www.modelscope.cn/models/hygon/Qwen3.8-27B-Channel-INT8-w8a8) | INT8 W8A8 | [0.5.18](../docker_images.md) | BW1100 | 2 | IFB | [**`>_`**](#qwen38-27b-channel-int8-w8a8-ifb-bw1100-2x-sglang-0518) |"
+      },
+      {
+        "line": 19,
+        "text": "|  | INT8 W8A8 | [0.5.18](../docker_images.md) | BW1000 | 2 | IFB | [**`>_`**](#qwen38-27b-channel-int8-w8a8-ifb-bw1000-2x-sglang-0518) |"
+      },
+      {
+        "line": 20,
+        "text": "|  | INT8 W8A8 | 0.5.18 | K100_AI | 2 | IFB | [**`>_`**](#qwen38-27b-channel-int8-w8a8-ifb-k100_ai-2x-sglang-0518) |"
+      },
+      {
+        "line": 21,
+        "text": "|   | INT8 W8A8 | [0.5.12](../docker_images.md) | BW1100 | 2 | IFB | [**`>_`**](#qwen38-27b-channel-int8-w8a8-ifb-bw1100-2x-sglang-0512) |"
+      },
+      {
+        "line": 22,
+        "text": "|  | W8A8 | 0.5.12 | BW1000 | 1 | IFB | [**`>_`**](#qwen38-27b-channel-int8-w8a8-ifb-bw1000-1x-sglang-0512) |"
+      },
+      {
+        "line": 23,
+        "text": "|  | W8A8 | 0.5.12 | BW1000 | 2 | IFB | [**`>_`**](#qwen38-27b-channel-int8-w8a8-ifb-bw1000-2x-sglang-0512-262k) |"
+      },
+      {
+        "line": 24,
+        "text": "|  | INT8 W8A8 | [0.5.12](../docker_images.md) | BW1000 | 2 | IFB | [**`>_`**](#qwen38-27b-channel-int8-w8a8-ifb-bw1000-2x-sglang-0512) |"
+      },
+      {
+        "line": 25,
+        "text": "|  | INT8 W8A8 | [0.5.12](../docker_images.md) | K100_AI | 2 | IFB | [**`>_`**](#qwen38-27b-channel-int8-w8a8-ifb-k100_ai-2x-sglang-0512) |"
+      },
+      {
+        "line": 26,
+        "text": "| [hygon/Qwen3.8-27B-Channel-FP8](https://www.modelscope.cn/models/hygon/Qwen3.8-27B-Channel-FP8) | FP8 W8A8 | [0.5.18](../docker_images.md) | BW1100 | 2 | IFB | [**`>_`**](#qwen38-27b-channel-fp8-ifb-bw1100-2x-sglang-0518) |"
+      },
+      {
+        "line": 27,
+        "text": "| [Qwen/Qwen3.8-Flash-Next](https://www.modelscope.cn/models/Qwen/Qwen3.8-Flash-Next) | BF16 | [0.5.18](../docker_images.md) | BW1100 | 8 | IFB | [**`>_`**](#qwen38-flash-next-ifb-bw1100-8x-sglang-0518) |"
+      },
+      {
+        "line": 28,
+        "text": "| | BF16 | [0.5.18](../docker_images.md) | BW1000 | 8 | IFB | [**`>_`**](#qwen38-flash-next-ifb-bw1000-8x-sglang-0518) |"
+      },
+      {
+        "line": 29,
+        "text": "| [hygon/Qwen3.8-Flash-Next-Channel-FP8](https://www.modelscope.cn/models/hygon/Qwen3.8-Flash-Next-Channel-FP8) | FP8 W8A8 | [0.5.18](../docker_images.md) | BW1100 | 4 | IFB | [**`>_`**](#qwen38-flash-next-channel-fp8-ifb-bw1100-4x-sglang-0518) |"
+      },
+      {
+        "line": 30,
+        "text": "| [hygon/Qwen3.8-Flash-Next-Channel-INT8-w8a8](https://www.modelscope.cn/models/hygon/Qwen3.8-Flash-Next-Channel-INT8-w8a8) | INT8 W8A8 | [0.5.18](../docker_images.md) | BW1100 | 4 | IFB | [**`>_`**](#qwen38-flash-next-channel-int8-w8a8-ifb-bw1100-4x-sglang-0518) |"
+      },
+      {
+        "line": 31,
+        "text": "| | INT8 W8A8 | [0.5.18](../docker_images.md) | BW1000 | 4 | IFB | [**`>_`**](#qwen38-flash-next-channel-int8-w8a8-ifb-bw1000-4x-sglang-0518) |"
+      },
+      {
+        "line": 32,
+        "text": "| [hygon/Qwen3.8-Flash-Next-Mixed-w4a8](https://www.modelscope.cn/models/hygon/Qwen3.8-Flash-Next-Mixed-w4a8) | INT4 W4A8 | 0.5.18 | BW1000 | 4 | IFB | [**`>_`**](#qwen38-flash-next-mixed-w4a8-ifb-bw1000-4x-sglang-0518) |"
+      },
+      {
+        "line": 33,
+        "text": ""
+      },
+      {
+        "line": 34,
+        "text": ""
+      },
+      {
+        "line": 35,
+        "text": ""
+      },
+      {
+        "line": 36,
+        "text": "## 启动命令"
+      },
+      {
+        "line": 37,
+        "text": ""
+      },
+      {
+        "line": 38,
+        "text": "须按本机 GPU 与 NUMA 亲和性设置 `--numa-node`。"
+      },
+      {
+        "line": 39,
+        "text": ""
+      },
+      {
+        "line": 40,
+        "text": "### Qwen3.8-27B IFB BW1100 2x SGLang 0.5.18"
+      },
+      {
+        "line": 41,
+        "text": ""
+      },
+      {
+        "line": 42,
+        "text": "```bash"
+      },
+      {
+        "line": 43,
+        "text": "export SGLANG_ENABLE_SPEC_V2=1"
+      },
+      {
+        "line": 44,
+        "text": "export SGLANG_USE_FUSED_TOPK_SOFTMAX=1"
+      },
+      {
+        "line": 45,
+        "text": "export SGLANG_USE_LIGHTOP=1"
+      },
+      {
+        "line": 46,
+        "text": "export SGLANG_USE_CAUSAL_CONV1D=1"
+      },
+      {
+        "line": 47,
+        "text": "export SGLANG_USE_AITER_LINEAR_ATTN=1"
+      },
+      {
+        "line": 48,
+        "text": ""
+      },
+      {
+        "line": 49,
+        "text": "sglang serve \\"
+      },
+      {
+        "line": 50,
+        "text": "  --model-path Qwen/Qwen3.8-27B \\"
+      },
+      {
+        "line": 51,
+        "text": "  --attention-backend fa3 \\"
+      },
+      {
+        "line": 52,
+        "text": "  --mm-attention-backend fa3 \\"
+      },
+      {
+        "line": 53,
+        "text": "  --speculative-algorithm NEXTN \\"
+      },
+      {
+        "line": 54,
+        "text": "  --speculative-num-steps 3 \\"
+      },
+      {
+        "line": 55,
+        "text": "  --speculative-eagle-topk 1 \\"
+      },
+      {
+        "line": 56,
+        "text": "  --speculative-num-draft-tokens 4 \\"
+      },
+      {
+        "line": 57,
+        "text": "  --tp-size 2 \\"
+      },
+      {
+        "line": 58,
+        "text": "  --pp-size 1 \\"
+      },
+      {
+        "line": 59,
+        "text": "  --page-size 64 \\"
+      },
+      {
+        "line": 60,
+        "text": "  --mamba-scheduler-strategy extra_buffer \\"
+      },
+      {
+        "line": 61,
+        "text": "  --kv-cache-dtype fp8_e4m3 \\"
+      },
+      {
+        "line": 62,
+        "text": "  --tool-call-parser qwen3_coder \\"
+      },
+      {
+        "line": 63,
+        "text": "  --reasoning-parser qwen3 \\"
+      },
+      {
+        "line": 64,
+        "text": "  --trust-remote-code"
+      },
+      {
+        "line": 65,
+        "text": "```"
+      },
+      {
+        "line": 66,
+        "text": ""
+      },
+      {
+        "line": 67,
+        "text": "### Qwen3.8-27B IFB BW1000 2x SGLang 0.5.18"
+      },
+      {
+        "line": 68,
+        "text": ""
+      },
+      {
+        "line": 69,
+        "text": "```bash"
+      },
+      {
+        "line": 70,
+        "text": "export SGLANG_ENABLE_SPEC_V2=1"
+      },
+      {
+        "line": 71,
+        "text": "export SGLANG_USE_FUSED_TOPK_SOFTMAX=1"
+      },
+      {
+        "line": 72,
+        "text": "export SGLANG_USE_LIGHTOP=1"
+      },
+      {
+        "line": 73,
+        "text": "export SGLANG_USE_CAUSAL_CONV1D=1"
+      },
+      {
+        "line": 74,
+        "text": "export SGLANG_USE_AITER_LINEAR_ATTN=1"
+      },
+      {
+        "line": 75,
+        "text": ""
+      },
+      {
+        "line": 76,
+        "text": "sglang serve \\"
+      },
+      {
+        "line": 77,
+        "text": "  --model-path Qwen/Qwen3.8-27B \\"
+      },
+      {
+        "line": 78,
+        "text": "  --mem-fraction-static 0.80 \\"
+      },
+      {
+        "line": 79,
+        "text": "  --max-running-requests 8 \\"
+      },
+      {
+        "line": 80,
+        "text": "  --max-mamba-cache-size 16 \\"
+      }
+    ],
+    "links": [
+      {
+        "label": "Qwen/Qwen3.8-27B",
+        "url": "https://www.modelscope.cn/models/Qwen/Qwen3.8-27B"
+      },
+      {
+        "label": "0.5.18",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-ifb-bw1100-2x-sglang-0518"
+      },
+      {
+        "label": "0.5.18",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-ifb-bw1000-2x-sglang-0518"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-ifb-k100_ai-2x-sglang-0518"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-ifb-bw1100-1x-sglang-0512"
+      },
+      {
+        "label": "0.5.12",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-ifb-bw1100-2x-sglang-0512"
+      },
+      {
+        "label": "0.5.12",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-ifb-bw1000-2x-sglang-0512"
+      },
+      {
+        "label": "0.5.12",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-ifb-k100_ai-2x-sglang-0512"
+      },
+      {
+        "label": "hygon/Qwen3.8-27B-Channel-INT8-w8a8",
+        "url": "https://www.modelscope.cn/models/hygon/Qwen3.8-27B-Channel-INT8-w8a8"
+      },
+      {
+        "label": "0.5.18",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-channel-int8-w8a8-ifb-bw1100-2x-sglang-0518"
+      },
+      {
+        "label": "0.5.18",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-channel-int8-w8a8-ifb-bw1000-2x-sglang-0518"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-channel-int8-w8a8-ifb-k100_ai-2x-sglang-0518"
+      },
+      {
+        "label": "0.5.12",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-channel-int8-w8a8-ifb-bw1100-2x-sglang-0512"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-channel-int8-w8a8-ifb-bw1000-1x-sglang-0512"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-channel-int8-w8a8-ifb-bw1000-2x-sglang-0512-262k"
+      },
+      {
+        "label": "0.5.12",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-channel-int8-w8a8-ifb-bw1000-2x-sglang-0512"
+      },
+      {
+        "label": "0.5.12",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-channel-int8-w8a8-ifb-k100_ai-2x-sglang-0512"
+      },
+      {
+        "label": "hygon/Qwen3.8-27B-Channel-FP8",
+        "url": "https://www.modelscope.cn/models/hygon/Qwen3.8-27B-Channel-FP8"
+      },
+      {
+        "label": "0.5.18",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-27b-channel-fp8-ifb-bw1100-2x-sglang-0518"
+      },
+      {
+        "label": "Qwen/Qwen3.8-Flash-Next",
+        "url": "https://www.modelscope.cn/models/Qwen/Qwen3.8-Flash-Next"
+      },
+      {
+        "label": "0.5.18",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-flash-next-ifb-bw1100-8x-sglang-0518"
+      },
+      {
+        "label": "0.5.18",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-flash-next-ifb-bw1000-8x-sglang-0518"
+      },
+      {
+        "label": "hygon/Qwen3.8-Flash-Next-Channel-FP8",
+        "url": "https://www.modelscope.cn/models/hygon/Qwen3.8-Flash-Next-Channel-FP8"
+      },
+      {
+        "label": "0.5.18",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-flash-next-channel-fp8-ifb-bw1100-4x-sglang-0518"
+      },
+      {
+        "label": "hygon/Qwen3.8-Flash-Next-Channel-INT8-w8a8",
+        "url": "https://www.modelscope.cn/models/hygon/Qwen3.8-Flash-Next-Channel-INT8-w8a8"
+      },
+      {
+        "label": "0.5.18",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-flash-next-channel-int8-w8a8-ifb-bw1100-4x-sglang-0518"
+      },
+      {
+        "label": "0.5.18",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/docker_images.md"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-flash-next-channel-int8-w8a8-ifb-bw1000-4x-sglang-0518"
+      },
+      {
+        "label": "hygon/Qwen3.8-Flash-Next-Mixed-w4a8",
+        "url": "https://www.modelscope.cn/models/hygon/Qwen3.8-Flash-Next-Mixed-w4a8"
+      },
+      {
+        "label": "**`>_`**",
+        "url": "https://github.com/HYGON-AI/inference-cookbook-das/blob/92b2f6a3e695c58e22779820157b39d1e9843140/docs/model-deployment/sglang/qwen3.8.md#qwen38-flash-next-mixed-w4a8-ifb-bw1000-4x-sglang-0518"
+      }
+    ],
+    "execution": "Reference text only; verify container and engine version before running commands"
+  }
+}

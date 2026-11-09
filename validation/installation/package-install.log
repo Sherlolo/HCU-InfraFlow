@@ -1,0 +1,45 @@
+Obtaining file:///public/home/yangyn1/work_space/2026/agent/hcu-infra-agent
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+  /public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.venv/lib/python3.10/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: BuildBackendWarning: `project.license` as a TOML table is deprecated
+  !!
+  
+          ********************************************************************************
+          Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+  
+          By 2027-Feb-18, you need to update your project and remove deprecated calls
+          or your builds will no longer be supported.
+  
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+  
+  !!
+    corresp(dist, value, root_dir)
+Building wheels for collected packages: hcu-infra-agent
+  Building editable for hcu-infra-agent (pyproject.toml): started
+  Building editable for hcu-infra-agent (pyproject.toml): finished with status 'done'
+  /public/home/yangyn1/work_space/2026/agent/hcu-infra-agent/.venv/lib/python3.10/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: BuildBackendWarning: `project.license` as a TOML table is deprecated
+  !!
+  
+          ********************************************************************************
+          Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+  
+          By 2027-Feb-18, you need to update your project and remove deprecated calls
+          or your builds will no longer be supported.
+  
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+  
+  !!
+    corresp(dist, value, root_dir)
+  Created wheel for hcu-infra-agent: filename=hcu_infra_agent-0.3.0-0.editable-py3-none-any.whl size=6993 sha256=fd348036ca77112a095e8cbdc282857c3a0db9a81f2edc07571fac47ea1ca5a9
+  Stored in directory: /tmp/hcu-infra-agent-install-check/pip-ephem-wheel-cache-qesh26cm/wheels/9c/cc/eb/cedab703f75dcd8b61a1e0ea85e2a206f36d1a2f16d3ab07c7
+Successfully built hcu-infra-agent
+Installing collected packages: hcu-infra-agent
+  Attempting uninstall: hcu-infra-agent
+    Found existing installation: hcu-infra-agent 0.2.0
+    Uninstalling hcu-infra-agent-0.2.0:
+      Successfully uninstalled hcu-infra-agent-0.2.0
+Successfully installed hcu-infra-agent-0.3.0

@@ -1,0 +1,14 @@
+{
+  "status": "complete",
+  "state": "completed",
+  "rounds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "report": "/tmp/hcu-infra-agent-install-check/demo/report.html",
+  "qualification": "synthetic evidence and real CPU subprocess; no HCU benchmark, model accuracy or independent Agent claim"
+}

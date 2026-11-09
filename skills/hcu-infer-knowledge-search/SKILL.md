@@ -15,4 +15,4 @@ For CLI schemas and stage gates read `docs/contracts.md` and the relevant deploy
 
 ## Search without a derived index
 
-Use `knowledge-query`/`knowledge-read` for tracked text and `cookbook-search`/`cookbook-read` for the separately bound recipe scope. These commands do not create a Store or mutate the bound repository; partial/exit 2 preserves usable hits but indicates limited coverage. Read matching bodies, not only snippets. `knowledge-search` retains the separate native index path. Commands and examples are in `docs/modules.md` and README.
+Use `knowledge-query`/`knowledge-read` for tracked text and `cookbook-search`/`cookbook-read` for the official online Cookbook. These commands do not create a Store or mutate the bound repository; partial/exit 2 preserves usable hits but indicates limited coverage. Read matching bodies, not only snippets. `knowledge-search` retains the separate native index path. Commands and examples are in `docs/modules.md` and README.

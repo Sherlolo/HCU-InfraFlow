@@ -8,7 +8,7 @@
 | Prof 性能分析 | `prof-analyze TASK REQUEST`；已有 rank trace、真实组、各 rank 选定窗口 | 保留原始压缩 trace、窗口、GPU 时间归因、覆盖缺口；可调用绑定的原生 triage。analysis artifact 供优化计划和 flow 使用 |
 | 性能优化 | `optimization-plan TASK REQUEST`、`optimization-check TASK REQUEST` | Agent 依据观测写假设和目标，不自动枚举固定旋钮；校验固定样本、特性、重复性能和 SLA，保留结果后仍需独立复核 |
 | 性能仿真 | `simulate BINDINGS REQUEST` | 调用独立 Python 3.10 环境中的真实 DCUSim，输出 prefill/decode、TPS、显存预测、默认假设与来源；不充当实测 |
-| Cookbook 查询 | `cookbook-search BINDINGS QUERY`、`cookbook-read BINDINGS PATH` | 先找到适用模型/框架/硬件配方，再读原文与命令片段，记录路径、行号、正文 SHA256、Git 修订和镜像性质 |
+| Cookbook 查询 | `cookbook-search BINDINGS QUERY`、`cookbook-read BINDINGS PATH` | 先找到适用模型/框架/硬件配方，再读原文与命令片段，记录路径、行号、正文 SHA256、官方提交与页面链接 |
 | 知识库查询 | `knowledge-query BINDINGS QUERY`、`knowledge-read BINDINGS PATH` | 无需原生派生索引，查本机 Git 跟踪的 Markdown/MDX/YAML；原生查询仍使用 knowledge-search |
 
 所有新入口支持 `--output FILE` 保存 JSON。查询类入口不创建 Store；Prof/仿真/优化的产物进入 `--workspace` 指定的私有 Store。
@@ -52,11 +52,11 @@ trace 元数据或事件 rank 与声明冲突、窗口没有 GPU 活动、缺少
 
 ## Cookbook 与知识库
 
-指定站点的 Cookbook submodule 为空，当前显式绑定 `hcu-knowledge/knowledge/foundation/systems/inference-cookbook-das` 镜像。
-返回 source_kind=knowledge-mirror，revision 是知识 checkout 的版本，不是 Cookbook 上游最新 commit。原始出处/PR/版本线索继续从正文核对。
-要直接查独立 Cookbook checkout，修改 cookbook_root 和 cookbook_source_kind 后重新 bind；不自动 clone、pull 或更新资料。
+Cookbook 使用 `https://github.com/HYGON-AI/inference-cookbook-das` 的 GitHub API 与固定提交原文，返回官方页面及相关链接。
+不依赖知识库安装、不采用 cookbook_root 镜像。search 按 Markdown 路径匹配模型/框架关键词，read 的 --revision 固定同一提交。
+安装及容器组件检查使用 hcu-infra-agent-install Skill 与 doctor；SimTools 由 component-fetch simtools 显式获取，知识库由使用者手动安装。
 
-查询只读 Git 跟踪的文本，范围不是全量线上文档；有界词项检索不证明全文结论已理解。命中后使用 read，核对 dtype、并行、硬件、框架分支与依赖，
+知识查询只读 Git 跟踪的文本，范围不是全量线上文档；有界词项检索不证明全文结论已理解。命中后使用 read，核对 dtype、并行、硬件、框架分支与依赖，
 再到现场检查当前 CLI help 和实际实现。正文中的启动命令仅作为待验证材料，不会自动执行。read 限制在所绑定根内，拒绝路径逃逸。
 
 知识库体量较大，`knowledge-query` 默认只扫描 local 的专题/教程/案例/概览及 concepts，结果包含 search_scope 和 coverage。需要上游/原文时显式 `--scope all --timeout 180`（最大 300 秒）；超时返回 incomplete，不把它解释为无命中。Cookbook 查询仍限所绑定的配方目录。

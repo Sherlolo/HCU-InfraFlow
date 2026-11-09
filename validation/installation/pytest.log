@@ -1,0 +1,8 @@
+........................................................................ [ 32%]
+........................................................................ [ 65%]
+.s..............................s....................................... [ 97%]
+.....                                                                    [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_source_transfer.py:125: Windows path semantics
+SKIPPED [1] tests/test_source_transfer.py:399: Case-insensitive Windows selection
+219 passed, 2 skipped in 11.60s

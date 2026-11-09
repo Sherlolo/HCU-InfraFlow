@@ -24,8 +24,8 @@ CLI 不启动隐藏 LLM。宿主提供实际 Agent 会话和独立 review，任�
 
 ## 实际站点文件系统限制
 
-指定站点的 `/public/home/yangyn1` 解析到 NFS。并发回归在此目录的 SQLite WAL Store 上出现等待并被主动中断；
+共享目录可能位于 NFS。并发回归在此目录的 SQLite WAL Store 上出现等待并被主动中断；
 因此不把 NFS 上的单进程 demo 成功外推为并发控制已验收。运行中的控制 Store 应选用节点/容器本地文件系统，
 用明确的 `--workspace` 或 `HCU_INFRA_WORKSPACE` 指定；源码、导出证据和交付日志可保存共享盘。
 容器本地目录须登记为任务专用，考虑其生命周期及备份；不能把各节点独立 Store 当作同一个协调数据库。
-远端回归使用 `/tmp/hcu-infra-agent-1107-validation` 为专属本地临时根，不修改系统账户或其他服务。
+回归使用任务专属的节点本地临时根，不修改系统账户或其他服务。

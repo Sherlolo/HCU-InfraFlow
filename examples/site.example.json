@@ -1,0 +1,9 @@
+{
+  "execution_context": {"kind": "container", "name": "chosen-container"},
+  "pilot_root": "/path/to/dcu-infer-pilot",
+  "knowledge_root": "/path/to/manually-installed/hcu-knowledge",
+  "kernel_skill": "/path/to/kernel-skill/SKILL.md",
+  "simulation_python": "/path/to/simulation-env/bin/python",
+  "simulation_wheel": "/path/to/DCUSimTools/dcusim-compatible.whl",
+  "serving_python": "/path/to/container-serving-python"
+}

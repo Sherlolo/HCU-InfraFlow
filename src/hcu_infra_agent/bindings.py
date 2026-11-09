@@ -26,11 +26,6 @@ def bind(config, destination):
     items['knowledge'] = {'path': str(kb), 'sha256': hashlib.sha256(kb.read_bytes()).hexdigest()}
     record = {'schema_version': 1, 'roots': {k: str(v) for k,v in roots.items()}, 'items': items,
               'knowledge_python': config.get('knowledge_python', sys.executable), 'unavailable': unavailable, 'source_mutations': False}
-    if config.get('cookbook_root'):
-        cookbook = Path(config['cookbook_root']).resolve(strict=True)
-        if not cookbook.is_dir(): raise FlowError('cookbook_root must be a directory')
-        record['cookbook_root'] = str(cookbook)
-        record['cookbook_source_kind'] = config.get('cookbook_source_kind', 'checkout')
     if config.get('simulation_python'):
         python = Path(config['simulation_python']).expanduser().absolute()
         if not python.is_file(): raise FlowError('simulation_python does not exist')

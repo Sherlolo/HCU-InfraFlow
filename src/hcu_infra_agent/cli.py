@@ -4,6 +4,7 @@ import json
 import os
 import sqlite3
 import subprocess
+import urllib.error
 import sys
 from pathlib import Path
 from . import __version__
@@ -171,7 +172,7 @@ def main(argv=None):
         result=execute(parser().parse_args(argv));print(json.dumps(result,ensure_ascii=False,allow_nan=False,indent=2))
         status=result.get('status') if isinstance(result,dict) else None
         return 2 if status in {'fail','failed','incomplete','rejected','unknown','attention','needs-repair','partial'} else 0
-    except (FlowError,OSError,ValueError,KeyError,TypeError,sqlite3.Error,subprocess.SubprocessError) as exc:
+    except (FlowError,OSError,ValueError,KeyError,TypeError,sqlite3.Error,subprocess.SubprocessError,urllib.error.URLError) as exc:
         print(json.dumps({'status':'error','error':str(exc)},ensure_ascii=False),file=sys.stderr);return 1
     except KeyboardInterrupt:return 130
 
