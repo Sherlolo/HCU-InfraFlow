@@ -1,22 +1,22 @@
 ---
 name: hcu-infer-knowledge-search
-description: Retrieve version-scoped HCU inference knowledge and route profiling, benchmarking, BLAS, MoE and incident Skills from bound local sources.
+description: 检索与版本相关的 HCU 推理知识，并根据已绑定的本地来源选择性能分析、基准测试、BLAS、MoE 和故障诊断 Skill。
 ---
 
-# hcu-infer-knowledge-search
+# HCU 推理知识检索
 
-Read the selected bindings JSON and verify it with bindings-check. Query knowledge-search for the actual model, engine/version and observed mechanism. Read result bodies and source revisions before using a claim. Keep source/PR reference, local implementation and hardware measurements separate.
+读取选定的 bindings JSON，使用 `bindings-check` 验证。针对实际模型、引擎及版本、观测到的机制调用 `knowledge-search`。采用结论前阅读结果正文和来源修订。分别陈述来源或 PR 参考、本地实现和硬件实测。
 
-If native index, permission or runtime is unavailable, report the gap; direct source reading can continue with explicit paths and hashes. Entry hashes cover those files only, not all nested scripts. Before executing an external Skill's tool, verify its dependencies, version and actual output. Do not bootstrap/update knowledge repositories or install global Skills as a search side effect. Training-only retrieved material does not grant inference acceptance.
+原生索引、权限或运行环境不可用时，说明缺口；仍可根据明确路径和哈希继续阅读源文件。入口哈希只覆盖对应文件，不覆盖全部嵌套脚本。执行外部 Skill 的工具前，核对依赖、版本和实际输出。查询不附带 bootstrap、知识仓库更新或全局 Skill 安装。仅适用于训练的检索材料不能作为推理验收依据。
 
-## Project resources
+## 工程资源
 
-For CLI schemas and stage gates read `docs/contracts.md` and the relevant deployment/optimization/operations document from the selected project root. Installed Skills locate that root in adjacent `workspace.json.project_root`; in a source checkout use the repository root. Keep task evidence in its separate private workspace.
+从选定工程根目录读取 `docs/contracts.md`，了解 CLI 数据格式与阶段门槛，再按当前任务读取部署、优化或运维文档。已安装 Skill 通过同目录下的 `workspace.json.project_root` 定位工程；源码 checkout 中使用仓库根目录。任务证据保存在独立的私有工作区。
 
-## Search without a derived index
+## 无派生索引时的查询
 
-Use `knowledge-query`/`knowledge-read` for tracked text and `cookbook-search`/`cookbook-read` for the official online Cookbook. These commands do not create a Store or mutate the bound repository; partial/exit 2 preserves usable hits but indicates limited coverage. Read matching bodies, not only snippets. `knowledge-search` retains the separate native index path. Commands and examples are in `docs/modules.md` and README.
+使用 `knowledge-query` / `knowledge-read` 查询和阅读受版本管理的文本，使用 `cookbook-search` / `cookbook-read` 查询官方在线 Cookbook。这些命令不创建 Store，也不修改已绑定的仓库；partial / 退出码 2 表示覆盖有限，仍保留可用命中。阅读匹配正文，不只看片段。`knowledge-search` 保留为单独的原生索引查询入口。命令和示例见 `docs/modules.md` 及 README。
 
-## Installed runtime
+## 已安装的运行入口
 
-Resolve the project from workspace.json.project_root. Reuse .work/setup/status.json, site.json and components.json when present; use the recorded Python with `-m hcu_infra_agent` so the user need not manage PATH, JSON bindings or internal commands. Inspect gaps in the selected container. The user provides goals and existing materials; the Agent maintains task specifications and tool inputs.
+通过 `workspace.json.project_root` 定位工程。存在安装记录时复用 `.work/setup/status.json`、`site.json` 和 `components.json`，使用记录的 Python 执行 `-m hcu_infra_agent`，让使用者无需管理 PATH、JSON 绑定或内部命令。在选定容器中核对组件缺口。使用者提供目标和已有资料，由 Agent 维护任务规格与工具输入。

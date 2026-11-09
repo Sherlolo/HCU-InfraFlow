@@ -1,26 +1,26 @@
 ---
 name: hcu-infra-agent
-description: Coordinate end-to-end HCU large-model inference deployment, profiling-led optimization and service operation; also route scoped environment, analysis or diagnosis requests.
+description: 协调 HCU 大模型推理的部署、基于性能分析的优化及服务运维全流程，也支持限定范围的环境检查、性能分析或故障诊断任务。
 ---
 
-# hcu-infra-agent
+# HCU 推理主控
 
-Accept the user's model, environment, resource scope, workload, quality requirements, SLA and deliverable. Reuse known authorization; ask only about material missing inputs. Read the task's current Store, actual job state and prior evidence before continuing.
+接收用户提供的模型、环境、资源范围、工作负载、质量要求、SLA 和交付目标。复用已有授权，只对实质缺失的信息补充确认。接续任务前，先读取当前 Store、实际作业状态和已有证据。
 
-Create TaskSpec and a named acceptance plan with CLI task-create/flow-start for a full task. Use flow-next to select work, repair, review, advance, coordinate or reconcile; never convert an unknown remote outcome into a retry. Route deployment to $hcu-infer-check-and-deploy, profiling/optimization to $hcu-infer-analyze-and-optimize, scale and ongoing service to $hcu-infer-scale-and-operate. Scoped analysis does not authorize optimization.
+完整任务通过 CLI 的 `task-create` / `flow-start` 创建 TaskSpec 和具有明确验收项的计划。使用 `flow-next` 判断下一步是实施、修正、复核、推进、协调还是核对执行结果（work / repair / review / advance / coordinate / reconcile）；不能因远端操作结果不明就直接重试。部署交给 `$hcu-infer-check-and-deploy`，性能分析与优化交给 `$hcu-infer-analyze-and-optimize`，扩容和持续服务交给 `$hcu-infer-scale-and-operate`。仅分析任务不自动授权优化。
 
-Preserve the initial serving baseline, exact model/tokenizer/quantization and fixed workloads. Submit candidate snapshots and retained evidence. Have an actual independent Agent review; author/reviewer strings alone do not prove independence. Check human guidance before new experiments/transitions; default polling is 300 seconds. Bound parallel work by real dependencies and nonconflicting resources; register and bind actual host sessions before consuming results.
+保留最初的服务基线、准确的模型、tokenizer、量化方式和固定工作负载。提交候选快照及已留存的证据，由实际独立的 Agent 复核；仅有不同的 author / reviewer 字符串不能证明复核独立。新实验和阶段推进前检查人的指导，默认轮询间隔为 300 秒。并行工作必须具备真实依赖关系和互不冲突的资源；消费结果前，登记并绑定实际宿主会话。
 
-Follow existing budget and resource reservations. Stop progression on numerical/feature regression, missing evidence or unresolved execution. Finish with validated launch instructions, quality/performance scope, remaining gaps and report, and curate only reusable final findings.
+遵守既有预算和资源预约。出现数值或功能回退、证据缺失或执行结果未核清时，停止推进。交付经过验证的启动方法、质量与性能结论的适用范围、剩余缺口和报告；仅筛选可复用的最终结论进入共享知识。
 
-## Project resources
+## 工程资源
 
-For CLI schemas and stage gates read `docs/contracts.md` and the relevant deployment/optimization/operations document from the selected project root. Installed Skills locate that root in adjacent `workspace.json.project_root`; in a source checkout use the repository root. Keep task evidence in its separate private workspace.
+从选定工程根目录读取 `docs/contracts.md`，了解 CLI 数据格式与阶段门槛，再按当前任务读取部署、优化或运维文档。已安装 Skill 通过同目录下的 `workspace.json.project_root` 定位工程；源码 checkout 中使用仓库根目录。任务证据保存在独立的私有工作区。
 
-## Five-module routing
+## 五个模块的选择
 
-Read `docs/skill-reading-map.md` for the selected scope, then `docs/modules.md` for executable module contracts. Cookbook and knowledge search/read establish version-scoped references; `simulate` supplies conditional DCUSim predictions. `prof-analyze` retains real rank evidence, `optimization-plan` records Agent hypotheses, and `optimization-check` recomputes candidate qualification. Route only the modules needed for the task; keep existing flow review and resource rules. See README for commands and measured validation scope.
+先按任务范围读取 `docs/skill-reading-map.md`，再从 `docs/modules.md` 查对应模块的可执行契约。Cookbook 和知识检索、正文阅读提供与版本相关的参考；`simulate` 提供带适用条件的 DCUSim 预测；`prof-analyze` 留存真实 rank 证据；`optimization-plan` 记录 Agent 的假设；`optimization-check` 重算候选是否满足要求。只调用任务需要的模块，继续遵守既有 flow 复核和资源规则。具体命令及实测覆盖范围见 README。
 
-## Installed runtime
+## 已安装的运行入口
 
-Resolve the project from workspace.json.project_root. Reuse .work/setup/status.json, site.json and components.json when present; use the recorded Python with `-m hcu_infra_agent` so the user need not manage PATH, JSON bindings or internal commands. Inspect gaps in the selected container. The user provides goals and existing materials; the Agent maintains task specifications and tool inputs.
+通过 `workspace.json.project_root` 定位工程。存在安装记录时复用 `.work/setup/status.json`、`site.json` 和 `components.json`，使用记录的 Python 执行 `-m hcu_infra_agent`，让使用者无需管理 PATH、JSON 绑定或内部命令。在选定容器中核对组件缺口。使用者提供目标和已有资料，由 Agent 维护任务规格与工具输入。

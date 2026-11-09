@@ -1,24 +1,24 @@
 ---
 name: hcu-infer-check-and-deploy
-description: Inspect HCU inference environments and adapt or deploy large-model serving with reproducible launch and output-quality baselines.
+description: 检查 HCU 推理环境，适配或部署大模型服务，并建立可复现的启动方式和输出质量基线。
 ---
 
-# hcu-infer-check-and-deploy
+# HCU 推理环境检查与部署
 
-Read the actual container/host mappings, allocation, device occupancy, DTK and effective engine/plugin/library versions. Prefer the applicable HCU cookbook/launch implementation, checking current CLI help rather than copying NVIDIA-only flags. External inputs stay read-only and caches/builds/logs go under the task workspace.
+核对实际容器与宿主的目录映射、资源分配、设备占用、DTK，以及实际生效的引擎、插件和库版本。优先采用适用的 HCU Cookbook 和启动实现，查看当前版本的 CLI 帮助，不照搬仅适用于 NVIDIA 的参数。外部输入保持只读，缓存、构建产物和日志放在任务工作区。
 
-Freeze source revision plus local bytes, model/tokenizer, quantization and KV dtype, chat template, required endpoints and workload. Budget weights, KV cache, graph/workspace peaks and headroom against actual available resources. Validate readiness, requests, streaming and required model features. Preserve original request/response and numeric evidence; no backward, optimizer or training-loss checks stand in for inference quality.
+冻结源码修订与本地实际字节、模型和 tokenizer、量化方式、KV dtype、对话模板、必需端点及工作负载。按实际可用资源预算权重、KV cache、图执行与工作空间峰值，并保留余量。验证服务就绪、请求、流式输出和必需模型功能。保留原始请求、响应和数值证据；反向传播、优化器或训练 loss 检查不能代替推理质量验证。
 
-Deliver fixed command cards and source snapshot, effective env, resource/health observations, initial output-quality and profiler-off performance baseline. Diagnose environment discrepancies before accepting them as the normal limit. A running endpoint alone is not completion.
+交付固定命令卡、源码快照、生效环境、资源与健康观测、初始输出质量，以及关闭 profiler 的性能基线。环境差异应先排查，不能直接当成正常上限。端点能够响应并不代表任务已经完成。
 
-## Project resources
+## 工程资源
 
-For CLI schemas and stage gates read `docs/contracts.md` and the relevant deployment/optimization/operations document from the selected project root. Installed Skills locate that root in adjacent `workspace.json.project_root`; in a source checkout use the repository root. Keep task evidence in its separate private workspace.
+从选定工程根目录读取 `docs/contracts.md`，了解 CLI 数据格式与阶段门槛，再按当前任务读取部署、优化或运维文档。已安装 Skill 通过同目录下的 `workspace.json.project_root` 定位工程；源码 checkout 中使用仓库根目录。任务证据保存在独立的私有工作区。
 
-## Recipe and capacity inputs
+## 配方与容量评估
 
-Use `cookbook-search` then `cookbook-read` to inspect the actual page, source kind and revision before adopting a recipe. Cookbook queries use the official HYGON-AI/inference-cookbook-das site and pinned commits. Use `simulate` for explicit offline model/parallelism memory and latency predictions, then calibrate against actual serving. See `docs/modules.md` for inputs and provenance.
+采用配方前，先使用 `cookbook-search`，再通过 `cookbook-read` 阅读实际页面，核对来源类型和修订。Cookbook 查询使用官方 HYGON-AI/inference-cookbook-das 网站及固定提交。使用 `simulate` 显式预测模型与并行配置的显存、时延，再通过实际服务校准。输入要求和来源记录见 `docs/modules.md`。
 
-## Installed runtime
+## 已安装的运行入口
 
-Resolve the project from workspace.json.project_root. Reuse .work/setup/status.json, site.json and components.json when present; use the recorded Python with `-m hcu_infra_agent` so the user need not manage PATH, JSON bindings or internal commands. Inspect gaps in the selected container. The user provides goals and existing materials; the Agent maintains task specifications and tool inputs.
+通过 `workspace.json.project_root` 定位工程。存在安装记录时复用 `.work/setup/status.json`、`site.json` 和 `components.json`，使用记录的 Python 执行 `-m hcu_infra_agent`，让使用者无需管理 PATH、JSON 绑定或内部命令。在选定容器中核对组件缺口。使用者提供目标和已有资料，由 Agent 维护任务规格与工具输入。

@@ -1,14 +1,14 @@
 ---
 name: hcu-infer-knowledge-curate
-description: Curate verified, reusable HCU inference findings into the selected project knowledge scope after task milestones or explicit maintenance requests.
+description: 在任务里程碑或明确的维护请求后，将已核验、可复用的 HCU 推理结论整理到选定工程的知识范围内。
 ---
 
-# hcu-infer-knowledge-curate
+# HCU 推理知识整理
 
-Read the private task report and original evidence. Separate intermediate candidates from reusable final findings. Shared entries need trigger, applicability (engine/revision/hardware/shape/dtype), mechanism, source citations, correctness/performance scope, failure cases and fallback. Do not promote raw logs or claim hardware validation from local tests.
+阅读私有任务报告和原始证据，区分中间候选与可复用的最终结论。共享条目应包含触发条件、适用范围（引擎、修订、硬件、shape、dtype）、机制、来源引用、正确性与性能结论的覆盖范围、失败案例及回退方法。不直接提升原始日志，不把本地测试说成硬件验证。
 
-Update only the authorized project's shared inference knowledge and affected Skill/contracts. Query HCU-Knowledge read-only unless its maintenance is explicitly in scope. Keep private model/request/environment details out of public outputs. Recheck affected references and validate updated Skills. A knowledge-followup is advisory, not an automatic source fetch or publication authorization.
+只更新已授权工程的共享推理知识，以及受影响的 Skill 和契约。除非知识库维护已明确纳入任务范围，否则只读查询 HCU-Knowledge。公开输出不得包含私有模型、请求或环境细节。重新检查受影响的引用，并校验更新后的 Skill。knowledge-followup 仅是建议，不代表自动获取来源或获得发布授权。
 
-## Project resources
+## 工程资源
 
-For CLI schemas and stage gates read `docs/contracts.md` and the relevant deployment/optimization/operations document from the selected project root. Installed Skills locate that root in adjacent `workspace.json.project_root`; in a source checkout use the repository root. Keep task evidence in its separate private workspace.
+从选定工程根目录读取 `docs/contracts.md`，了解 CLI 数据格式与阶段门槛，再按当前任务读取部署、优化或运维文档。已安装 Skill 通过同目录下的 `workspace.json.project_root` 定位工程；源码 checkout 中使用仓库根目录。任务证据保存在独立的私有工作区。
