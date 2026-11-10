@@ -1,13 +1,32 @@
-"""CLI entry points for the five inference analysis and research modules."""
+"""CLI entry points for inference analysis, development and optimization modules."""
 from .core import Store, read_json, write_json
 
 COMMANDS = {'doctor','component-fetch','prof-analyze','optimization-plan','optimization-check','simulate','cookbook-search','cookbook-read','knowledge-read','knowledge-query'}
+SPECIALISTS = {
+    'operator-plan': ('operators', 'plan'),
+    'operator-dispatch': ('operators', 'dispatch'),
+    'operator-integrate': ('operators', 'integrate'),
+    'model-adapt-plan': ('model_adaptation', 'plan'),
+    'model-adapt-run': ('model_adaptation', 'run'),
+    'model-adapt-check': ('model_adaptation', 'evaluate'),
+    'model-loop-start': ('model_loop', 'start'),
+    'model-loop-step': ('model_loop', 'advance'),
+    'model-loop-status': ('model_loop', 'status'),
+    'model-loop-report': ('model_loop', 'report'),
+}
+COMMANDS.update(SPECIALISTS)
 
 
 def configure(subs):
     for name in sorted(COMMANDS):
         p = subs.add_parser(name)
-        if name == 'doctor':
+        if name in SPECIALISTS:
+            p.add_argument('task')
+            if name in {'model-loop-status', 'model-loop-report'}:
+                p.add_argument('request', nargs='?')
+            else:
+                p.add_argument('request')
+        elif name == 'doctor':
             p.add_argument('config');p.add_argument('--online',action='store_true')
         elif name == 'component-fetch':
             p.add_argument('component',choices=['simtools']);p.add_argument('destination')
@@ -31,7 +50,13 @@ def configure(subs):
 def dispatch(a):
     from . import references, bindings
     c = a.command
-    if c == 'doctor':
+    if c in SPECIALISTS:
+        from importlib import import_module
+        module, function = SPECIALISTS[c]
+        implementation = import_module('.' + module, __package__)
+        result = getattr(implementation, function)(Store(a.workspace), a.task,
+                                                  read_json(a.request) if a.request else {})
+    elif c == 'doctor':
         from .installation import doctor
         result=doctor(read_json(a.config),a.online)
     elif c == 'component-fetch':

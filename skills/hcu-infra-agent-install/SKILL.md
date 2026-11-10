@@ -7,7 +7,7 @@ description: 在选定的 Python 或容器中安装、更新 HCU Infra Agent 并
 
 通过 `workspace.json.project_root` 或源码根目录定位 checkout。阅读 `scripts/setup_hcu_infra.py --help` 和 README。使用者提供环境和已有知识库位置，由 Agent 管理参数、配置文件、检查及内部命令。
 
-在选定且已存在的 Python >=3.10 环境中运行 `python scripts/setup_hcu_infra.py`。脚本直接安装包和七个 Skill，记录解释器及组件路径，不创建虚拟环境。使用 `--skills-dir` 指定实际 Agent 宿主的 Skill 目录。远端容器只安装工具时可使用 `--tools-only`，Agent Skill 保留在其实际宿主。复用 `.work/setup` 中记录的路径，不重复向用户索取。
+在选定且已存在的 Python >=3.10 环境中运行 `python scripts/setup_hcu_infra.py`。脚本直接安装包和全部工作流与专业 Skill，记录解释器及组件路径，不创建虚拟环境。使用 `--skills-dir` 指定实际 Agent 宿主的 Skill 目录。远端容器只安装工具时可使用 `--tools-only`，Agent Skill 保留在其实际宿主。复用 `.work/setup` 中记录的路径，不重复向用户索取。
 
 只有更新本工程管理的 Skill 副本时才使用 `--replace`，不覆盖其他 checkout 的绑定。安装器会拒绝替换归其他安装所有的 Python 包；遇到这种情况，选择已有的合适环境，不静默卸载其他工程。
 

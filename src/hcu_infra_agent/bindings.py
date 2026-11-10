@@ -8,8 +8,12 @@ from .core import FlowError, fingerprint, write_json
 
 SKILLS = {'benchmark': 'skills/llm-serving-auto-benchmark', 'profile': 'skills/llm-torch-profiler-analysis',
           'incident': 'skills/sglang-prod-incident-triage', 'loop': 'skills/sglang-sota-humanize-loop',
-          'gemm': 'skills/hipblaslt-rocblas-tuning', 'moe': 'skills/hcu-aiter-moe-tuning',
-          'kernel': 'skills/lightop-skills/knowledge', 'simulation': 'skills/model-compute-simulation'}
+          'gemm': 'skills/gemm-tuning', 'moe': 'skills/hcu-aiter-moe-tuning',
+          'kernel': 'skills/lightop-kernel-agent-loop', 'simulation': 'skills/model-compute-simulation',
+          'blas': 'skills/hipblaslt-rocblas-tuning',
+          'triton': 'skills/kernel-triton-optimize', 'hip': 'skills/kernel-hip-optimize'}
+OPTIONAL_SKILLS = {'kernel', 'simulation', 'blas', 'triton', 'hip'}
+PILOT_URL = 'https://github.com/Sherlolo/hcu-infer-pilot'
 
 
 def bind(config, destination):
@@ -17,7 +21,7 @@ def bind(config, destination):
     items = {}; unavailable = []
     for key, relative in SKILLS.items():
         path = Path(config['kernel_skill']).resolve(strict=True) if key == 'kernel' and config.get('kernel_skill') else roots['pilot_root'] / relative / 'SKILL.md'
-        if key in {'kernel','simulation'} and not path.is_file() and not (key == 'kernel' and config.get('kernel_skill')):
+        if key in OPTIONAL_SKILLS and not path.is_file() and not (key == 'kernel' and config.get('kernel_skill')):
             unavailable.append({'role':key,'reason':'Optional source not populated; bind its verified local entry before use'});continue
         if not path.is_file(): raise FlowError('Required inference skill missing: ' + str(path))
         items[key] = {'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}

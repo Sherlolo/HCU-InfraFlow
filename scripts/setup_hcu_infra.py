@@ -14,7 +14,7 @@ from hcu_infra_agent.bindings import bind
 from hcu_infra_agent.installation import doctor, fetch_simtools
 from install_skills import install, preflight
 
-PILOT_URL='https://developer.sourcefind.cn/codes/OpenDAS/dcu-infer-pilot.git'
+PILOT_URL='https://github.com/Sherlolo/hcu-infer-pilot.git'
 
 
 def existing_distribution(project):
@@ -52,7 +52,7 @@ def setup(args):
     config={**previous,'execution_context':{'kind':'container' if Path('/.dockerenv').exists() or Path('/run/.containerenv').exists() else 'host'},
             'serving_python':getattr(args,'serving_python',None) or previous.get('serving_python',sys.executable),'knowledge_python':previous.get('knowledge_python',sys.executable)}
     pilot_arg=args.pilot_root or previous.get('pilot_root')
-    pilot=Path(pilot_arg).expanduser().resolve() if pilot_arg else next((p for p in [ROOT.parent/'dcu-infer-pilot',ROOT/'.deps/dcu-infer-pilot'] if p.is_dir()),ROOT/'.deps/dcu-infer-pilot')
+    pilot=Path(pilot_arg).expanduser().resolve() if pilot_arg else next((p for p in [ROOT/'.deps/hcu-infer-pilot',ROOT.parent/'hcu-infer-pilot',ROOT.parent/'dcu-infer-pilot',ROOT/'.deps/dcu-infer-pilot'] if p.is_dir()),ROOT/'.deps/hcu-infer-pilot')
     if not pilot.exists():
         print('Setup: fetch inference Skills',flush=True)
         pilot.parent.mkdir(parents=True,exist_ok=True)
@@ -62,7 +62,7 @@ def setup(args):
     knowledge=Path(knowledge_arg).expanduser().resolve() if knowledge_arg else ROOT.parent/'hcu-knowledge'
     config['knowledge_root']=str(knowledge)
     kernel_arg=args.kernel_skill or previous.get('kernel_skill')
-    kernel=Path(kernel_arg).expanduser().resolve() if kernel_arg else ROOT.parent/'lightop-skiils/knowledge/SKILL.md'
+    kernel=Path(kernel_arg).expanduser().resolve() if kernel_arg else pilot/'skills/lightop-kernel-agent-loop/SKILL.md'
     if kernel.is_file():config['kernel_skill']=str(kernel)
     if args.with_simtools:
         tools=Path(args.simtools_root).expanduser().resolve() if args.simtools_root else ROOT/'.deps/DCUSimTools'

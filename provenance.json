@@ -54,6 +54,35 @@
       "source": "User-supplied sibling DCUSimTools; package not redistributed"
     },
     "profiler": "External bound llm-torch-profiler-analysis offline runner; original trace inputs retained privately",
-    "cookbook": "Explicitly bound inference-cookbook knowledge mirror or selected checkout; no implicit upstream refresh"
+    "cookbook": "Official HYGON-AI/inference-cookbook-das GitHub pages pinned to a revision; independent of local knowledge installation"
+  },
+  "specialist_modules": {
+    "date": "2026-11-09",
+    "modules": [
+      "operators",
+      "model_adaptation",
+      "model_loop"
+    ],
+    "references": [
+      {
+        "name": "HCU-TrainFlow",
+        "url": "https://github.com/yuguo-Jack/HCU-TrainFlow",
+        "revision": "0f2e883b101fc1cebf627d9203b03068827a6a5a",
+        "reuse": "Inference rewrite of environment/capacity, delivery baseline, profile ceilings, native tuning, library/communication integration, evidence loop and recovery guidance"
+      },
+      {
+        "name": "hcu-infer-pilot",
+        "url": "https://github.com/Sherlolo/hcu-infer-pilot",
+        "revision": "76fef8c73eb1e7aa5882eeeb29ac2b604b2adfc3",
+        "reuse": "External read-only operator skill routes; no kernel or large evidence assets vendored"
+      },
+      {
+        "name": "AI-Infra-Auto-Driven-SKILLS",
+        "revision": "5df356636bf9da3a1446653043942ff3487c1430",
+        "skill": "sglang-model-day0-support",
+        "reuse": "Release lock, architecture gap map and layered validation concepts; rewritten local workflow"
+      }
+    ],
+    "runtime_reference_checkout_required": false
   }
 }

@@ -24,9 +24,21 @@
 
 > `$hcu-infra-agent-install` 检查 `<环境或容器>` 中需要的组件并补齐，知识库已手动安装在 `<路径>`。
 
-**从新模型开始**
+**模型适配**
 
 > `$hcu-infra-agent` 在 `<环境>` 用 SGLang 跑通并优化 `<模型>`，模型、数据和启动资料在 `<目录>`，目标是 `<目标>`。
+
+**算子开发与自动接入**
+
+> `$hcu-infer-operator-develop` 按 `<Prof 分析>` 的热点开发或优化算子，复用 hcu-infer-pilot 的 LightOp、Triton/TileLang 或 GEMM 技能，接入 `<框架和版本>` 并验证实际分发、精度与回退。
+
+**新模型适配**
+
+> `$hcu-infer-model-adapt` 将 `<新模型及固定版本>` 适配到 `<SGLang/vLLM 基点>`，补齐权重和架构支持；缺算子时迁移或实现 Triton/HIP，再建立可验证基线。
+
+**指定卡数持续优化**
+
+> `$hcu-infer-model-optimize` 在 `<卡型和卡数>` 下先仿真并行策略，建立 `<模型>` 基线；跑不通先适配，再按 Prof 迭代优化，每轮通过精度和性能检查后保留，输出优化报告。停止预算为 `<轮数/时间>`。
 
 **只分析 Prof**
 
@@ -68,6 +80,9 @@
 
 | 模块 | 主要能力 |
 | --- | --- |
+| 算子开发与接入 | LightOp 融合、Triton/TileLang/HIP、GEMM tuning，框架 apply/verify/rollback |
+| 模型适配 | 新模型发布锁、架构/权重缺口、缺失 kernel 迁移与真实测试门槛 |
+| 模型优化闭环 | 指定卡数仿真、基线失败转适配、Prof 驱动迭代、质量/性能与复核、逐轮报告 |
 | Prof 性能分析 | 多 rank trace、热点/通信/空泡、原生 triage 和证据归档 |
 | 性能优化 | profile 驱动的假设、实验、质量/性能验收与独立复核 |
 | 性能仿真 | DCUSim 的 prefill/decode、TPS 与显存预测 |
@@ -84,7 +99,7 @@
 python scripts/setup_hcu_infra.py
 ```
 
-脚本直接使用当前 Python 安装本工程和七个 Skill，自动记录工程、解释器及已有组件路径。默认 Skill 目录为当前 Agent 用户的 `$CODEX_HOME/skills`，未设置时使用 `~/.codex/skills`。
+脚本直接使用当前 Python 安装本工程和全部工作流与专业 Skill，自动记录工程、解释器及已有组件路径。默认 Skill 目录为当前 Agent 用户的 `$CODEX_HOME/skills`，未设置时使用 `~/.codex/skills`。
 
 需要同时安装 SimTools 时，在 **CPython 3.10 / Linux x86_64** 的适用环境中执行：
 
@@ -136,3 +151,6 @@ hcu-infra-agent demo /path/to/new-demo
 演示使用合成输入，不构成真实模型精度、提速或生产恢复验收。历史验证保存在 `validation/`，不作为新用户的默认部署配方。
 
 [安装说明](docs/installation.md) · [阅读导航](docs/skill-reading-map.md) · [模块指南](docs/modules.md) · [契约](docs/contracts.md) · [架构](docs/architecture.md) · [验证范围](docs/acceptance.md)
+
+
+专业模块说明：[算子开发](docs/operator-development.md) · [模型适配](docs/model-adaptation.md) · [模型优化闭环](docs/model-optimization-loop.md)。专项工具来源为 [hcu-infer-pilot](https://github.com/Sherlolo/hcu-infer-pilot)，通过安装记录绑定；本仓技能不依赖其他参考工程的固定目录。方法对齐见 [TrainFlow 推理转化](docs/trainflow-alignment.md)。

@@ -1,0 +1,9 @@
+{
+  "gpu_count": 8,
+  "max_iterations": 8,
+  "max_no_gain": 3,
+  "metric": "throughput_tok_s",
+  "min_gain": 0.01,
+  "max_regression": 0.0,
+  "sla": {"ttft_ms": 1000, "tpot_ms": 50, "latency_p95_ms": 10000}
+}

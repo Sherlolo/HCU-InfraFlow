@@ -26,7 +26,9 @@ def test_install_has_binding_and_refuses_existing_target(tmp_path):
     import importlib.util
     path=Path(__file__).resolve().parents[1]/'scripts/install_skills.py'
     spec=importlib.util.spec_from_file_location('installer',path);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
-    result=m.install(tmp_path/'skills');assert len(result['installed'])==7
+    result=m.install(tmp_path/'skills')
+    from hcu_infra_agent.skill_registry import WORKFLOW_SKILLS
+    assert set(result['installed']) == {*WORKFLOW_SKILLS, 'hcu-infra-agent-install'}
     binding=json.loads((tmp_path/'skills/hcu-infra-agent/workspace.json').read_text())
     assert Path(binding['project_root']).joinpath('pyproject.toml').is_file()
     with pytest.raises(ValueError):m.install(tmp_path/'skills')

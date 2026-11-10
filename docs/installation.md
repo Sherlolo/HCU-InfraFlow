@@ -2,7 +2,7 @@
 
 安装脚本 `scripts/setup_hcu_infra.py` 使用当前选定 Python，直接安装包和 Skill；没有创建或切换虚拟环境的步骤。
 
-- 默认安装七个 Skill 到 `$CODEX_HOME/skills` 或 `~/.codex/skills`，可用 --skills-dir 指定。
+- 默认安装全部工作流与专业 Skill 到 `$CODEX_HOME/skills` 或 `~/.codex/skills`，可用 --skills-dir 指定。
 - --with-simtools：CPython 3.10/Linux x86_64 下获取并安装 DCUSim。--simtools-root 可复用指定来源。
 - --knowledge-root：绑定手动安装的知识库。未提供时查找相邻 hcu-knowledge；始终不自动安装、更新或重建知识库。
 - --pilot-root、--kernel-skill：复用已有推理 Skill/算子入口。推理 Skill 缺失时只在本项目 .deps 中获取，不改已有 checkout。

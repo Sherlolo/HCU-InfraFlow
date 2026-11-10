@@ -22,3 +22,8 @@ description: 检查 HCU 推理环境，适配或部署大模型服务，并建�
 ## 已安装的运行入口
 
 通过 `workspace.json.project_root` 定位工程。存在安装记录时复用 `.work/setup/status.json`、`site.json` 和 `components.json`，使用记录的 Python 执行 `-m hcu_infra_agent`，让使用者无需管理 PATH、JSON 绑定或内部命令。在选定容器中核对组件缺口。使用者提供目标和已有资料，由 Agent 维护任务规格与工具输入。
+
+
+## 按问题补充阅读
+
+首次环境与容量判断、固定执行基线或性能异常时读取 [环境与容量](references/environment-and-capacity.md)。模型 registry、权重或算子缺口交给 `$hcu-infer-model-adapt`（工程 `docs/model-adaptation.md`）；得到 ready_for_baseline 后重新测真实服务基线。完整模型优化按 `$hcu-infer-model-optimize` 先比较指定卡数的仿真策略，部署阶段负责验证实际映射和校准。

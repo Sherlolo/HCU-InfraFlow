@@ -1,0 +1,10 @@
+{
+  "revision": 0,
+  "action": "select-strategy",
+  "simulation_metric": "throughput_tok_s",
+  "candidates": [{
+    "artifact": "REPLACE_WITH_RETAINED_SIMULATE_ARTIFACT",
+    "prefill_devices": ["node-a:0", "node-a:1", "node-a:2", "node-a:3", "node-a:4", "node-a:5", "node-a:6", "node-a:7"],
+    "decode_devices": ["node-a:0", "node-a:1", "node-a:2", "node-a:3", "node-a:4", "node-a:5", "node-a:6", "node-a:7"]
+  }]
+}

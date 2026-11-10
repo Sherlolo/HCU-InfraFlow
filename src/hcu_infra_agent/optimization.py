@@ -6,7 +6,7 @@ from .evidence import current_analysis, retain
 
 
 def require_scope(task):
-    if task['spec']['mode'] not in {'optimize', 'full'} or task['state'] in {'completed', 'cancelled'}:
+    if task['spec']['mode'] not in {'optimize', 'full'} or task['state'] in {'completed', 'cancelled', 'paused', 'blocked', 'failed'}:
         raise FlowError('Use an active optimize/full task for optimization work')
 
 

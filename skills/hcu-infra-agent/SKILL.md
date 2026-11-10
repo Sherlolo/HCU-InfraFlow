@@ -17,10 +17,21 @@ description: 协调 HCU 大模型推理的部署、基于性能分析的优化�
 
 从选定工程根目录读取 `docs/contracts.md`，了解 CLI 数据格式与阶段门槛，再按当前任务读取部署、优化或运维文档。已安装 Skill 通过同目录下的 `workspace.json.project_root` 定位工程；源码 checkout 中使用仓库根目录。任务证据保存在独立的私有工作区。
 
-## 五个模块的选择
+## 模块选择与闭环
 
 先按任务范围读取 `docs/skill-reading-map.md`，再从 `docs/modules.md` 查对应模块的可执行契约。Cookbook 和知识检索、正文阅读提供与版本相关的参考；`simulate` 提供带适用条件的 DCUSim 预测；`prof-analyze` 留存真实 rank 证据；`optimization-plan` 记录 Agent 的假设；`optimization-check` 重算候选是否满足要求。只调用任务需要的模块，继续遵守既有 flow 复核和资源规则。具体命令及实测覆盖范围见 README。
 
 ## 已安装的运行入口
 
 通过 `workspace.json.project_root` 定位工程。存在安装记录时复用 `.work/setup/status.json`、`site.json` 和 `components.json`，使用记录的 Python 执行 `-m hcu_infra_agent`，让使用者无需管理 PATH、JSON 绑定或内部命令。在选定容器中核对组件缺口。使用者提供目标和已有资料，由 Agent 维护任务规格与工具输入。
+
+
+## 专业模块与工作区
+
+读取工程 `docs/workspace-and-delivery.md`，沿用已确认的目录映射、执行基线、交付轨道和资源范围。完整任务仍由一个主控协调三阶段；按需要调用以下专业模块：
+
+- 新模型结构、权重或缺失算子导致跑不通：`$hcu-infer-model-adapt`，入口 `model-adapt-plan/run/check`。
+- Prof 给出融合、Triton/TileLang/HIP 或 GEMM 需求：`$hcu-infer-operator-develop`，入口 `operator-plan/dispatch/integrate`。
+- 指定卡数的持续模型优化：`$hcu-infer-model-optimize`，入口 `model-loop-start/step/status/report`。先比较仿真策略，再建立初始基线；失败转适配，通过后循环分析、实施、双门禁与独立复核。
+
+每轮报告由循环模块保存，既保留初始数值基线，也保留已复核最佳候选；被拒绝候选恢复并验证后才能继续。安装、查询、仅分析任务不自动扩展为完整闭环。设计对齐关系见 `docs/trainflow-alignment.md`，所有运行指引均在本仓，不依赖参考工程目录。

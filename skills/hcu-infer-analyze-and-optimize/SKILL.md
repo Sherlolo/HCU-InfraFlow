@@ -22,3 +22,10 @@ description: 分析 HCU 推理服务的 trace，优化实测的大模型推理�
 ## 已安装的运行入口
 
 通过 `workspace.json.project_root` 定位工程。存在安装记录时复用 `.work/setup/status.json`、`site.json` 和 `components.json`，使用记录的 Python 执行 `-m hcu_infra_agent`，让使用者无需管理 PATH、JSON 绑定或内部命令。在选定容器中核对组件缺口。使用者提供目标和已有资料，由 Agent 维护任务规格与工具输入。
+
+
+## 按瓶颈补充阅读
+
+形成热点队列、估计收益和决定停止时读取 [热点与上限](references/profile-and-ceilings.md)。涉及 TP/EP/PD、数学库或框架分发时读取 [通信与库接入](references/communication-and-libraries.md)。只读参考材料不触发依赖升级。
+
+Prof 产生的具体算子需求交 `$hcu-infer-operator-develop`，用 `operator-plan` 固定证据和调用契约，由 `operator-dispatch` 调用实际专项 runner，再 `operator-integrate` 执行框架接入/验证/回退。模型级持续任务由 `$hcu-infer-model-optimize` 管理仿真、初始基线、迭代决策和报告；本阶段继续负责每轮真实 profiling 与优化假设，不让循环状态替代实验。

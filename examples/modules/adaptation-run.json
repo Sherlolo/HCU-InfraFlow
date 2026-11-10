@@ -1,0 +1,25 @@
+{
+  "plan": "replace-with-adaptation-plan-artifact",
+  "candidate_snapshot": "replace-with-source-snapshot-artifact",
+  "tests": [
+    "load"
+  ],
+  "operation": "adapt-load-001",
+  "card": {
+    "schema_version": 1,
+    "backend": "local",
+    "cwd": "/path/to/private-candidate",
+    "argv": [
+      "python",
+      "test_model_load.py"
+    ],
+    "timeout_seconds": 120,
+    "basis": "Load gate for the pinned model candidate; assertions and quality checks still required"
+  },
+  "lease": {
+    "resource": "replace-with-resource",
+    "owner": "replace-with-owner",
+    "token": 1,
+    "expires": 0
+  }
+}

@@ -14,3 +14,8 @@ description: 验证 HCU 推理扩容，诊断或观测服务可靠性，并明�
 ## 工程资源
 
 从选定工程根目录读取 `docs/contracts.md`，了解 CLI 数据格式与阶段门槛，再按当前任务读取部署、优化或运维文档。已安装 Skill 通过同目录下的 `workspace.json.project_root` 定位工程；源码 checkout 中使用仓库根目录。任务证据保存在独立的私有工作区。
+
+
+## 故障与范围交接
+
+故障分流、多节点扩容或观察器换代时读取 [诊断与交接](references/diagnosis-and-handoff.md)。工作区容量、缓存保护和稳定/快速线交付参照工程 `docs/workspace-and-delivery.md`。复用未变的证据，重新验证改变的拓扑、输出和服务行为；报告未验证的长期运行边界。

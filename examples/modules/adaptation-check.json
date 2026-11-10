@@ -1,0 +1,9 @@
+{
+  "plan": "replace-with-adaptation-plan-artifact",
+  "candidate_snapshot": "replace-with-source-snapshot-artifact",
+  "test_results": [
+    "replace-with-each-planned-test-result-artifact"
+  ],
+  "quality_inputs": "replace-with-fixed-reference-and-candidate-comparison-artifact",
+  "gap_resolutions": {}
+}

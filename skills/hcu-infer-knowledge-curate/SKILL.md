@@ -12,3 +12,8 @@ description: 在任务里程碑或明确的维护请求后，将已核验、可�
 ## 工程资源
 
 从选定工程根目录读取 `docs/contracts.md`，了解 CLI 数据格式与阶段门槛，再按当前任务读取部署、优化或运维文档。已安装 Skill 通过同目录下的 `workspace.json.project_root` 定位工程；源码 checkout 中使用仓库根目录。任务证据保存在独立的私有工作区。
+
+
+## 维护闭环
+
+按工程 `docs/workspace-and-delivery.md` 保留最终里程碑与中间实验的区别。新增结论列明触发条件、因果机制、适用版本/shape/拓扑、原始比较、失败反例和回退；不要把单模型临时补丁升级成所有任务必经步骤。源码/库接口变化时联动检查当前 skill、阅读导航、命令契约和用到它的示例，保留旧来源身份。完成后运行 `python scripts/check_skill_resources.py` 并验证受影响模块。只同步当前选定且授权维护的安装副本，其他知识库/全局 skill 保持独立。

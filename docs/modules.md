@@ -1,6 +1,6 @@
-# 五个推理模块的运行方式
+# 推理模块的运行方式
 
-沿用 TrainFlow 的“主控 + 三阶段 Skill + 持久证据 + 独立复核”组织方式。五个模块可单独使用，完整任务按瓶颈组合；
+沿用 TrainFlow 的“主控 + 三阶段 Skill + 持久证据 + 独立复核”组织方式。各模块可单独使用，完整任务按瓶颈组合；
 模拟或查询不自动启动服务，分析任务不自动扩展为优化任务。
 
 | 模块 | 输入与入口 | 产物与消费 |
@@ -60,3 +60,16 @@ Cookbook 使用 `https://github.com/HYGON-AI/inference-cookbook-das` 的 GitHub 
 再到现场检查当前 CLI help 和实际实现。正文中的启动命令仅作为待验证材料，不会自动执行。read 限制在所绑定根内，拒绝路径逃逸。
 
 知识库体量较大，`knowledge-query` 默认只扫描 local 的专题/教程/案例/概览及 concepts，结果包含 search_scope 和 coverage。需要上游/原文时显式 `--scope all --timeout 180`（最大 300 秒）；超时返回 incomplete，不把它解释为无命中。Cookbook 查询仍限所绑定的配方目录。
+
+
+## 三个专业模块
+
+| 模块 | 入口 | 详细契约 |
+| --- | --- | --- |
+| 算子开发与接入 | `operator-plan`、`operator-dispatch`、`operator-integrate` | [算子开发](operator-development.md)：Prof/适配缺口 → 专项 Skill → 自动 apply/verify/rollback |
+| 模型适配 | `model-adapt-plan`、`model-adapt-run`、`model-adapt-check` | [模型适配](model-adaptation.md)：发布锁、架构缺口、kernel 迁移、执行测试与 ready_for_baseline |
+| 模型优化闭环 | `model-loop-start`、`model-loop-step`、`model-loop-status`、`model-loop-report` | [持续优化](model-optimization-loop.md)：定卡数仿真 → 基线/适配 → Prof → 候选 → 双门禁/独立复核 → 保留/回退 |
+
+上述入口仍使用 `--workspace` 指定的 Store，输入由主控 Agent 根据任务维护。执行命令继续使用已有 command card、lease 和 unknown/reconcile 机制。循环只根据已留存的执行证据推进，不在 Python 进程中隐式启动 LLM；宿主 Agent 负责调用所需技能和实施下一步。
+
+普通环境/分析/查询请求保持原有范围；新模块不会强迫它们执行全部链路。专项技能安装、公开来源与目录独立性见 [工作区与交付](workspace-and-delivery.md)。

@@ -20,3 +20,8 @@ description: 检索与版本相关的 HCU 推理知识，并根据已绑定的�
 ## 已安装的运行入口
 
 通过 `workspace.json.project_root` 定位工程。存在安装记录时复用 `.work/setup/status.json`、`site.json` 和 `components.json`，使用记录的 Python 执行 `-m hcu_infra_agent`，让使用者无需管理 PATH、JSON 绑定或内部命令。在选定容器中核对组件缺口。使用者提供目标和已有资料，由 Agent 维护任务规格与工具输入。
+
+
+## 专项来源与适用性
+
+算子、性能工具和优化历史的公开入口为 [hcu-infer-pilot](https://github.com/Sherlolo/hcu-infer-pilot)。先按架构/机制定位，再以实际 commit、DTK、gfx、shape/dtype 和框架父依赖锁核对；同名能力不能视作兼容。用 `bindings-check` 发现入口变化后重新审阅，不静默刷新。源码审阅、CPU 实验和 HCU 实测分别陈述；缺索引时直接读取已固定原件，不把无命中当作不支持。具体专业模块见工程 `docs/operator-development.md` 和 `docs/model-adaptation.md`。

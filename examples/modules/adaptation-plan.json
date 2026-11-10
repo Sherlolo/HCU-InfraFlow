@@ -1,0 +1,103 @@
+{
+  "framework": "sglang",
+  "release_lock": {
+    "model": "replace-with-model-artifact",
+    "config": "replace-with-config-artifact",
+    "weights": "replace-with-weights-artifact",
+    "tokenizer": "replace-with-tokenizer-artifact",
+    "engine": "replace-with-engine-artifact",
+    "dependencies": "replace-with-dependencies-artifact",
+    "image": "replace-with-image-artifact",
+    "driver": "replace-with-driver-artifact",
+    "quantization": "replace-with-quantization-artifact",
+    "workload": "replace-with-workload-artifact"
+  },
+  "gaps": [
+    {
+      "id": "config",
+      "capability": "config",
+      "status": "supported",
+      "required": true,
+      "target": "Replace with inspected pinned framework symbol",
+      "contract": "Replace with model tensor or protocol contract",
+      "fallback": "Describe eager fallback or fail-fast boundary",
+      "kind": "framework"
+    },
+    {
+      "id": "checkpoint",
+      "capability": "checkpoint",
+      "status": "supported",
+      "required": true,
+      "target": "Replace with inspected pinned framework symbol",
+      "contract": "Replace with model tensor or protocol contract",
+      "fallback": "Describe eager fallback or fail-fast boundary",
+      "kind": "framework"
+    },
+    {
+      "id": "tokenizer",
+      "capability": "tokenizer",
+      "status": "supported",
+      "required": true,
+      "target": "Replace with inspected pinned framework symbol",
+      "contract": "Replace with model tensor or protocol contract",
+      "fallback": "Describe eager fallback or fail-fast boundary",
+      "kind": "framework"
+    },
+    {
+      "id": "attention",
+      "capability": "attention",
+      "status": "supported",
+      "required": true,
+      "target": "Replace with inspected pinned framework symbol",
+      "contract": "Replace with model tensor or protocol contract",
+      "fallback": "Describe eager fallback or fail-fast boundary",
+      "kind": "framework"
+    },
+    {
+      "id": "kv-cache",
+      "capability": "kv-cache",
+      "status": "supported",
+      "required": true,
+      "target": "Replace with inspected pinned framework symbol",
+      "contract": "Replace with model tensor or protocol contract",
+      "fallback": "Describe eager fallback or fail-fast boundary",
+      "kind": "framework"
+    },
+    {
+      "id": "quantization",
+      "capability": "quantization",
+      "status": "supported",
+      "required": true,
+      "target": "Replace with inspected pinned framework symbol",
+      "contract": "Replace with model tensor or protocol contract",
+      "fallback": "Describe eager fallback or fail-fast boundary",
+      "kind": "framework"
+    },
+    {
+      "id": "parallelism",
+      "capability": "parallelism",
+      "status": "supported",
+      "required": true,
+      "target": "Replace with inspected pinned framework symbol",
+      "contract": "Replace with model tensor or protocol contract",
+      "fallback": "Describe eager fallback or fail-fast boundary",
+      "kind": "framework"
+    },
+    {
+      "id": "serving",
+      "capability": "serving",
+      "status": "supported",
+      "required": true,
+      "target": "Replace with inspected pinned framework symbol",
+      "contract": "Replace with model tensor or protocol contract",
+      "fallback": "Describe eager fallback or fail-fast boundary",
+      "kind": "framework"
+    }
+  ],
+  "required_features": [
+    "streaming"
+  ],
+  "risk_pairs": [
+    "graph-cache"
+  ]
+}

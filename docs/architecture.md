@@ -29,3 +29,10 @@ CLI 不启动隐藏 LLM。宿主提供实际 Agent 会话和独立 review，任�
 用明确的 `--workspace` 或 `HCU_INFRA_WORKSPACE` 指定；源码、导出证据和交付日志可保存共享盘。
 容器本地目录须登记为任务专用，考虑其生命周期及备份；不能把各节点独立 Store 当作同一个协调数据库。
 回归使用任务专属的节点本地临时根，不修改系统账户或其他服务。
+
+
+## 专业模块
+
+`operators.py` 由 profile 或适配缺口选择专项 skill，通过已有命令执行层调用 runner 并应用/验证/回退框架 adapter。`model_adaptation.py` 维护发布锁、架构缺口和执行测试矩阵，验收后返回可重新建立基线。`model_loop.py` 在 SQLite 中保存带修订号的循环状态，区分初始 oracle、当前最佳与待复核候选；逐轮生成私有报告。
+
+三者是阶段使用的专业能力，宿主 Agent 根据返回的 next/skill 实施工作。它们不替代原有 flow 的实际独立复核，也不自带隐藏 LLM、GPU 调度器或任意模型的通用 kernel。外部 runner、框架 adapter 和测量命令需由 Agent 按当前环境提供并验证；自动接入的对象是已准备的候选与 adapter。
