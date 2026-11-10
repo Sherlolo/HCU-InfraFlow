@@ -2,6 +2,17 @@
 
 `model-loop-start/step/status/report` 是主控使用的持久协议。执行仍复用 `command-run` / `command-group-run` 与资源租约；Agent 读取每步的 `next` 继续工作。模块不会自行猜测模型启动命令，也不将记录成功视为 HCU 实测。流程仍受原有 flow 独立复核约束。
 
+
+## 本仓 Skill 协作与优化方法
+
+模型循环由 `$hcu-infer-model-optimize` 协调；**Prof 采集与分析调用本仓 `$hcu-infer-analyze-and-optimize`**，由该 Skill 对接上游 profiler 和 TraceLens，返回当前 analysis/capture/原件。模型循环不调用 TrainFlow 的脚本或 `tracelens-report` 等外仓 CLI。
+
+HCU 适配、性能或故障问题先使用 `$hcu-knowledge-search` 的检索流程，再核当前分支的消费者、父依赖锁和真实加载制品。执行检索使用本仓 `knowledge-bind/query/read`，只将 HCU-Knowledge 的资料目录作为输入；不要求其 `kb.py` 或其他工作流 checkout。适用证据复用，版本/问题变化才重查；不自动更新大库。见 [知识与源码](../skills/hcu-infer-model-optimize/references/knowledge-and-source.md)。
+
+从 TrainFlow 转化的闭环包括：固定初始/最佳/候选；先核引擎原生能力与容量；本仓 Prof 归因；按热点/依赖/融合和性能上限排序；模型内外同条件对照；低成本初筛后正式验收；候选组合重测；停滞复查机制与有证据的停止。具体推理选项见 [推理机制](../skills/hcu-infer-model-optimize/references/inference-mechanisms.md)，证据刷新与复用见 [迭代决策](../skills/hcu-infer-model-optimize/references/iteration-decisions.md)。这些是 Agent 的实施方法，不能将文档中的方法名称当作未实现的 CLI 字段。
+
+同一假设内部的多个参数点留在实验记录，选出的候选才提交 evaluate。API 继续要求每个正式循环刷新 analysis、质量与性能双门禁、真实独立 flow 复核和本轮执行的恢复证明；初筛复用证据不能绕过这些要求。自动 REPORT.md/JSON 保存现有指标与状态，知识依据、源码解释和试参过程由 Agent 补充到当前任务报告/BOARD。
+
 ## 生命周期与边界
 
 ```text

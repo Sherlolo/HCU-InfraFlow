@@ -4,11 +4,40 @@ import json
 import re
 import subprocess
 from pathlib import Path
-from .core import FlowError
+from .core import FlowError, fingerprint, write_json
+
+
+def _data_root(root):
+    checkout = Path(root).expanduser().resolve(strict=True)
+    knowledge = (checkout / 'knowledge').resolve(strict=True)
+    if not knowledge.is_dir() or not knowledge.is_relative_to(checkout) or knowledge == checkout:
+        raise FlowError('Knowledge data must be a directory inside the selected checkout')
+    return checkout, knowledge
+
+
+def bind_knowledge(root, destination):
+    """Bind readable knowledge data without requiring any external Python scripts."""
+    checkout, _ = _data_root(root)
+    target = Path(destination).expanduser().resolve()
+    if target.is_relative_to(checkout):
+        raise FlowError('Save the binding in the task workspace, outside the read-only knowledge checkout')
+    record = {'schema_version': 1, 'kind': 'knowledge-source',
+              'roots': {'knowledge_root': str(checkout)}, 'source_mutations': False}
+    record['identity'] = fingerprint(record)
+    write_json(target, record)
+    return record
 
 
 def scope(record, kind):
     if kind != 'knowledge':raise FlowError('Cookbook uses its official online source')
+    if record.get('kind') == 'knowledge-source':
+        if (set(record) != {'schema_version', 'kind', 'roots', 'source_mutations', 'identity'}
+                or record.get('schema_version') != 1 or record.get('source_mutations') is not False
+                or not isinstance(record.get('roots'), dict)
+                or set(record['roots']) != {'knowledge_root'}
+                or fingerprint({k: v for k, v in record.items() if k != 'identity'}) != record['identity']):
+            raise FlowError('Invalid knowledge-source binding identity/schema')
+        return _data_root(record['roots']['knowledge_root'])[1]
     from .bindings import verify
     verify(record)
     return Path(record['roots']['knowledge_root']).resolve(strict=True) / 'knowledge'

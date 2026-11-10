@@ -15,3 +15,20 @@
 | 模型级持续优化 | `model-optimization-loop.md` | 给定卡数仿真 → 基线/适配 → Prof → 优化 → 双门禁/复核 → 迭代报告 |
 
 没有移植训练 loss、backward、梯度累积、优化器或 checkpoint 优化器状态作为推理门槛。推理依据是固定输入输出/数值、服务特性、KV/会话一致性和无 profiler 的性能/SLA。训练专属后端和环境变量不直接套用；具体 HCU 库能力由当前部署版本验证。
+
+
+## 模型推理优化闭环的进一步转化
+
+本仓 `hcu-infer-model-optimize` 将训练优化 Skill 的方法重写为推理场景，运行时不读取 TrainFlow 文档或调用其脚本：
+
+| 借鉴的方法 | 本仓推理落点 |
+| --- | --- |
+| 先查领域知识再核源码，复用未变证据 | 先 `$hcu-knowledge-search` 方法，再查当前分支；本仓 knowledge-bind/query/read 仅读取外部资料，不执行外仓 Python |
+| 原生配置与实现相互反馈 | scheduler、attention/KV、graph/compile、MoE/通信；补齐底层能力后重验配置组合 |
+| 映射、稳态、计数器与正式计时分开 | Prof 明确交本仓 hcu-infer-analyze-and-optimize；性能由 profiler-off 服务重复测量决定 |
+| 热点/源码/上限、依赖、融合三视角 | prefill/decode/PD、动态 token/shape、关键路径与资源竞争，按实际贡献及可兑现空间排优先级 |
+| 模型内外同条件对照 | 真实 mask/路由/KV/scale 与完整调用，区分独立低效、模型并发拖慢和 host 开销 |
+| 分层筛选、候选组合与阶段精度 | 先局部正确性与短筛，再固定输出/功能和重复性能；组合整体复测，稳定里程碑完成约定质量集 |
+| 停滞复查与交付 | 重新核机制/证据、恢复最佳、预算/阻塞据实报告；不以预算耗尽声称硬件极限 |
+
+没有移植训练反向、优化器状态或长训 loss 门槛。新的数据绑定 API 和文档均位于 infra-agent；外部资料根可由使用者替换，公共 Skill 中不写入站点固定路径。

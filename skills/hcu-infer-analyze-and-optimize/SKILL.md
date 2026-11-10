@@ -1,11 +1,19 @@
 ---
 name: hcu-infer-analyze-and-optimize
-description: 分析 HCU 推理服务的 trace，优化实测的大模型推理瓶颈，同时保持固定工作负载下的质量与 SLA。
+description: 使用 llm-torch-profiler-analysis 分析 HCU 推理 Prof/torch.profiler trace，结合 TraceLens 复核热点、通信和空泡，并按实测瓶颈优化模型、验证质量与 SLA。
 ---
 
 # HCU 推理性能分析与优化
 
-从固定且关闭 profiler 的基线开始。使用已绑定的 profiler Skill 采集实际 prefill / decode / rank trace，并开展原生 TraceLens 分析。核对 trace 是否为本次采集、是否包含非空 GPU 事件、rank 覆盖、文件哈希及工具的真实输出。文件已存在或启动成功，都不能证明采集成功。
+优化任务从固定且关闭 profiler 的基线开始；用户只提供已有 Prof 要求分析时，直接核验并分析原件，不强制启动模型。以 [hcu-infer-pilot](https://github.com/Sherlolo/hcu-infer-pilot) 的 [llm-torch-profiler-analysis Skill](https://github.com/Sherlolo/hcu-infer-pilot/blob/main/skills/llm-torch-profiler-analysis/SKILL.md) 为 Prof 主分析入口，结合 [TraceLens](https://github.com/AMD-AGI/TraceLens) 做性能复核。核对 trace 的采集身份、非空 GPU 事件、rank 覆盖、文件哈希及工具真实输出。
+
+## Prof 分析的实际调用
+
+开始时读取 [Profiler 与 TraceLens 联合分析](references/profiler-and-tracelens.md)，并实际读取所绑定的上游 `SKILL.md`。从现有 bindings 的 `items.profile.path` 或安装记录 `pilot_root` 定位它，核对 revision、入口哈希和解释器；远程链接用于来源与获取，不代替本地脚本和依赖。使用完整 Skill 资源，不仅复制一份 Markdown。
+
+已有 trace 默认调用上游报告脚本 `run_triage_report.py`，将 kernel、overlap、fusion 与空泡结论及命令/原始输出落盘；需要源码归因时按上游契约区分 mapping 和 formal trace。采集新 Prof 时沿用真实 workload、框架 profiler 接口和容器路径映射，核实 trace 已 flush；不沿用来源中的 H100 型号、作者目录或示例负载作为 HCU 默认配置。
+
+根据问题实际运行 TraceLens 的单 rank/推理报告、多 rank 通信报告或前后对照。图重放需要相应采集元数据与稳态窗口；缺少 shape、GPU 参考或 rank 时注明对应分析缺口。保存 TraceLens 的独立命令、版本、输出和失败原因；`prof-analyze` 的基础解析或上游 triage 成功不表示已运行 TraceLens。组件不可用时交付已完成的分析并标明尚缺的辅助复核。
 
 按观测到的墙钟耗时确定优先级，并解释因果假设。选择引擎调参、融合或 kernel 工作前，检查当前实现、相关 HCU 知识，以及上游和本地历史。不执行预设旋钮网格；缺证据时安排有针对性的补采集。区分重叠 kernel 的耗时总和与墙钟时间，并分别处理 shape、dtype、阶段和 rank。
 

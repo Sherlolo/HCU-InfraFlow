@@ -20,12 +20,16 @@
 支持 `.json` 和 `.json.gz`。每个非单例组至少两个代表 rank，采样不等于完整 collective 分析。明确 groups，不能从文件数推断并行拓扑。
 trace 元数据或事件 rank 与声明冲突、窗口没有 GPU 活动、缺少代表 rank 都会拒绝报告。
 
-加入 `triage_bindings` 可调用本机 `llm-torch-profiler-analysis/scripts/run_triage_report.py`；在私有目录分析固定原件，不重新采集 GPU。
+加入 `triage_bindings`（绑定 JSON 的路径）可调用执行端已安装的 [llm-torch-profiler-analysis](https://github.com/Sherlolo/hcu-infer-pilot/blob/main/skills/llm-torch-profiler-analysis/SKILL.md) 中 `scripts/run_triage_report.py`；在私有目录分析固定原件，不重新采集 GPU。
 外部 triage 失败不会冒充成功，原始 stdout/stderr 和退出码留在 Store 的 modules 目录。分析无模型名时不访问在线架构图。
 工具输出引用脚本入口哈希；外部脚本的其他依赖应按站点版本另行核实，不把入口 pin 宣称为整个运行环境冻结。
 
 主报告是可供 Agent 推理的证据，不自动证明算子上限评估完整。缺 shape/dtype、图重放归属、未归因时间、条件上限仍明确保留。
 `profile-analyze TRACE WINDOW` 保留为原始单文件检查入口；需要持久任务证据时用 `prof-analyze`。
+
+上游仓库：[Sherlolo/hcu-infer-pilot](https://github.com/Sherlolo/hcu-infer-pilot)；辅助工具：[AMD-AGI/TraceLens](https://github.com/AMD-AGI/TraceLens)。具体采集、triage 和 TraceLens 组合方式见 [联合分析指引](../skills/hcu-infer-analyze-and-optimize/references/profiler-and-tracelens.md)。
+
+当前 `prof-analyze` 给外部 wrapper 的是完整单 rank 文件，window 仅用于本仓统计；比较口径时核对范围。该 CLI 不自动启动 TraceLens，也不传 `--model` 或 mapping/formal 参数。需要这些分析时由 Agent 按实际工具 CLI 单独执行，用 `artifact-add` 留存结果，加入优化计划的 references；不可将基础解析结果称作 TraceLens 报告。
 
 ## 性能优化
 
@@ -51,6 +55,8 @@ trace 元数据或事件 rank 与声明冲突、窗口没有 GPU 活动、缺少
 显存不可行应据返回 feasibility 判断；仿真结果一律 hardware_executed=false，不可用作 performance 报告原始测量。
 
 ## Cookbook 与知识库
+
+可用 `knowledge-bind ROOT DESTINATION` 独立绑定知识资料，再调用 `knowledge-query/read`。此路线的 Python 实现位于本仓，不执行知识库脚本、不要求其他 Skill 仓库或 `kb.py`；绑定文件保存在私有任务目录。详见 [知识接口与边界](knowledge.md)。
 
 Cookbook 使用 `https://github.com/HYGON-AI/inference-cookbook-das` 的 GitHub API 与固定提交原文，返回官方页面及相关链接。
 不依赖知识库安装、不采用 cookbook_root 镜像。search 按 Markdown 路径匹配模型/框架关键词，read 的 --revision 固定同一提交。

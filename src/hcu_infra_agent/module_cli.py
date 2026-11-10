@@ -1,7 +1,7 @@
 """CLI entry points for inference analysis, development and optimization modules."""
 from .core import Store, read_json, write_json
 
-COMMANDS = {'doctor','component-fetch','prof-analyze','optimization-plan','optimization-check','simulate','cookbook-search','cookbook-read','knowledge-read','knowledge-query'}
+COMMANDS = {'doctor','component-fetch','prof-analyze','optimization-plan','optimization-check','simulate','cookbook-search','cookbook-read','knowledge-read','knowledge-query','knowledge-bind'}
 SPECIALISTS = {
     'operator-plan': ('operators', 'plan'),
     'operator-dispatch': ('operators', 'dispatch'),
@@ -26,6 +26,8 @@ def configure(subs):
                 p.add_argument('request', nargs='?')
             else:
                 p.add_argument('request')
+        elif name == 'knowledge-bind':
+            p.add_argument('root'); p.add_argument('destination')
         elif name == 'doctor':
             p.add_argument('config');p.add_argument('--online',action='store_true')
         elif name == 'component-fetch':
@@ -56,6 +58,8 @@ def dispatch(a):
         implementation = import_module('.' + module, __package__)
         result = getattr(implementation, function)(Store(a.workspace), a.task,
                                                   read_json(a.request) if a.request else {})
+    elif c == 'knowledge-bind':
+        result = references.bind_knowledge(a.root, a.destination)
     elif c == 'doctor':
         from .installation import doctor
         result=doctor(read_json(a.config),a.online)
