@@ -12,6 +12,8 @@
 微基准更快不代表端到端更快；合并候选要重测，不能叠加独立收益。输出精度变化不应被吞吐收益抵消。
 提交 profile_evidence，独立 review 后保留或回退。停止条件来自预算、可信上限、平台期、质量风险或明确资源缺口。
 
+每个候选先登记探索与修改位置，再进行短/长输入及单请求/并发精度检查。必须补采该候选的优化后 Prof，并以 candidate_snapshot 调用 prof-analyze，分别保留计划依据的前置 analysis 和 candidate-analysis。精度失败、缺优化后Prof或缺修改记录时不得认定优化有效。model-loop和独立optimization-plan/check都会自动生成每轮目录与外层总报告；格式、初筛归因和导出方式见[模型优化闭环](model-optimization-loop.md)。
+
 benchmark CLI 使用 closed-loop 并发和客户端时间，固定文本或 token ID 请求；cache_policy 明确为 endpoint-state-not-reset。
 跨框架公平比较需通过绑定 benchmark Skill 核对 tokenizer/token 数、缓存、服务 flag、设备/负载与场景，不由一次客户端结果自动宣称公平。
 TTFT 是首个非空文本 chunk 到达时间；TPOT 是首末文本 chunk 间时间除以输出 token 间隔，chunk 聚合影响估计。

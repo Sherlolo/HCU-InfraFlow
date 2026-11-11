@@ -8,6 +8,8 @@ from hcu_infra_agent import flow, model_loop, optimization, profiling
 from hcu_infra_agent.core import Store, FlowError
 from hcu_infra_agent.evidence import retain
 from hcu_infra_agent.simulation import REQUIRED
+from hcu_infra_agent.quality_coverage import DEFAULT_COVERAGE
+from optimization_fixtures import samples, after_profile
 
 
 @pytest.fixture
@@ -31,6 +33,11 @@ def step(store, action, **kwargs):
         kwargs['deployment'] = retain(store, {'context': store.task('t')['context'], 'candidate_snapshot': candidate['candidate_snapshot'],
             'simulation': selected['artifact'], 'prefill_devices': selected['prefill_devices'], 'decode_devices': selected['decode_devices'],
             'evidence': [store.put(b'fixture effective deployment config')]})
+    if action == 'evaluate' and not model_loop.status(store, 't')['pending'].get('explorations'):
+        snapshot = json.loads(store.artifact(kwargs['quality_inputs']))['candidate']['candidate_snapshot']
+        step(store, 'explore', plan=kwargs['plan'], route=kwargs['route'], candidate_snapshot=snapshot,
+             summary='Fixture candidate implementation', changes=kwargs.get('changes', [{'path': 'kernel.py', 'description': 'fixture change'}]),
+             evidence=[snapshot])
     return model_loop.advance(store, 't', {'revision': model_loop.status(store, 't')['revision'], 'action': action, **kwargs})
 
 
@@ -55,11 +62,11 @@ def measurements(store, snapshot=None):
     snapshot = snapshot or store.put(b'initial source')
     context = store.task('t')['context']
     ids = {key: 'fixed-' + key for key in ('model', 'tokenizer', 'quantization', 'driver')}; ids['workload'] = 'w'
-    base = {'context': context, 'identities': ids, 'executed': 3, 'status': 'pass', 'candidate_path_exercised': True,
+    base = {'context': context, 'identities': ids, 'executed': 6, 'status': 'pass', 'candidate_path_exercised': True,
             'candidate_snapshot': snapshot, 'evidence': [store.put(b'fixture raw measurement')], 'hardware_executed': True}
-    qr = {**base, 'features': {'streaming': True}, 'samples': [{'id': 'a', 'text': 'fixed output'}]}
+    qr = {**base, 'features': {'streaming': True}, 'samples': samples()}
     qi = {'contract': {'context': context, 'identities': ids, 'atol': 0, 'rtol': 0, 'tolerance_basis': 'exact fixture',
-                       'required_features': ['streaming']}, 'baseline': copy.deepcopy(qr), 'candidate': copy.deepcopy(qr)}
+                       'required_features': ['streaming'], 'coverage': dict(DEFAULT_COVERAGE)}, 'baseline': copy.deepcopy(qr), 'candidate': copy.deepcopy(qr)}
     pr = {**base, 'workload': 'w', 'profiler_off': True, 'scenarios': {'decode': {
         'throughput_tok_s': [100, 101, 99], 'ttft_ms': [1, 1, 1], 'tpot_ms': [1, 1, 1], 'latency_p95_ms': [3, 3, 3]}}}
     pi = {'contract': {'context': context, 'identities': ids, 'workload': 'w', 'metric': 'throughput_tok_s'},
@@ -93,11 +100,13 @@ def profile(store, tmp_path, suffix='first'):
 
 def candidate(store, qi, pi, gain=True):
     qi, pi = copy.deepcopy(qi), copy.deepcopy(pi)
-    snapshot = store.put(b'candidate source')
+    snapshot = store.put(('candidate source ' + uuid.uuid4().hex).encode())
     qi['candidate']['candidate_snapshot'] = snapshot
     pi['candidate']['candidate_snapshot'] = snapshot
     pi['candidate']['scenarios']['decode']['throughput_tok_s'] = [120, 121, 119] if gain else [90, 91, 89]
-    return {'quality_inputs': retain(store, qi), 'performance_inputs': retain(store, pi)}
+    return {'quality_inputs': retain(store, qi), 'performance_inputs': retain(store, pi),
+            'changes': [{'path': 'kernel.py', 'description': 'fixture dispatch tuning'}],
+            **after_profile(store, snapshot)}
 
 
 def independent_review(store, plan, inputs):
@@ -194,6 +203,9 @@ def test_complete_candidate_requires_flow_and_preserves_initial_oracle(store, tm
     profile(store, tmp_path, 'second')
     changed_q = json.loads(store.artifact(inputs['quality_inputs'])); changed_q['baseline'] = changed_q['candidate']
     changed_p = json.loads(store.artifact(inputs['performance_inputs'])); changed_p['baseline'] = changed_p['candidate']
+    newer_snapshot = store.put(b'second candidate fixture')
+    changed_q['candidate'] = {**changed_q['candidate'], 'candidate_snapshot': newer_snapshot}
+    changed_p['candidate'] = {**changed_p['candidate'], 'candidate_snapshot': newer_snapshot}
     newer = optimization.plan(store, 't', {'analysis': model_loop.status(store, 't')['analysis'], 'observation': 'new profile',
         'hypothesis': 'new candidate', 'target': 'gemm', 'validation': ['fixed oracle']})
     with pytest.raises(FlowError, match='initial numerical oracle'):

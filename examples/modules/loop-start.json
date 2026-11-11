@@ -2,6 +2,7 @@
   "gpu_count": 8,
   "max_iterations": 8,
   "max_no_gain": 3,
+  "quality_coverage": {"short_input_max_tokens": 128, "long_input_min_tokens": 2048, "min_concurrency": 2},
   "metric": "throughput_tok_s",
   "min_gain": 0.01,
   "max_regression": 0.0,

@@ -11,6 +11,9 @@ from .evidence import pin, retain, run_tool
 
 def analyze(store, tid, request):
     task = store.task(tid)
+    candidate_snapshot = request.get('candidate_snapshot')
+    if candidate_snapshot is not None:
+        store.artifact(candidate_snapshot)
     traces = request.get('traces')
     if not isinstance(traces, list) or not traces:
         raise FlowError('Declare nonempty traces with path, rank and window')
@@ -75,10 +78,14 @@ def analyze(store, tid, request):
             raw_evidence.extend([tool['artifact'], tool['report']['sha256'], script_pin['sha256']])
     evidence = [*raw_evidence, retain(store, request), retain(store, results)]
     report = {'context': task['context'], 'status': 'complete', 'kind': 'offline-prof-analysis',
+              'task': tid, 'context_epoch': task['context_epoch'],
+              **({'candidate_snapshot': candidate_snapshot} if candidate_snapshot is not None else {}),
               'executed': len(results), 'evidence': evidence, 'ranks': results,
               'rank_coverage': coverage, 'tools': tools,
               'qualification': 'offline-trace-analysis; measurement provenance comes from the supplied capture, no new benchmark or speedup claim',
               'limits': 'Per-rank windows, no automatic cross-node clock alignment. Unknown shapes/bounds remain explicit; attribution requires Agent review.'}
-    saved = store.report(tid, 'analysis', report)
+    # Candidate profiling must not invalidate the pre-change analysis that
+    # justified the plan or the independent flow review's profile_evidence.
+    saved = store.report(tid, 'candidate-analysis' if candidate_snapshot is not None else 'analysis', report)
     return {'status': 'complete', 'task': tid, 'analysis': saved['artifact'],
             'context': task['context'], 'rank_coverage': coverage, 'report': report}

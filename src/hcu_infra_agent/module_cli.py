@@ -1,8 +1,9 @@
 """CLI entry points for inference analysis, development and optimization modules."""
-from .core import Store, read_json, write_json
+from .core import FlowError, Store, read_json, write_json
 
 COMMANDS = {'doctor','component-fetch','prof-analyze','optimization-plan','optimization-check','simulate','cookbook-search','cookbook-read','knowledge-read','knowledge-query','knowledge-bind'}
 SPECIALISTS = {
+    'optimization-report': ('optimization', 'report'),
     'operator-plan': ('operators', 'plan'),
     'operator-dispatch': ('operators', 'dispatch'),
     'operator-integrate': ('operators', 'integrate'),
@@ -22,10 +23,12 @@ def configure(subs):
         p = subs.add_parser(name)
         if name in SPECIALISTS:
             p.add_argument('task')
-            if name in {'model-loop-status', 'model-loop-report'}:
+            if name in {'model-loop-status', 'model-loop-report', 'optimization-report'}:
                 p.add_argument('request', nargs='?')
             else:
                 p.add_argument('request')
+            if name == 'model-loop-report':
+                p.add_argument('--destination', help='Export a portable report tree to a new or same-task directory')
         elif name == 'knowledge-bind':
             p.add_argument('root'); p.add_argument('destination')
         elif name == 'doctor':
@@ -56,8 +59,12 @@ def dispatch(a):
         from importlib import import_module
         module, function = SPECIALISTS[c]
         implementation = import_module('.' + module, __package__)
-        result = getattr(implementation, function)(Store(a.workspace), a.task,
-                                                  read_json(a.request) if a.request else {})
+        request = read_json(a.request) if a.request else {}
+        if getattr(a, 'destination', None):
+            if 'destination' in request and request['destination'] != a.destination:
+                raise FlowError('Conflicting report destinations')
+            request = {**request, 'destination': a.destination}
+        result = getattr(implementation, function)(Store(a.workspace), a.task, request)
     elif c == 'knowledge-bind':
         result = references.bind_knowledge(a.root, a.destination)
     elif c == 'doctor':

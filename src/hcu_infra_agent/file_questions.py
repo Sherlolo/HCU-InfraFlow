@@ -29,10 +29,11 @@ def paths(store, tid):
 
 
 @contextlib.contextmanager
-def writer_lock(directory):
+def writer_lock(directory, name='questions.lock'):
     """Serialize cooperating scanners/answer writers, not arbitrary editors."""
     directory.mkdir(parents=True, exist_ok=True)
-    with (directory / 'questions.lock').open('a+b') as stream:
+    label = 'Questions file' if name == 'questions.lock' else 'Output directory'
+    with (directory / name).open('a+b') as stream:
         if os.name == 'nt':
             import msvcrt
             if stream.seek(0, 2) == 0:
@@ -41,13 +42,13 @@ def writer_lock(directory):
             try:
                 msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
             except OSError as exc:
-                raise FlowError('Questions file has an active scanner/writer; retry without removing its lock') from exc
+                raise FlowError(label + ' has an active scanner/writer; retry without removing its lock') from exc
         else:
             import fcntl
             try:
                 fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except OSError as exc:
-                raise FlowError('Questions file has an active scanner/writer; retry without removing its lock') from exc
+                raise FlowError(label + ' has an active scanner/writer; retry without removing its lock') from exc
         try:
             yield
         finally:

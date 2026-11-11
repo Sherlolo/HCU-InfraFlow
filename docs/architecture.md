@@ -1,7 +1,11 @@
 # 架构
 
+[![HCU Infra Agent 工作流总览](assets/workflow-overview.png)](assets/workflow-overview.svg)
+
 用户目标和部署范围 → 本地主控 Agent → 三阶段 Skill → JSON CLI → Store / Flow / Team / Execution → 远端引擎与工具。
 执行产生的日志、trace 和请求结果经哈希保存在任务 Store，分析、质量与性能报告绑定 context 和候选 snapshot，review 后推进。
+
+总览图展示任务推进和横向能力；[模型优化闭环](model-optimization-loop.md)规定每轮精度、性能、优化后 Prof 与统一报告的门槛。[图源与再生成](assets/README.md)保留可编辑来源。
 
 ## 实现归属
 

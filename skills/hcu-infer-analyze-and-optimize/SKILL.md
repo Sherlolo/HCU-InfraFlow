@@ -29,6 +29,8 @@ description: 使用 llm-torch-profiler-analysis 分析 HCU 推理 Prof/torch.pro
 
 ## 已安装的运行入口
 
+模型优化候选完成后必须补采优化后的真实Prof。使用带 candidate_snapshot 的 prof-analyze，保留 candidate-analysis 及 capture 原件，包含当前 context/epoch、实际执行、候选路径命中和全部分析 rank 的 trace。原始 profile_evidence 仍引用产生计划的优化前 analysis；不要用新 Prof 覆盖它。独立 optimization-check 与模型循环都需要短/长×单请求/并发精度覆盖和候选 Prof，缺失时只保留 incomplete 报告。输出目录与字段以 `docs/model-optimization-loop.md` 为准；预热/采Prof的时延不进入正式性能数组。
+
 通过 `workspace.json.project_root` 定位工程。存在安装记录时复用 `.work/setup/status.json`、`site.json` 和 `components.json`，使用记录的 Python 执行 `-m hcu_infra_agent`，让使用者无需管理 PATH、JSON 绑定或内部命令。在选定容器中核对组件缺口。使用者提供目标和已有资料，由 Agent 维护任务规格与工具输入。
 
 

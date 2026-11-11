@@ -1,0 +1,11 @@
+{
+  "context": "<current-task-context-sha256>",
+  "context_epoch": 0,
+  "candidate_snapshot": "<evaluated-candidate-snapshot-sha256>",
+  "analysis": "<candidate-prof-analyze-result-sha256>",
+  "status": "incomplete",
+  "hardware_executed": false,
+  "candidate_path_exercised": false,
+  "executed": 0,
+  "evidence": []
+}

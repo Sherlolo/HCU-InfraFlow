@@ -1,0 +1,8 @@
+{
+  "candidate_snapshot": "<evaluated-candidate-snapshot-sha256>",
+  "traces": [
+    {"rank": 0, "path": "/capture/candidate-rank0.trace.json.gz", "window": {"start_us": 0, "end_us": 1000}},
+    {"rank": 1, "path": "/capture/candidate-rank1.trace.json.gz", "window": {"start_us": 0, "end_us": 1000}}
+  ],
+  "groups": [{"domain": "tp", "ranks": [0, 1]}]
+}
