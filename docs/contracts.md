@@ -24,6 +24,8 @@ verdict 为 accept/revise/blocked；reviewer 必须区别于 author，所有命�
 样本必须使用相同唯一 id 和顺序，文本精确匹配，数值向量按有依据 atol/rtol 对比；required_features 全部通过，baseline 已通过特性不能回退。
 这里只实现固定样本和特性结果的验收。Agent/实际评测工具产生原件，脚本不据此宣称完整准确率。
 
+优化模块额外要求 contract.coverage 及对应请求元数据，覆盖短输入、长输入的单请求与并发四格。样本必须保留输入SHA、token数、run_id、请求并发数和起止时间；请求级并发由区间重叠检查，不能只填标签。参考与候选的请求身份必须一致。缺覆盖或输出不匹配均不能以性能收益抵消，详见[模型优化闭环](model-optimization-loop.md)。通用 quality-check 仍可用于其他明确声明范围的质量任务。
+
 `performance-check FILE` 对相同场景集的吞吐、TTFT、TPOT、p95 延迟重复数组比较；至少三个相等次数的无 profiler 重复，
 contract 明确主 metric、min_gain、max_regression、sla。须保持缓存策略、请求和测量条件；统计输出不等于显著性证明。
 `report-add` 写 inference-quality/performance 的 pass 时，必须提供 quality_inputs/performance_inputs，保留原比较输入，程序重算，并校验候选身份。

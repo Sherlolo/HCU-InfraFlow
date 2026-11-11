@@ -32,6 +32,16 @@ description: 在固定 HCU 卡数和服务负载下，协调知识检索、并�
 9. **复核、保留或恢复。** `model-loop-step` 的 evaluate 请求只产生待复核决定，随后 `optimization-check`、独立 `flow-submit/review/advance`，通过后以 keep 更新最佳。失败或复核拒绝先恢复最佳，并提交本轮新执行的回退验证；旧基线记录不可代替恢复。代码/库/形状/调度/融合改变后由本仓 Prof Skill 刷新受影响证据，重排热点；组合候选在共同快照整体重测，独立收益不能相加。
 10. **停滞时复查机制，按证据收尾。** 无稳定收益先区分过期证据、测量噪声、未命中、资源竞争、数值约束与实现上限，再决定补采、消融、换机制或停止。遵守 `max_iterations`、`max_no_gain` 和既有执行预算；预算耗尽不等于达到硬件极限。显著空间仍受阻时报告最小证据包、已尝试结果和推荐下一步。未处置候选先恢复再 stop，unknown 操作由既有 recovery_owner 核清。
 
+## 每轮记录与有效性门槛（v2）
+
+1. 每次候选实施/试参用 `model-loop-step` 的 `explore` 登记 plan、route、candidate_snapshot、summary、changes 和 evidence；changes 写实际文件、可选符号和修改说明，notes 留存观察、失败及适用范围。不要只写聊天总结或等成功后才建记录。同一假设内多次 explore 都保留，evaluate 必须对应最后登记的候选。
+2. 可选 screening artifact 保存单次模型或算子微测，明确 scope；只作为未验证初筛显示，不代替正式模型精度/性能，不把算子加速当作模型收益。
+3. 每轮执行短输入单请求、长输入单请求、短输入并发、长输入并发四格精度验证，按开始时冻结的 coverage 和初始 oracle 比较。保存输入 SHA/token数、run_id、并发和起止时间，核对实际请求重叠与原件。可用少量请求做轻量检查，但长输入阈值必须按本任务代表性上下文设置，不能用默认2048冒充更长目标范围；必要完整质量集及 serving features 仍需覆盖。精度失败不能用吞吐抵消。
+4. 实现后调用本仓分析 Skill 补采该候选的优化后 Prof。`prof-analyze` 带 candidate_snapshot，保留独立 candidate-analysis 和 capture；原 profile_evidence 仍引用产生计划的优化前 analysis。capture 绑定当前 context/epoch/snapshot、实际执行、候选路径命中、全部分析 rank 的 trace 与采集日志，不能复用前置或旧轮 trace 贴新标签。
+5. evaluate 传 candidate_analysis/candidate_capture 与精度/性能输入。缺优化后 Prof 保持 incomplete；精度或性能失败进入 rollback；通过后才进入独立 flow 复核及 keep。可运行候选应收集优化后 Prof；无法运行/明确中断时保留缺失状态及原因，不能伪造成功 Prof。
+6. 模块自动维护 `modules/model-loop/TASK/REPORT.md` 和 `iterations/NNNN/`：每轮有报告、探索历史、quality/performance输入与结果、prof/before、prof/after、原始证据及manifest。每步更新总报告，失败、中断、缺证据都可见；用 `model-loop-report TASK --destination` 导出交付树。源码解释、资源代价和因果仍须提供真实记录，模块不会凭空生成。
+7. 用户明确要求中断时，先停止并核清实际执行，再用 interrupt 及当前 revision 的停止原件记录 incomplete/interrupted；不冒称已恢复最佳服务，不自动再启动。常规失败/预算停止仍按原回退门槛执行。字段与目录以 `docs/model-optimization-loop.md` 为准。
+
 ## 协作、报告与交付
 
 依据真实热点和依赖拆分独立工作；实际可用且获授权时才使用子 Agent。开发/CPU 分析可并行，共享 GPU/NIC/存储计时串行或证明隔离。采用同一基线和质量契约，接口影响及时交接，在共同实例验证兼容组合，不按固定名单分派算子。新实验和阶段推进前处理主控已采集的人的指导。

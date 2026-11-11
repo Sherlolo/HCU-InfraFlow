@@ -63,3 +63,45 @@ def current_analysis(store, task, artifact):
     if not value.get('evidence'):
         raise FlowError('Analysis requires retained raw evidence')
     return value
+
+
+def candidate_profile(store, task, analysis_id, capture_id, snapshot, before_analysis=None):
+    """Bind a fresh post-change profile to the exact evaluated candidate."""
+    analysis = json.loads(store.artifact(analysis_id))
+    capture = json.loads(store.artifact(capture_id))
+    with store.db() as db:
+        latest = store.current_reports(db, task['id'], task['context']).get('candidate-analysis')
+    if not latest or latest['artifact'] != analysis_id:
+        raise FlowError('Candidate profile is stale or replaced; use prof-analyze with candidate_snapshot')
+    if (analysis.get('task') != task['id'] or analysis.get('context') != task['context']
+            or analysis.get('context_epoch') != task['context_epoch']
+            or analysis.get('candidate_snapshot') != snapshot
+            or analysis.get('kind') != 'offline-prof-analysis' or analysis.get('status') != 'complete'):
+        raise FlowError('Post-change analysis must match this task/context/epoch and candidate snapshot')
+    if (capture.get('context') != task['context'] or capture.get('context_epoch') != task['context_epoch']
+            or capture.get('candidate_snapshot') != snapshot or capture.get('analysis') != analysis_id
+            or capture.get('hardware_executed') is not True or capture.get('synthetic')
+            or type(capture.get('executed')) is not int or capture['executed'] <= 0
+            or capture.get('candidate_path_exercised') is not True
+            or capture.get('failures') or capture.get('required_missing') or capture.get('skipped_required')
+            or capture.get('qualification') == 'simulation-prediction'
+            or capture.get('status') not in {'pass', 'complete'}):
+        raise FlowError('Post-change capture needs successful hardware provenance for the evaluated snapshot')
+    evidence = capture.get('evidence')
+    if not isinstance(evidence, list) or not evidence or not analysis.get('ranks'):
+        raise FlowError('Retain candidate profile traces and capture evidence')
+    for sha in evidence + analysis.get('evidence', []):
+        store.artifact(sha)
+    sources = {row['source']['sha256'] for row in analysis['ranks']}
+    if not sources.issubset(evidence):
+        raise FlowError('Candidate capture must retain every analyzed rank trace')
+    if before_analysis:
+        before = json.loads(store.artifact(before_analysis))
+        previous = {row['source']['sha256'] for row in before.get('ranks', [])}
+        if sources & previous:
+            raise FlowError('Post-change profiling cannot reuse pre-change trace bytes')
+        # Preserve declared rank/group coverage for a meaningful before/after view.
+        if analysis.get('rank_coverage') != before.get('rank_coverage'):
+            raise FlowError('Candidate profile rank/group coverage differs from the pre-change profile')
+    return {'analysis': analysis_id, 'capture': capture_id, 'status': 'complete',
+            'snapshot': snapshot, 'traces': sorted(sources)}

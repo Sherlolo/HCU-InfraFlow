@@ -125,20 +125,23 @@ def dcusim({params}, generate_csv=False, verbose=False):
 
 
 def test_optimization_checks_require_same_snapshot_and_current_analysis(store,tmp_path):
+    from optimization_fixtures import samples, after_profile
+    from hcu_infra_agent.quality_coverage import DEFAULT_COVERAGE
     prof=profiling.analyze(store,'t',trace_request(tmp_path))
     p=optimization.plan(store,'t',{'analysis':prof['analysis'],'observation':'GPU cost','hypothesis':'Inspect dispatch',
                         'target':'gemm','validation':['outputs and serving repetitions']})
     snapshot=store.put(b'fixture source');raw=store.put(b'fixture measurements')
     ids={k:'fixed-'+k for k in ('model','tokenizer','quantization','workload','driver')};ids['workload']='w'
-    base={'context':store.task('t')['context'],'identities':ids,'executed':3,'status':'pass',
+    base={'context':store.task('t')['context'],'identities':ids,'executed':6,'status':'pass', 'hardware_executed':True,
           'candidate_path_exercised':True,'candidate_snapshot':snapshot,'evidence':[raw]}
-    qr={**base,'features':{'streaming':True},'samples':[{'id':'a','text':'exact output'}]}
+    qr={**base,'features':{'streaming':True},'samples':samples()}
     qi={'contract':{'context':base['context'],'identities':ids,'atol':0,'rtol':0,'tolerance_basis':'exact fixture',
-                   'required_features':['streaming']},'baseline':copy.deepcopy(qr),'candidate':copy.deepcopy(qr)}
+                   'required_features':['streaming'], 'coverage':dict(DEFAULT_COVERAGE)},'baseline':copy.deepcopy(qr),'candidate':copy.deepcopy(qr)}
     pr={**base,'workload':'w','profiler_off':True,'scenarios':{'decode':{'throughput_tok_s':[10,10,10],
         'ttft_ms':[1,1,1],'tpot_ms':[1,1,1],'latency_p95_ms':[3,3,3]}}}
     pi={'contract':{'context':base['context'],'identities':ids,'workload':'w','metric':'throughput_tok_s'},'baseline':copy.deepcopy(pr),'candidate':copy.deepcopy(pr)}
-    request={'plan':p['plan'],'quality_inputs':retain(store,qi),'performance_inputs':retain(store,pi)}
+    request={'plan':p['plan'],'quality_inputs':retain(store,qi),'performance_inputs':retain(store,pi),
+                 'changes':[{'path':'kernel.py','description':'fixture tuning'}], **after_profile(store,snapshot,ranks=(0,1))}
     result=optimization.evaluate(store,'t',request)
     assert result['status']=='pass' and result['accepted_by_flow'] is False
     assert set(result['reports'])=={'inference-quality','performance'}
@@ -147,6 +150,7 @@ def test_optimization_checks_require_same_snapshot_and_current_analysis(store,tm
     bad=copy.deepcopy(qi);bad['candidate']['samples'][0]['text']='regressed'
     failed=optimization.evaluate(store,'t',{**request,'quality_inputs':retain(store,bad)})
     assert failed['status']=='fail'
+    assert failed['next'].startswith('Repair or reject')
     with store.db() as db:
         reports=store.current_reports(db,'t',store.task('t')['context'])
     assert reports['inference-quality']['result']=='fail' and reports['performance']['result']=='fail'

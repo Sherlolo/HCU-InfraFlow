@@ -6,10 +6,12 @@ never runs a model, invents a measurement or changes a production deployment.
 import copy
 import json
 import math
-from .core import FlowError, atomic_write, context_epoch, utc
-from .evidence import current_analysis, retain
+import statistics
+from .core import FlowError, atomic_write, context_epoch, utc, write_json
+from .evidence import current_analysis, retain, candidate_profile
 from .optimization import require_scope
-from . import quality
+from . import quality, quality_coverage, optimization_output
+from .file_questions import writer_lock
 
 
 ROUTES = {'native': 'hcu-infer-analyze-and-optimize',
@@ -47,6 +49,12 @@ def _load(store, tid):
 
 
 def _save(store, task, state, previous):
+    directory = store.root / 'modules' / 'model-loop' / task['id']
+    with writer_lock(directory, name='report.lock'):
+        return _save_locked(store, task, state, previous)
+
+
+def _save_locked(store, task, state, previous):
     state['revision'] = 0 if previous is None else previous + 1
     state['updated'] = utc()
     artifact = retain(store, state)
@@ -60,14 +68,14 @@ def _save(store, task, state, previous):
             raise FlowError('Loop changed concurrently; reread its revision before retrying')
         db.execute('INSERT OR REPLACE INTO model_loops VALUES(?,?,?)', (task['id'], state['revision'], artifact))
         store.event(db, task['id'], 'model-loop-step', {'artifact': artifact, 'stage': state['stage'], 'revision': state['revision']})
-    rendered = report(store, task['id'])
+    rendered = _report_state(store, state, artifact)
     return {**state, 'artifact': artifact, 'report': rendered['report']}
 
 
 def start(store, tid, request):
     task = store.task(tid)
     require_scope(task)
-    fields = {'gpu_count', 'max_iterations', 'max_no_gain', 'metric', 'min_gain', 'max_regression', 'sla'}
+    fields = {'gpu_count', 'max_iterations', 'max_no_gain', 'metric', 'min_gain', 'max_regression', 'sla', 'quality_coverage'}
     if set(request) - fields or {'gpu_count', 'max_iterations', 'max_no_gain'} - set(request):
         raise FlowError('Declare gpu_count, max_iterations and max_no_gain; optional metric/min_gain/max_regression/sla')
     for key in ('gpu_count', 'max_iterations', 'max_no_gain'):
@@ -85,8 +93,9 @@ def start(store, tid, request):
     for key, value in sla.items():
         quality.number(value, key, positive=True)
     _table(store)
-    state = {'task': tid, 'context': task['context'], 'context_epoch': task['context_epoch'],
-             'stage': 'simulation', 'policy': {'metric': metric, 'min_gain': 0, 'max_regression': 0, 'sla': {}, **request},
+    state = {'schema_version': 2, 'task': tid, 'context': task['context'], 'context_epoch': task['context_epoch'],
+             'stage': 'simulation', 'policy': {'metric': metric, 'min_gain': 0, 'max_regression': 0, 'sla': {}, **request,
+                                              'quality_coverage': quality_coverage.policy(request.get('quality_coverage'))},
              'initial': None, 'best': None, 'pending': None, 'iterations': [], 'no_gain': 0,
              'next': {'action': 'simulate-and-select', 'skill': 'hcu-infer-model-optimize'}}
     return _save(store, task, state, None)
@@ -182,6 +191,7 @@ def _select(store, state, request):
 
 def _measurements(store, state, request, baseline=False):
     qi, pi = (_object(store, request[k]) for k in ('quality_inputs', 'performance_inputs'))
+    quality_coverage.require(qi['contract'], state['policy']['quality_coverage'])
     for inputs in (qi, pi):
         if inputs['contract'].get('context') != state['context']:
             raise FlowError('Measurement context mismatch')
@@ -239,18 +249,73 @@ def _next_iteration(state):
                      'skill': 'hcu-infer-model-optimize'}
 
 
+def _screening(store, state, artifact, snapshot):
+    """Keep exploratory timings visible without turning them into acceptance."""
+    value = _object(store, artifact)
+    _evidence(store, value)
+    if (value.get('context') != state['context'] or value.get('candidate_snapshot') != snapshot
+            or value.get('hardware_executed') is not True or value.get('synthetic')
+            or value.get('qualification') == 'simulation-prediction'
+            or value.get('profiler_off') is not True or value.get('candidate_path_exercised') is not True
+            or type(value.get('executed')) is not int or value['executed'] <= 0
+            or value.get('failures') or value.get('status') not in {'pass', 'complete'}):
+        raise FlowError('Screening needs retained successful profiler-off hardware measurements for this candidate')
+    metrics = value.get('metrics')
+    if not isinstance(metrics, list) or not metrics:
+        raise FlowError('Screening needs nonempty metric rows')
+    result = {}
+    for row in metrics:
+        scope, name, metric = row.get('scope'), row.get('scenario'), row.get('metric')
+        allowed = {'throughput_tok_s', 'ttft_ms', 'tpot_ms', 'latency_p95_ms'} if scope == 'model' else {'time_ms'} if scope == 'operator' else set()
+        if metric not in allowed or not isinstance(name, str) or not name.strip():
+            raise FlowError('Screening must distinguish model metrics from operator time_ms and name the scenario')
+        a, b = row.get('baseline'), row.get('candidate')
+        if not isinstance(a, list) or not a or not isinstance(b, list) or len(a) != len(b):
+            raise FlowError('Screening needs paired nonempty timing arrays')
+        for number in a + b:
+            quality.number(number, 'screening metric', positive=True)
+        ma, mb = statistics.median(a), statistics.median(b)
+        key = scope + '/' + name + ':' + metric
+        if key in result:
+            raise FlowError('Screening scenario/metric rows must be unique')
+        result[key] = {'scope': scope, 'baseline_median': ma, 'candidate_median': mb,
+                       'relative_gain': mb / ma - 1 if metric == 'throughput_tok_s' else 1 - mb / ma,
+                       'repeats': len(a)}
+    return {'status': 'unverified-screening', 'metrics': result,
+            'limits': 'Exploratory data only; accuracy, formal performance repetitions and review remain required.'}
+
+
 def advance(store, tid, request):
     state = copy.deepcopy(_load(store, tid))
     task = _fresh(store, tid, state)
     require_scope(task)
     revision = state['revision']
+    if state.get('schema_version') != 2:
+        raise FlowError('Legacy loop is report-only: start a new task with explicit quality coverage and candidate profiling')
     if type(request.get('revision')) is not int or request['revision'] != revision:
         raise FlowError('Supply the current loop revision; stale steps cannot replay')
     with store.db() as db:
         if db.execute("SELECT 1 FROM operations WHERE task=? AND status IN ('started','unknown')", (tid,)).fetchone():
             raise FlowError('Reconcile unresolved execution before advancing the loop')
     action, stage = request.get('action'), state['stage']
-    if action == 'stop' and stage not in {'candidate', 'review', 'rollback'}:
+    if action == 'interrupt':
+        if not isinstance(request.get('reason'), str) or not request['reason'].strip():
+            raise FlowError('Record the explicit user interruption reason')
+        proof = _object(store, request['verification'])
+        _evidence(store, proof)
+        if (proof.get('task') != tid or proof.get('context') != state['context']
+                or proof.get('context_epoch') != state['context_epoch']
+                or proof.get('loop_revision') != revision or proof.get('status') != 'stopped'
+                or proof.get('execution_stopped') is not True):
+            raise FlowError('Interruption requires current-revision evidence that execution is stopped')
+        if state.get('pending'):
+            state['pending'].update(decision='interrupted', status='incomplete',
+                                    rejection_reason=request['reason'], interruption=request['verification'])
+            state['iterations'].append(state['pending'])
+            state['pending'] = None
+        state.update(stage='stopped', stop_reason=request['reason'], interruption=request['verification'],
+                     runtime_state='stopped; restoring the reviewed best is not claimed', next={'action': 'report'})
+    elif action == 'stop' and stage not in {'candidate', 'review', 'rollback'}:
         if not isinstance(request.get('reason'), str) or not request['reason'].strip():
             raise FlowError('Stopping requires an actual reason')
         state.update(stage='stopped', stop_reason=request['reason'], next={'action': 'report'})
@@ -263,6 +328,7 @@ def advance(store, tid, request):
             raise FlowError('Retain the current failed baseline run')
         state.update(stage='adaptation', baseline_failure=request['failure'],
                      next={'action': 'adapt-model', 'skill': 'hcu-infer-model-adapt', 'failure': request['failure']})
+        state.setdefault('baseline_failures', []).append({'failure': request['failure'], 'recorded': utc()})
     elif stage in {'baseline', 'adaptation'} and action == 'baseline':
         if stage == 'adaptation':
             adapted = _object(store, request['adaptation'])
@@ -280,6 +346,7 @@ def advance(store, tid, request):
                                      'evidence': [request['quality_inputs'], request['performance_inputs']]})
             state.update(stage='adaptation', baseline_failure=failure,
                          next={'action': 'adapt-model', 'skill': 'hcu-infer-model-adapt', 'failure': failure})
+            state.setdefault('baseline_failures', []).append({'failure': failure, 'recorded': utc()})
         else:
             state.update(initial=measurement, best=measurement, stage='profile',
                          next={'action': 'capture-current-best-profile', 'skill': 'hcu-infer-analyze-and-optimize'})
@@ -295,7 +362,49 @@ def advance(store, tid, request):
         if any(item['analysis'] == request['analysis'] for item in state['iterations']):
             raise FlowError('Refresh profiling after each candidate; do not recycle the previous iteration analysis')
         state.update(analysis=request['analysis'], capture=request['capture'], stage='candidate',
+                     pending={'number': len(state['iterations']) + 1, 'analysis': request['analysis'],
+                              'capture': request['capture'], 'previous_snapshot': state['best']['snapshot'],
+                              'status': 'exploring', 'direction': 'Candidate exploration not recorded yet',
+                              'explorations': []},
                      next={'action': 'plan-and-implement', 'skill': 'hcu-infer-analyze-and-optimize'})
+    elif stage == 'candidate' and action == 'explore':
+        plan = _object(store, request['plan'])
+        if plan.get('task') != tid or plan.get('context') != state['context'] or plan.get('analysis') != state['analysis']:
+            raise FlowError('Exploration plan must use the current loop profile')
+        current_analysis(store, task, state['analysis'])
+        route = request.get('route')
+        if route not in ROUTES:
+            raise FlowError('Choose a supported optimization route')
+        snapshot = request.get('candidate_snapshot')
+        store.artifact(snapshot)
+        if snapshot == state['best']['snapshot']:
+            raise FlowError('Exploration needs a distinct candidate snapshot')
+        changes = request.get('changes')
+        if (not isinstance(changes, list) or not changes
+                or any(not isinstance(x, dict) or not all(isinstance(x.get(k), str) and x[k].strip()
+                                                         for k in ('path', 'description')) for x in changes)):
+            raise FlowError('Record nonempty implementation changes with path and description')
+        if not isinstance(request.get('summary'), str) or not request['summary'].strip():
+            raise FlowError('Describe what this exploration changes')
+        if not isinstance(request.get('notes', ''), str):
+            raise FlowError('Exploration notes must be text')
+        _evidence(store, request)
+        trial = {'snapshot': snapshot, 'plan': request['plan'], 'summary': request['summary'],
+                 'changes': changes, 'notes': request.get('notes', ''), 'evidence': request['evidence'], 'recorded': utc()}
+        if request.get('screening'):
+            trial.update(screening=request['screening'],
+                         screening_summary=_screening(store, state, request['screening'], snapshot))
+        old = state['pending']
+        # Keep every attempt, even if the selected candidate later changes.
+        state['pending'] = {key: old[key] for key in ('number', 'analysis', 'capture', 'previous_snapshot', 'explorations')}
+        state['pending'].update(plan=request['plan'], snapshot=snapshot, direction=plan['hypothesis'],
+                                observation=plan['observation'], changes=changes, route=route,
+                                skill=ROUTES[route], status='exploring')
+        state['pending']['explorations'].append(trial)
+        if trial.get('screening'):
+            state['pending'].update(screening=trial['screening'], screening_summary=trial['screening_summary'])
+        state['next'] = {'action': 'validate-candidate-and-capture-after-profile',
+                         'snapshot': snapshot, 'skill': ROUTES[route]}
     elif stage == 'candidate' and action == 'evaluate':
         plan = _object(store, request['plan'])
         if plan.get('task') != tid or plan.get('context') != state['context'] or plan.get('analysis') != state['analysis']:
@@ -304,18 +413,43 @@ def advance(store, tid, request):
         route = request.get('route')
         if route not in ROUTES:
             raise FlowError('Choose native/fusion/triton/tilelang/hip/gemm route from profile evidence')
+        exploration = state['pending']
+        if (not exploration.get('explorations') or exploration.get('plan') != request['plan']
+                or exploration.get('route') != route):
+            raise FlowError('Record the candidate with explore before evaluation')
         measurement = _measurements(store, state, request)
-        pending = {'number': len(state['iterations']) + 1, 'analysis': state['analysis'], 'plan': request['plan'],
+        if exploration['snapshot'] != measurement['snapshot']:
+            raise FlowError('Evaluated snapshot differs from the recorded exploration')
+        after = {'status': 'not-collected'}
+        if request.get('candidate_analysis') or request.get('candidate_capture'):
+            if not request.get('candidate_analysis') or not request.get('candidate_capture'):
+                raise FlowError('Provide both candidate_analysis and candidate_capture')
+            after = candidate_profile(store, task, request['candidate_analysis'], request['candidate_capture'],
+                                      measurement['snapshot'], state['analysis'])
+            used = {sha for item in state['iterations'] for sha in item.get('candidate_profile', {}).get('traces', [])}
+            if used.intersection(after['traces']):
+                raise FlowError('Refresh candidate profiling for every optimization iteration')
+        pending = {**exploration, 'analysis': state['analysis'], 'plan': request['plan'],
                    'direction': plan['hypothesis'], 'observation': plan['observation'], 'route': route,
-                   'skill': ROUTES[route], 'previous_snapshot': state['best']['snapshot'], **measurement}
+                   'skill': ROUTES[route], 'previous_snapshot': state['best']['snapshot'], **measurement,
+                   'candidate_profile': after}
         if measurement['snapshot'] == state['best']['snapshot']:
             raise FlowError('Candidate must identify a distinct source/configuration snapshot')
         state['pending'] = pending
-        state['stage'] = 'review' if measurement['status'] == 'pass' else 'rollback'
-        state['next'] = {'action': 'independent-flow-review' if measurement['status'] == 'pass' else 'restore-best-and-verify',
-                         'snapshot': state['best']['snapshot'], 'skill': ROUTES[route]}
+        ready = measurement['status'] == 'pass' and after['status'] == 'complete'
+        if measurement['status'] == 'pass' and not ready:
+            pending.update(status='incomplete', missing_reason='Capture the evaluated candidate Prof before review')
+        state['stage'] = 'review' if ready else 'rollback' if measurement['status'] == 'fail' else 'candidate'
+        state['next'] = {'action': 'independent-flow-review' if ready else 'restore-best-and-verify' if measurement['status'] == 'fail' else 'capture-candidate-profile',
+                         'snapshot': pending['snapshot'] if measurement['status'] == 'pass' else state['best']['snapshot'],
+                         'skill': 'hcu-infer-analyze-and-optimize' if measurement['status'] == 'pass' and not ready else ROUTES[route]}
     elif stage == 'review' and action == 'keep':
         current_analysis(store, task, state['analysis'])
+        pending = state['pending']
+        after = pending.get('candidate_profile', {})
+        if pending.get('quality', {}).get('status') != 'pass' or after.get('status') != 'complete':
+            raise FlowError('Passing accuracy and post-change profiling are required before keep')
+        candidate_profile(store, task, after['analysis'], after['capture'], pending['snapshot'], state['analysis'])
         number = request.get('flow_round')
         with store.db() as db:
             row = db.execute('SELECT * FROM flow_rounds WHERE task=? AND number=?', (tid, number)).fetchone()
@@ -353,8 +487,9 @@ def advance(store, tid, request):
             failure = _object(store, request['failure']); _evidence(store, failure)
             if failure.get('context') != state['context'] or failure.get('status') not in {'fail', 'incomplete'}:
                 raise FlowError('Retain the current implementation failure')
-            state['pending'] = {'number': len(state['iterations']) + 1, 'analysis': state['analysis'],
-                                'direction': request['reason'], 'status': 'fail', 'failure': request['failure']}
+            state['pending'].update(status='fail', failure=request['failure'])
+            if not state['pending'].get('explorations'):
+                state['pending']['direction'] = request['reason']
         state['pending']['rejection_reason'] = request['reason']
         state.update(stage='rollback', next={'action': 'restore-best-and-verify', 'snapshot': state['best']['snapshot']})
     elif stage == 'rollback' and action == 'rollback':
@@ -382,24 +517,87 @@ def advance(store, tid, request):
     return _save(store, task, state, revision)
 
 
-def report(store, tid, request=None):
-    state = status(store, tid)
+def _report_state(store, state, artifact, directory=None, force=False):
+    tid = state['task']
+    directory = directory or store.root / 'modules' / 'model-loop' / tid
     lines = ['# Model optimization loop', '', 'Task: ' + tid,
+             'Objective: ' + optimization_output.text(store.task(tid)['spec']['objective']),
              'Stage: ' + state['stage'], 'Stop reason: ' + state.get('stop_reason', 'not stopped'),
+             'Runtime disposition: ' + state.get('runtime_state', 'see execution/rollback evidence'),
              'Validation: evidence protocol; no hardware execution is implied by this report.', '',
-             '| Iteration | Direction | Decision | Incremental performance | Cumulative performance |',
-             '| --- | --- | --- | --- | --- |']
+             '| Iteration | Direction | Assessment / decision | Quality | After Prof | Effective | Incremental primary metric | Cumulative primary metric |',
+             '| --- | --- | --- | --- | --- | --- | --- | --- |']
     def metrics(value):
-        return '; '.join(f'{k}: {v["relative_gain"]:+.2%}' for k, v in value.get('metrics', {}).items()) or 'not measured'
-    for item in state['iterations']:
+        entries = [(k, v['relative_gain']) for k, v in value.get('metrics', {}).items()
+                   if k.endswith(':' + state['policy']['metric'])]
+        if len(entries) > 3:
+            values = [v for _, v in entries]
+            return f'{state["policy"]["metric"]}: {min(values):+.2%} to {max(values):+.2%} ({len(values)} scenarios)'
+        return '; '.join(f'{k}: {v:+.2%}' for k, v in entries) or 'not measured'
+    records = state['iterations'] + ([state['pending']] if state.get('pending') else [])
+    for item in records:
+        relative = f'iterations/{item["number"]:04d}'
+        optimization_output.bundle(store, directory / relative, item, force=force)
         direction = item['direction'].replace('|', '\\|').replace('\n', ' ')
-        lines.append(f'| {item["number"]} | {direction} | {item["decision"]} | {metrics(item.get("performance", {}))} | {metrics(item.get("cumulative_performance", {}))} |')
+        lines.append(f'| [{item["number"]}]({relative}/REPORT.md) | {direction} | {item.get("status", "exploring")} / {item.get("decision", "pending")} | '
+                     f'{item.get("quality", {}).get("status", "not-measured")} | '
+                     f'{item.get("candidate_profile", {}).get("status", "not-collected")} | '
+                     f'{"yes" if optimization_output.effective(item) else "no"} | '
+                     f'{metrics(item["performance"]) if item.get("performance") else "screening / unverified: " + metrics(item["screening_summary"]) if item.get("screening_summary") else "not measured"} | '
+                     f'{metrics(item.get("cumulative_performance", {}))} |')
     if state.get('pending'):
         lines += ['', 'Pending candidate (not retained): ' + state['pending']['direction']]
+    if state['initial']:
+        optimization_output.bundle(store, directory/'baseline', {**state['initial'], 'kind': 'baseline', 'direction': 'Initial baseline'}, force=force)
+        lines += ['', '[Initial baseline and fixed accuracy oracle](baseline/REPORT.md)']
+    for number, failed in enumerate(state.get('baseline_failures', []), 1):
+        failure = _object(store, failed['failure'])
+        relative = f'baseline-failures/{number:04d}'
+        optimization_output.bundle(store, directory/relative,
+                                   {**failure, 'failure': failed['failure'], 'kind': 'baseline-failure', 'direction': 'Failed baseline',
+                                    'decision': 'failed', 'number': number}, force=force)
+        lines += ['', f'[Failed baseline {number}]({relative}/REPORT.md)']
+    if state.get('interruption'):
+        optimization_output.bundle(store, directory/'interruption', {
+            'direction': 'Loop interrupted', 'decision': 'interrupted', 'status': 'incomplete',
+            'interruption': state['interruption'], 'rejection_reason': state['stop_reason']}, force=force)
+        lines += ['', '[User interruption and stopped-execution evidence](interruption/REPORT.md)']
     lines += ['', 'Initial snapshot: ' + (state['initial']['snapshot'] if state['initial'] else 'unmeasured'),
               'Reviewed best snapshot: ' + (state['best']['snapshot'] if state['best'] else 'unmeasured'),
+              '', 'Each iteration retains exploration history, quality/performance inputs, raw before/after Prof and a manifest.',
+              'Measured gains without passing quality or candidate Prof are unverified. Only independently reviewed kept candidates are effective.',
               '', 'Full immutable evidence and per-metric medians/deviation are in the JSON artifact.']
-    directory = store.root / 'modules' / 'model-loop' / tid
+    write_json(directory/'state.json', state)
+    write_json(directory/'history'/f'revision-{state["revision"]:06d}.json', state)
+    write_json(directory/'manifest.json', {'schema_version': 1, 'module': 'model-loop', 'task': tid,
+                                         'context': state['context'], 'state_artifact': artifact,
+                                         'revision': state['revision'], 'report': 'REPORT.md'})
     path = directory / 'REPORT.md'
     atomic_write(path, '\n'.join(lines) + '\n')
-    return {'status': 'complete', 'report': str(path), 'artifact': retain(store, state), 'state': state}
+    return {'status': 'complete', 'report': str(path), 'artifact': artifact, 'state': state}
+
+
+def report(store, tid, request=None):
+    from pathlib import Path
+    request = request or {}
+    if set(request) - {'destination'}:
+        raise FlowError('Report accepts only an optional destination directory')
+    directory = store.root / 'modules' / 'model-loop' / tid
+    if request.get('destination'):
+        directory = Path(request['destination']).expanduser().resolve()
+        _check_destination(directory, tid, store.task(tid)['context'])
+    with writer_lock(directory, name='report.lock'):
+        state = _load(store, tid)
+        _fresh(store, tid, state)
+        if request.get('destination'):
+            _check_destination(directory, tid, state['context'])
+        return _report_state(store, state, retain(store, state), directory=directory, force=True)
+
+
+def _check_destination(directory, tid, context):
+    if directory.exists() and any(p.name != 'report.lock' for p in directory.iterdir()):
+        marker = directory/'manifest.json'
+        metadata = json.loads(marker.read_text()) if marker.is_file() else {}
+        if (metadata.get('task') != tid or metadata.get('module') != 'model-loop'
+                or metadata.get('context') != context):
+            raise FlowError('Export destination must be new or an existing export of this task')

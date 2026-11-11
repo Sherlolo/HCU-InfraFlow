@@ -1,0 +1,19 @@
+{
+  "context": "<current-task-context-sha256>",
+  "identities": {
+    "model": "<frozen-model-identity>",
+    "tokenizer": "<frozen-tokenizer-identity>",
+    "quantization": "<frozen-quantization-identity>",
+    "workload": "<frozen-workload-identity>",
+    "driver": "<frozen-driver-identity>"
+  },
+  "atol": 0,
+  "rtol": 0,
+  "tolerance_basis": "Replace with the justified comparison basis before real measurements",
+  "required_features": ["streaming"],
+  "coverage": {
+    "short_input_max_tokens": 128,
+    "long_input_min_tokens": 2048,
+    "min_concurrency": 2
+  }
+}

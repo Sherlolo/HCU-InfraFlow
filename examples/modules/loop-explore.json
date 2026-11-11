@@ -1,0 +1,13 @@
+{
+  "revision": 3,
+  "action": "explore",
+  "plan": "<retained-plan-sha256>",
+  "route": "triton",
+  "candidate_snapshot": "<retained-source-and-config-snapshot-sha256>",
+  "summary": "Describe the concrete candidate implementation",
+  "changes": [
+    {"path": "path/to/operator.py", "symbol": "operator_entrypoint", "description": "Describe the actual change and supported shapes"}
+  ],
+  "notes": "Record the observed bottleneck, alternatives tried, limitations and stopping condition",
+  "evidence": ["<retained-diff-or-build-log-sha256>"]
+}

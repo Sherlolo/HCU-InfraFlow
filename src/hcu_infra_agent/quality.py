@@ -71,7 +71,13 @@ def compare_outputs(contract, baseline, candidate):
         else: raise FlowError('Each sample needs text or numeric values')
     if baseline['executed'] < len(left) or candidate['executed'] < len(right):
         reasons.append('executed-count-does-not-cover-samples')
+    coverage = None
+    if 'coverage' in contract:
+        from .quality_coverage import assess
+        coverage, coverage_failures = assess(contract, baseline, candidate)
+        reasons.extend(coverage_failures)
     return {'status': 'fail' if reasons else 'pass', 'executed': len(left), 'failures': reasons,
+            **({'coverage': coverage} if coverage is not None else {}),
             'contract': fingerprint(contract), 'limits': 'Only declared samples and features; not a full model accuracy benchmark.'}
 
 

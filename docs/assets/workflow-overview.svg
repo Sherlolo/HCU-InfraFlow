@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1140" viewBox="0 0 1600 1140" role="img" aria-labelledby="title desc">
+<title id="title">HCU Infra Agent 工作流总览</title>
+<desc id="desc">统一主控协调环境检查与模型部署、性能分析与优化、扩容验证与服务运维。知识、工具、原始证据和独立复核贯穿全程；每轮输出探索、精度、性能和优化后的Prof，外层总报告持续更新。</desc>
+<defs><linearGradient id="page" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#F7FAFE"/></linearGradient><marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#4D94D5"/></marker><marker id="arrow-teal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#24ADA5"/></marker><marker id="arrow-violet" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#8C76D6"/></marker><marker id="arrow-orange" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#DA9A45"/></marker></defs>
+<style>text{font-family:'Noto Sans CJK SC','Microsoft YaHei','PingFang SC','Heiti SC',sans-serif}svg{shape-rendering:geometricPrecision;text-rendering:optimizeLegibility}</style>
+<rect x="0" y="0" width="1600" height="1140" rx="0" fill="url(#page)" stroke="none" stroke-width="1.2"/>
+<text x="32" y="58" font-size="43" font-weight="800" fill="#18366A" text-anchor="start">HCU Infra Agent</text>
+<text x="34" y="96" font-size="24" font-weight="600" fill="#18366A" text-anchor="start">面向 HCU 大模型推理的智能体协同工作流</text>
+<rect x="1124" y="25" width="444" height="41" rx="9" fill="#F2F7FE" stroke="#B7D0EC" stroke-width="1.2"/>
+<text x="1346" y="53" font-size="21" font-weight="600" fill="#18366A" text-anchor="middle">SGLang · vLLM · v0.5.0</text>
+<text x="1346" y="96" font-size="19" font-weight="500" fill="#34516F" text-anchor="middle">部署 · 优化 · 扩容 · 独立分析</text>
+<rect x="32" y="122" width="1536" height="92" rx="12" fill="#F5F9FF" stroke="#9FC3E8" stroke-width="1.4"/>
+<g transform="translate(61 150) scale(1.1)" fill="none" stroke="#4D94D5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="7"/><circle cx="18" cy="2" r="3"/><circle cx="34" cy="18" r="3"/><circle cx="18" cy="34" r="3"/><circle cx="2" cy="18" r="3"/><path d="M18 5v6M25 18h6M18 25v6M5 18h6"/></g>
+<text x="120" y="160" font-size="28" font-weight="750" fill="#18366A" text-anchor="start">统一主控 Agent</text>
+<text x="120" y="190" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">按证据拆解任务 · 按需协作 · 组织集成与独立复核</text>
+<rect x="970" y="138" width="180" height="37" rx="8" fill="#FFFFFF" stroke="#B6D0ED" stroke-width="1.2"/>
+<text x="1060" y="163" font-size="18" font-weight="600" fill="#18366A" text-anchor="middle">环境 / 部署</text>
+<rect x="1164" y="138" width="180" height="37" rx="8" fill="#FFFFFF" stroke="#B6D0ED" stroke-width="1.2"/>
+<text x="1254" y="163" font-size="18" font-weight="600" fill="#18366A" text-anchor="middle">分析 / 优化</text>
+<rect x="1358" y="138" width="180" height="37" rx="8" fill="#FFFFFF" stroke="#B6D0ED" stroke-width="1.2"/>
+<text x="1448" y="163" font-size="18" font-weight="600" fill="#18366A" text-anchor="middle">服务 / 运维</text>
+<text x="1254" y="199" font-size="16" font-weight="400" fill="#60778F" text-anchor="middle">按范围选择模块 · 共享资源计时统一协调</text>
+<path d="M272 214v20" fill="none" stroke="#7FAAD4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<path d="M800 214v20" fill="none" stroke="#7FAAD4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<path d="M1328 214v20" fill="none" stroke="#7FAAD4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<rect x="32" y="236" width="480" height="640" rx="15" fill="#F0F7FF" stroke="#A9CCED" stroke-width="1.4"/>
+<circle cx="70" cy="276" r="23" fill="#4D94D5"/>
+<text x="70" y="285" font-size="26" font-weight="750" fill="#FFFFFF" text-anchor="middle">01</text>
+<text x="108" y="285" font-size="25" font-weight="750" fill="#18366A" text-anchor="start">环境检查与模型部署</text>
+<text x="54" y="316" font-size="16" font-weight="400" fill="#60778F" text-anchor="start">核对现场与适用配方，建立可复现起点</text>
+<rect x="48" y="334" width="448" height="107" rx="11" fill="#FFFFFF" stroke="#A9CCED" stroke-width="1.2"/>
+<g transform="translate(63 354) scale(0.85)" fill="none" stroke="#4D94D5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="32" height="23" rx="3"/><path d="M18 25v8M8 33h20"/></g>
+<text x="108" y="364" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">核对环境与资源</text>
+<text x="108" y="393" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">容器 / DTK / 框架 / 卡型与拓扑</text>
+<text x="108" y="418" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">设备占用 · 依赖 · 目录与权限</text>
+<path d="M272 442v9" fill="none" stroke="#4D94D5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<rect x="48" y="453" width="448" height="107" rx="11" fill="#FFFFFF" stroke="#A9CCED" stroke-width="1.2"/>
+<g transform="translate(63 473) scale(0.85)" fill="none" stroke="#4D94D5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6C12 1 6 2 2 4v26c7-3 12-1 16 2 4-3 9-5 16-2V4c-4-2-10-3-16 2zM18 6v26"/></g>
+<text x="108" y="483" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">检索配方与容量仿真</text>
+<text x="108" y="512" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">Cookbook · HCU-Knowledge</text>
+<text x="108" y="537" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">DCUSim：并行 / KV / 显存假设</text>
+<path d="M272 561v9" fill="none" stroke="#4D94D5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<rect x="48" y="572" width="448" height="107" rx="11" fill="#FFFFFF" stroke="#A9CCED" stroke-width="1.2"/>
+<g transform="translate(63 592) scale(0.85)" fill="none" stroke="#4D94D5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2L2 10l16 8 16-8zM2 18l16 8 16-8M2 26l16 8 16-8"/></g>
+<text x="108" y="602" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">加载模型与适配缺口</text>
+<text x="108" y="631" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">架构 / 权重 / tokenizer / 量化</text>
+<text x="108" y="656" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">缺模型支持或算子 → 适配与回归</text>
+<path d="M272 680v9" fill="none" stroke="#4D94D5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<rect x="48" y="691" width="448" height="107" rx="11" fill="#FFFFFF" stroke="#A9CCED" stroke-width="1.2"/>
+<g transform="translate(63 711) scale(0.85)" fill="none" stroke="#4D94D5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="28" height="32" rx="4"/><path d="m10 17 5 5 11-12"/></g>
+<text x="108" y="721" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">冻结质量与性能基线</text>
+<text x="108" y="750" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">模型 · 请求 · 并发 · Cache · 版本</text>
+<text x="108" y="775" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">TTFT · TPOT · P95 · 吞吐（关闭Prof）</text>
+<rect x="48" y="814" width="448" height="46" rx="10" fill="#FFFFFF" stroke="#A9CCED" stroke-width="1.2"/>
+<text x="272" y="843" font-size="17" font-weight="650" fill="#18366A" text-anchor="middle">输出：启动配方 · 数值参考 · 基线结果</text>
+<rect x="560" y="236" width="480" height="640" rx="15" fill="#EDFAF7" stroke="#99D9D3" stroke-width="1.4"/>
+<circle cx="598" cy="276" r="23" fill="#24ADA5"/>
+<text x="598" y="285" font-size="26" font-weight="750" fill="#FFFFFF" text-anchor="middle">02</text>
+<text x="636" y="285" font-size="25" font-weight="750" fill="#18366A" text-anchor="start">性能分析与优化</text>
+<text x="582" y="316" font-size="16" font-weight="400" fill="#60778F" text-anchor="start">问题驱动 · 有界迭代 · 验证后保留</text>
+<rect x="576" y="334" width="448" height="107" rx="11" fill="#FFFFFF" stroke="#99D9D3" stroke-width="1.2"/>
+<g transform="translate(591 354) scale(0.85)" fill="none" stroke="#24ADA5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="15" cy="15" r="12"/><path d="m24 24 10 10M7 15h5l3-6 4 12 3-6h5"/></g>
+<text x="636" y="364" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">Prof + TraceLens 定位瓶颈</text>
+<text x="636" y="393" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">Prefill / Decode · 多rank</text>
+<text x="636" y="418" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">热点 · 通信 · 空泡 · 真实shape</text>
+<path d="M800 442v9" fill="none" stroke="#24ADA5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-teal)"/>
+<rect x="576" y="453" width="448" height="107" rx="11" fill="#FFFFFF" stroke="#99D9D3" stroke-width="1.2"/>
+<g transform="translate(591 473) scale(0.85)" fill="none" stroke="#24ADA5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h32M2 18h32M2 29h32"/><circle cx="11" cy="7" r="4" fill="white"/><circle cx="25" cy="18" r="4" fill="white"/><circle cx="13" cy="29" r="4" fill="white"/></g>
+<text x="636" y="483" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">核查原生能力与优化假设</text>
+<text x="636" y="512" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">引擎 / 后端 / 通信 / KV路径</text>
+<text x="636" y="537" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">配置调优 · 复用库 · 补齐算子能力</text>
+<path d="M800 561v9" fill="none" stroke="#24ADA5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-teal)"/>
+<rect x="576" y="572" width="448" height="107" rx="11" fill="#FFFFFF" stroke="#99D9D3" stroke-width="1.2"/>
+<g transform="translate(591 592) scale(0.85)" fill="none" stroke="#24ADA5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m11 6-9 12 9 12M25 6l9 12-9 12M22 3l-8 30"/></g>
+<text x="636" y="602" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">逐次探索与实现</text>
+<text x="636" y="631" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">独立候选 · 改动说明 · 原始证据</text>
+<text x="636" y="656" font-size="17" font-weight="400" fill="#34516F" text-anchor="start">LightOp · Triton · TileLang · HIP · GEMM</text>
+<path d="M800 680v9" fill="none" stroke="#24ADA5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-teal)"/>
+<rect x="576" y="691" width="448" height="107" rx="11" fill="#FFFFFF" stroke="#99D9D3" stroke-width="1.2"/>
+<g transform="translate(591 711) scale(0.85)" fill="none" stroke="#24ADA5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2c5 5 11 6 15 6v10c0 9-8 14-15 17C11 32 3 27 3 18V8c4 0 10-1 15-6z"/><path d="m11 18 5 5 10-12"/></g>
+<text x="636" y="721" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">精度、性能与候选Prof验证</text>
+<text x="636" y="750" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">短 / 长输入 × 单请求 / 并发</text>
+<text x="636" y="775" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">关闭Prof ≥3次对照 · 优化后Prof</text>
+<rect x="576" y="814" width="448" height="46" rx="10" fill="#FFFFFF" stroke="#99D9D3" stroke-width="1.2"/>
+<text x="800" y="843" font-size="17" font-weight="650" fill="#18366A" text-anchor="middle">独立复核：保留 / 回退 / 再迭代</text>
+<rect x="1088" y="236" width="480" height="640" rx="15" fill="#F4F1FE" stroke="#C9BDF0" stroke-width="1.4"/>
+<circle cx="1126" cy="276" r="23" fill="#8C76D6"/>
+<text x="1126" y="285" font-size="26" font-weight="750" fill="#FFFFFF" text-anchor="middle">03</text>
+<text x="1164" y="285" font-size="25" font-weight="750" fill="#18366A" text-anchor="start">扩容验证与服务运维</text>
+<text x="1110" y="316" font-size="16" font-weight="400" fill="#60778F" text-anchor="start">基于已验证配置扩展，观察真实服务状态</text>
+<rect x="1104" y="334" width="448" height="107" rx="11" fill="#FFFFFF" stroke="#C9BDF0" stroke-width="1.2"/>
+<g transform="translate(1119 354) scale(0.85)" fill="none" stroke="#8C76D6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="1" width="14" height="10" rx="2"/><rect x="1" y="24" width="14" height="10" rx="2"/><rect x="21" y="24" width="14" height="10" rx="2"/><path d="M18 11v7M8 24v-6h20v6"/></g>
+<text x="1164" y="364" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">扩容与服务验收</text>
+<text x="1164" y="393" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">TP / EP / DP / PD · 部署配置</text>
+<text x="1164" y="418" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">质量 · SLA · 扩展效率 · 资源</text>
+<path d="M1328 442v9" fill="none" stroke="#8C76D6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-violet)"/>
+<rect x="1104" y="453" width="448" height="107" rx="11" fill="#FFFFFF" stroke="#C9BDF0" stroke-width="1.2"/>
+<g transform="translate(1119 473) scale(0.85)" fill="none" stroke="#8C76D6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M31 12A14 14 0 0 0 6 8L2 13m0-9v9h9M5 24a14 14 0 0 0 25 4l4-5m0 9v-9h-9"/></g>
+<text x="1164" y="483" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">故障诊断与受控恢复</text>
+<text x="1164" y="512" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">卡住 / OOM / 泄漏 / 服务中断</text>
+<text x="1164" y="537" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">恢复责任明确 · 恢复后重新验证</text>
+<path d="M1328 561v9" fill="none" stroke="#8C76D6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-violet)"/>
+<rect x="1104" y="572" width="448" height="107" rx="11" fill="#FFFFFF" stroke="#C9BDF0" stroke-width="1.2"/>
+<g transform="translate(1119 592) scale(0.85)" fill="none" stroke="#8C76D6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 2v32h32M8 25l8-9 7 3 10-13"/><path d="M26 6h7v7"/></g>
+<text x="1164" y="602" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">持续观察与事件处置</text>
+<text x="1164" y="631" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">请求推进 · 吞吐 / 时延 / 失败率</text>
+<text x="1164" y="656" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">记录事件 → Agent处理 → 复核</text>
+<path d="M1328 680v9" fill="none" stroke="#8C76D6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-violet)"/>
+<rect x="1104" y="691" width="448" height="107" rx="11" fill="#FFFFFF" stroke="#C9BDF0" stroke-width="1.2"/>
+<g transform="translate(1119 711) scale(0.85)" fill="none" stroke="#8C76D6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="32" height="8" rx="2"/><rect x="2" y="15" width="32" height="8" rx="2"/><rect x="2" y="28" width="32" height="8" rx="2"/><path d="M7 6h2M7 19h2M7 32h2"/></g>
+<text x="1164" y="721" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">交付与经验整理</text>
+<text x="1164" y="750" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">代码 · 配方 · 质量/性能 · 回退</text>
+<text x="1164" y="775" font-size="18" font-weight="400" fill="#34516F" text-anchor="start">可复用结论沉淀，过程证据归档</text>
+<rect x="1104" y="814" width="448" height="46" rx="10" fill="#FFFFFF" stroke="#C9BDF0" stroke-width="1.2"/>
+<text x="1328" y="843" font-size="17" font-weight="650" fill="#18366A" text-anchor="middle">达到目标或有依据停止 → 报告与交接</text>
+<path d="M514 550h42" fill="none" stroke="#4D94D5" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<text x="536" y="538" font-size="14" font-weight="600" fill="#60778F" text-anchor="middle">基线</text>
+<path d="M1042 550h42" fill="none" stroke="#4D94D5" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<text x="1064" y="538" font-size="14" font-weight="600" fill="#60778F" text-anchor="middle">通过</text>
+<g transform="translate(995 260) scale(0.65)" fill="none" stroke="#24ADA5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M31 12A14 14 0 0 0 6 8L2 13m0-9v9h9M5 24a14 14 0 0 0 25 4l4-5m0 9v-9h-9"/></g>
+<path d="M1328 877v18H800v-17" fill="none" stroke="#DA9A45" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-orange)" stroke-dasharray="5 4"/>
+<rect x="978" y="883" width="172" height="20" rx="3" fill="#FFFFFF" stroke="none" stroke-width="1.2"/>
+<text x="1064" y="898" font-size="15" font-weight="600" fill="#AF742B" text-anchor="middle">新瓶颈返回优化</text>
+<rect x="32" y="910" width="1536" height="62" rx="11" fill="#F6FAFF" stroke="#A9C9E8" stroke-width="1.2"/>
+<g transform="translate(54 924) scale(0.8)" fill="none" stroke="#4D94D5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="28" height="32" rx="4"/><path d="m10 17 5 5 11-12"/></g>
+<text x="100" y="948" font-size="22" font-weight="700" fill="#18366A" text-anchor="start">证据与独立复核贯穿全程</text>
+<rect x="472" y="922" width="224" height="38" rx="8" fill="#FFFFFF" stroke="#BDD4ED" stroke-width="1.2"/>
+<text x="584" y="948" font-size="18" font-weight="500" fill="#18366A" text-anchor="middle">执行 · 原始证据</text>
+<path d="M699 941h16" fill="none" stroke="#4D94D5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<rect x="720" y="922" width="240" height="38" rx="8" fill="#FFFFFF" stroke="#BDD4ED" stroke-width="1.2"/>
+<text x="840" y="948" font-size="18" font-weight="500" fill="#18366A" text-anchor="middle">精度 · 性能 · Prof</text>
+<path d="M963 941h16" fill="none" stroke="#4D94D5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<rect x="984" y="922" width="206" height="38" rx="8" fill="#FFFFFF" stroke="#BDD4ED" stroke-width="1.2"/>
+<text x="1087" y="948" font-size="18" font-weight="500" fill="#18366A" text-anchor="middle">独立复核</text>
+<path d="M1193 941h16" fill="none" stroke="#4D94D5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<rect x="1214" y="922" width="332" height="38" rx="8" fill="#FFFFFF" stroke="#BDD4ED" stroke-width="1.2"/>
+<text x="1380" y="948" font-size="18" font-weight="500" fill="#18366A" text-anchor="middle">保留 / 回退 / 阶段推进</text>
+<rect x="32" y="990" width="480" height="112" rx="11" fill="#EDFAF7" stroke="#99D9D3" stroke-width="1.2"/>
+<g transform="translate(48 1005) scale(0.65)" fill="none" stroke="#24ADA5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6C12 1 6 2 2 4v26c7-3 12-1 16 2 4-3 9-5 16-2V4c-4-2-10-3-16 2zM18 6v26"/></g>
+<text x="84" y="1023" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">知识与工具贯穿全程</text>
+<text x="52" y="1048" font-size="17" font-weight="400" fill="#34516F" text-anchor="start">官方Cookbook · HCU-Knowledge</text>
+<text x="52" y="1070" font-size="17" font-weight="400" fill="#34516F" text-anchor="start">SimTools · Profiler · TraceLens · 算子库</text>
+<text x="52" y="1092" font-size="17" font-weight="400" fill="#34516F" text-anchor="start">依据资料形成假设，以实测核验</text>
+<rect x="560" y="990" width="480" height="112" rx="11" fill="#F0F7FF" stroke="#A9CCED" stroke-width="1.2"/>
+<g transform="translate(576 1005) scale(0.65)" fill="none" stroke="#4D94D5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="1" width="14" height="10" rx="2"/><rect x="1" y="24" width="14" height="10" rx="2"/><rect x="21" y="24" width="14" height="10" rx="2"/><path d="M18 11v7M8 24v-6h20v6"/></g>
+<text x="612" y="1023" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">协同与受控执行</text>
+<text x="580" y="1048" font-size="17" font-weight="400" fill="#34516F" text-anchor="start">本地 / SSH / Docker / Slurm / K8s</text>
+<text x="580" y="1070" font-size="17" font-weight="400" fill="#34516F" text-anchor="start">固定快照 · 原件归档 · 未知执行先核查</text>
+<text x="580" y="1092" font-size="17" font-weight="400" fill="#34516F" text-anchor="start">BOARD / GUIDANCE / QUESTIONS</text>
+<rect x="1088" y="990" width="480" height="112" rx="11" fill="#F4F1FE" stroke="#C9BDF0" stroke-width="1.2"/>
+<g transform="translate(1104 1005) scale(0.65)" fill="none" stroke="#8C76D6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="32" height="8" rx="2"/><rect x="2" y="15" width="32" height="8" rx="2"/><rect x="2" y="28" width="32" height="8" rx="2"/><path d="M7 6h2M7 19h2M7 32h2"/></g>
+<text x="1140" y="1023" font-size="21" font-weight="700" fill="#18366A" text-anchor="start">每轮归档与总报告</text>
+<text x="1108" y="1048" font-size="17" font-weight="400" fill="#34516F" text-anchor="start">探索 · 精度 · 性能 · 优化前后Prof</text>
+<text x="1108" y="1070" font-size="17" font-weight="400" fill="#34516F" text-anchor="start">失败 / 中断记录 · 原件哈希 · 可导出</text>
+<text x="1108" y="1092" font-size="17" font-weight="400" fill="#34516F" text-anchor="start">总报告随迭代更新，保留完整探索历史</text>
+<text x="800" y="1129" font-size="16" font-weight="400" fill="#60778F" text-anchor="middle">完整任务按阶段推进；独立请求按范围调用模块。宿主 Agent 会话承担实施与独立复核，运行和恢复设施按现场绑定。</text>
+</svg>

@@ -38,11 +38,16 @@ trace 元数据或事件 rank 与声明冲突、窗口没有 GPU 活动、缺少
 旧 context、被替换 analysis、不允许优化的 analyze/environment/diagnose 范围会被拒绝。
 
 实施时检查现有引擎能力、生效路径、量化/通信/缓存约束，再选择配置或 kernel 改动。用命令卡、隔离工作树和资源准入执行。
-`optimization-check` 输入 `{plan, quality_inputs, performance_inputs}`，三个字段均为当前 Store artifact ID。
-后两者对象格式与 quality-check/performance-check 一致。两份比较必须绑定同一候选 snapshot、context、模型与 workload。
+`optimization-check` 输入 plan、quality_inputs、performance_inputs、candidate_analysis、candidate_capture（均为当前 Store artifact ID），以及 changes 数组（path/description，可加symbol）。两份比较必须绑定同一候选 snapshot、context、模型与 workload；每条原始测量声明真实硬件执行并保留原件。
 
-通过会生成 inference-quality/performance 报告；失败会写入当前失败报告，防止沿用上一份 pass 继续推进。
+质量合同必须带 coverage：短输入上限、长输入下限、并发下限，覆盖短/长×单请求/并发四格。候选 Prof 通过带 candidate_snapshot 的 `prof-analyze` 生成，登记为 candidate-analysis；它不会覆盖计划使用的优化前 analysis。capture 必须绑定同一 snapshot/context/epoch、实际执行和所有 rank trace，不能复用优化前 trace。详见[模型优化合同](model-optimization-loop.md)。
+
+通过会生成 inference-quality/performance 报告；缺候选Prof或修改说明时保存 incomplete，精度/性能失败时保存 fail，防止沿用上一份 pass 继续推进。
 `accepted_by_flow=false` 表示尚未经过独立 review；之后仍需原有 flow-submit（含迭代输入）、flow-review、flow-advance。
+
+独立 plan/check 也统一输出到 `WORK/modules/optimization/TASK/REPORT.md`，每个plan在 `explorations/PLAN_SHA/` 下保存历次 `attempts/0001/`。每次计划或检查自动更新总报告，旧评估、失败和原始Prof不被新结果覆盖。模型连续优化以 `modules/model-loop/TASK/` 的逐轮目录为主；两种入口共用同一报告与原件布局。
+
+独立入口的历史也写入SQLite和不可变artifact，不以可编辑的index.json作为权威状态。`optimization-report TASK` 可在报告文件丢失后重建整个目录；不同context/epoch的旧记录标为historical，不当作当前验证。
 
 ## DCUSim 仿真
 

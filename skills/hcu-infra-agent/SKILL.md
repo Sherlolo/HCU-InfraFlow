@@ -18,6 +18,8 @@ description: 统一编排 HCU 大模型推理部署、性能优化、扩容和�
 5. **验收与计划。** 写可检查的阶段目标、交付物、停止条件和资源预算。`full` 覆盖部署、优化、服务范围的验收；独立模式只验自身目标。预算耗尽、持续无收益或质量回退时保留最佳已验候选和缺口，按实际原因 `flow-replan --reason`，不能偷偷放宽 SLA、降低质量门槛或换基线。执行身份改变时经 `task-context` 和重新规划使旧报告失效；切回旧配置也不能绕过 epoch 重新验收。
 6. **持久记录。** 用 `flow-board` 返回的路径向用户提供 BOARD、GUIDANCE、QUESTIONS、DETAILS。多轮任务在私有工作区维护 `task_plan.md`、`findings.md`、`progress.md`，分别记录目标/依赖/验收、带出处的发现、实验/决策/交接；引用 Store artifact、context 和候选，不另造与 Store 冲突的状态。简单任务可复用现有记录。看板和笔记不替代结构化报告与程序门槛。
 
+模型持续优化必须走 model-loop 的 explore/evaluate 等记录入口，使用模块生成的总报告和逐轮目录；各次探索、精度、性能及优化后 Prof 都需留存。精度至少覆盖短/长输入与单请求/并发，缺精度或候选 Prof 不得认定优化有效。独立 optimization-plan/check 使用相同输出约定。不要用手工散落文件替代这些模块产物，详细格式见 `docs/model-optimization-loop.md`。
+
 ## 每轮执行与复核
 
 围绕 `flow-next TASK` 的当前动作推进。每轮开始、昂贵实验和阶段推进前处理已有指导、团队消息、预算及现场变化；正常授权步骤直接继续。
