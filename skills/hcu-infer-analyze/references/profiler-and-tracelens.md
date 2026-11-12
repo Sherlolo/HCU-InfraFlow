@@ -75,4 +75,4 @@ TraceLens 对同批原件补充结构化归因。先核当前工具支持的格�
 
 当前 `prof-analyze` 不负责启动 TraceLens，也不传递 `--model` 或 mapping/formal 参数。需要模型结构图、双 trace 或 TraceLens 时，按以上入口另行执行，再用 `artifact-add` 留存报告、原始输出、命令和版本清单。不要把这些选项写成 `prof-analyze` 已支持的请求字段。
 
-最终汇总包含：输入/窗口/rank 身份，上游 triage 产物，TraceLens 已执行项和缺口，主要热点与墙钟贡献，调用链与已有实现，支持假设的证据和下一步验证。使用当前 analysis ID 建 `optimization-plan`，在 `references` 中列入额外的上游/TraceLens artifact ID。算子方向交 `hcu-infer-operator-develop`，模型循环交 `hcu-infer-model-optimize`；仅分析请求止于报告与建议。局部推断继续经过源码核对、精度及无 profiler 性能验收。
+最终汇总包含：输入/窗口/rank 身份，上游 triage 产物，TraceLens 已执行项和缺口，主要热点与墙钟贡献，调用链与已有实现，支持假设的证据和下一步验证。将当前 analysis ID 和额外的上游/TraceLens artifact ID 交给 `hcu-infer-model-optimize`，由其建立 `optimization-plan`、选择原生或算子实现并负责验收；仅分析请求止于报告与建议。局部推断继续经过源码核对、精度及无 profiler 性能验收。

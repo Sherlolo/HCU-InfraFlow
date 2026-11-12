@@ -6,7 +6,7 @@ claims to authenticate reviewer identity, or treats a code review as a GPU test.
 import json
 import time
 from .core import FlowError, GATES, atomic_write, child, context_epoch, safe_id, utc
-from .skill_registry import STAGE_SKILLS, WIKI_UPDATE_SKILL
+from .skill_registry import STAGE_SKILLS, PROFILE_SKILL, WIKI_UPDATE_SKILL
 
 DEFAULTS = {'max_rounds': 20, 'max_stalled_rounds': 3, 'full_review_every': 4,
             'max_review_failures': 3, 'poll_seconds': 300}
@@ -344,7 +344,7 @@ def next_step(store, tid):
             reasons.append('task-' + task['state'])
         if reasons:
             return {**result, 'action': 'human', 'reasons': reasons}
-        result['skill'] = STAGE_SKILLS[stage]
+        result['skill'] = PROFILE_SKILL if mode == 'analyze' else STAGE_SKILLS[stage]
         if row and row['status'] == 'blocked' and row['goal'] == flow['goal']:
             return {**result, 'action': 'human', 'reasons': ['review-blocked'], 'review': row['review']}
         if row and row['status'] in {'submitted', 'accepted'}:

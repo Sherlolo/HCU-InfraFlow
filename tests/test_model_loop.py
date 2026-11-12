@@ -306,3 +306,18 @@ def test_old_baseline_and_old_restore_cannot_prove_current_rollback(store, tmp_p
         with pytest.raises(FlowError, match='fresh completed'):
             step(store, 'rollback', verification=proof)
     assert step(store, 'rollback', verification=restore(store, pi['baseline']))['stage'] == 'profile'
+
+
+def test_profile_returns_native_implementation_to_model_optimizer(store, tmp_path):
+    baseline(store)
+    assert model_loop.status(store, 't')['next']['skill'] == 'hcu-infer-analyze'
+    plan = profile(store, tmp_path)
+    state = model_loop.status(store, 't')
+    assert state['next'] == {'action': 'plan-and-implement', 'skill': 'hcu-infer-model-optimize'}
+    snapshot = store.put(b'native configuration candidate')
+    state = step(store, 'explore', plan=plan['plan'], route='native', candidate_snapshot=snapshot,
+                 summary='Change native configuration',
+                 changes=[{'path': 'launch.json', 'description': 'fixture native option'}], evidence=[snapshot])
+    assert state['pending']['route'] == 'native'
+    assert state['pending']['skill'] == 'hcu-infer-model-optimize'
+    assert state['next']['skill'] == 'hcu-infer-model-optimize'

@@ -14,7 +14,7 @@ from . import quality, quality_coverage, optimization_output
 from .file_questions import writer_lock
 
 
-ROUTES = {'native': 'hcu-infer-analyze-and-optimize',
+ROUTES = {'native': 'hcu-infer-model-optimize',
           'fusion': 'hcu-infer-operator-develop', 'triton': 'hcu-infer-operator-develop',
           'tilelang': 'hcu-infer-operator-develop', 'hip': 'hcu-infer-operator-develop',
           'gemm': 'hcu-infer-operator-develop'}
@@ -398,7 +398,7 @@ def advance(store, tid, request):
             state.setdefault('baseline_failures', []).append({'failure': failure, 'recorded': utc()})
         else:
             state.update(initial=measurement, best=measurement, stage='profile',
-                         next={'action': 'capture-current-best-profile', 'skill': 'hcu-infer-analyze-and-optimize'})
+                         next={'action': 'capture-current-best-profile', 'skill': 'hcu-infer-analyze'})
     elif stage == 'profile' and action == 'profile':
         current_analysis(store, task, request['analysis'])
         capture = _object(store, request['capture'])
@@ -415,7 +415,7 @@ def advance(store, tid, request):
                               'capture': request['capture'], 'previous_snapshot': state['best']['snapshot'],
                               'status': 'exploring', 'direction': 'Candidate exploration not recorded yet',
                               'explorations': []},
-                     next={'action': 'plan-and-implement', 'skill': 'hcu-infer-analyze-and-optimize'})
+                     next={'action': 'plan-and-implement', 'skill': 'hcu-infer-model-optimize'})
     elif stage == 'candidate' and action == 'explore':
         plan = _object(store, request['plan'])
         if plan.get('task') != tid or plan.get('context') != state['context'] or plan.get('analysis') != state['analysis']:
@@ -491,7 +491,7 @@ def advance(store, tid, request):
         state['stage'] = 'review' if ready else 'rollback' if measurement['status'] == 'fail' else 'candidate'
         state['next'] = {'action': 'independent-flow-review' if ready else 'restore-best-and-verify' if measurement['status'] == 'fail' else 'capture-candidate-profile',
                          'snapshot': pending['snapshot'] if measurement['status'] == 'pass' else state['best']['snapshot'],
-                         'skill': 'hcu-infer-analyze-and-optimize' if measurement['status'] == 'pass' and not ready else ROUTES[route]}
+                         'skill': 'hcu-infer-analyze' if measurement['status'] == 'pass' and not ready else ROUTES[route]}
     elif stage == 'review' and action == 'keep':
         current_analysis(store, task, state['analysis'])
         pending = state['pending']

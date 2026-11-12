@@ -27,7 +27,7 @@ trace 元数据或事件 rank 与声明冲突、窗口没有 GPU 活动、缺少
 主报告是可供 Agent 推理的证据，不自动证明算子上限评估完整。缺 shape/dtype、图重放归属、未归因时间、条件上限仍明确保留。
 `profile-analyze TRACE WINDOW` 保留为原始单文件检查入口；需要持久任务证据时用 `prof-analyze`。
 
-上游仓库：[Sherlolo/hcu-infer-pilot](https://github.com/Sherlolo/hcu-infer-pilot)；辅助工具：[AMD-AGI/TraceLens](https://github.com/AMD-AGI/TraceLens)。具体采集、triage 和 TraceLens 组合方式见 [联合分析指引](../skills/hcu-infer-analyze-and-optimize/references/profiler-and-tracelens.md)。
+上游仓库：[Sherlolo/hcu-infer-pilot](https://github.com/Sherlolo/hcu-infer-pilot)；辅助工具：[AMD-AGI/TraceLens](https://github.com/AMD-AGI/TraceLens)。具体采集、triage 和 TraceLens 组合方式见 [联合分析指引](../skills/hcu-infer-analyze/references/profiler-and-tracelens.md)。
 
 当前 `prof-analyze` 给外部 wrapper 的是完整单 rank 文件，window 仅用于本仓统计；比较口径时核对范围。该 CLI 不自动启动 TraceLens，也不传 `--model` 或 mapping/formal 参数。需要这些分析时由 Agent 按实际工具 CLI 单独执行，用 `artifact-add` 留存结果，加入优化计划的 references；不可将基础解析结果称作 TraceLens 报告。
 

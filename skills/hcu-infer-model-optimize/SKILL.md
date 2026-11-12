@@ -9,7 +9,7 @@ description: 在固定 HCU 卡数和服务负载下，协调知识检索、并�
 
 在 `$hcu-infra-agent` 主控和既有优化阶段内推进同一任务。通过安装目录 `workspace.json.project_root` 定位本仓；源码版使用仓库根。按工程 `docs/skill-reading-map.md` 阅读当前模式入口，执行契约见 `docs/model-optimization-loop.md`，目录、资源和交付边界见 `docs/workspace-and-delivery.md`。任务 Store 与工程位置分别绑定，实际节点/容器映射先核实。
 
-本 Skill 面向 `optimize/full`；只分析 Prof 转交 `$hcu-infer-analyze-and-optimize`，只做仿真按该任务范围交付。稳定发布与快速适配共用质量和性能门槛，执行基点、用户补丁和最终交付形式分别记录。新模型跑通、导出补丁或实现初版融合后，继续完成约定的优化验收。
+本 Skill 面向 `optimize/full`；只分析 Prof 转交 `$hcu-infer-analyze`，只做仿真按该任务范围交付。稳定发布与快速适配共用质量和性能门槛，执行基点、用户补丁和最终交付形式分别记录。新模型跑通、导出补丁或实现初版融合后，继续完成约定的优化验收。
 
 工作流、检索适配和循环状态 API 均使用本仓 `hcu_infra_agent`。参考工程只用于理解方法，不调用其脚本、CLI 或依赖作者机器路径。实际 profiler、算子库和仿真器属于按任务显式绑定的工具；没有配置时如实记录缺口。
 
@@ -23,10 +23,10 @@ description: 在固定 HCU 卡数和服务负载下，协调知识检索、并�
 
 1. **固定比较契约与预算。** 保存模型/权重、tokenizer/chat template、量化与 KV dtype、采样参数、输入输出长度分布、并发/请求到达方式、cache 冷热、引擎基点/候选快照、驱动和设备身份。约定目标场景的 TTFT、TPOT、P95、吞吐、失败率、质量/服务特性和停止预算。最初数值 oracle 与性能基线不可覆盖，另存已复核最佳和当前候选。
 2. **容量与并行先形成假设。** 在给定健康卡数下用本仓 `simulate` 比较少量合法方案，核实际 TP/PP/DP/EP/PD 分组、权重/KV/图池/工作区与最坏 rank 余量。按 `model-loop-start` 和 `select-strategy` 请求记录选型，真实短跑校准。资源足够优先完整模型；代理模型的结果只用于其声明范围。当前选择器 CP=1 等边界见模块文档，不猜支持能力。
-3. **建立基线并核查原生能力。** 运行无 profiler 基线；启动、加载或质量失败先检索知识、核源码，转 `$hcu-infer-model-adapt`，适配通过后重新测基线。原生能力检查按 [推理机制选择](references/inference-mechanisms.md) 覆盖调度、attention/KV、编译/graph、MoE、通信和 host 路径。区分已命中、未启用、依赖缺口、在途 PR 与不适用；候选改动必须有当前 Prof/源码依据，不在基线后无记录地打开一组开关。
-4. **Prof 明确交给本仓分析 Skill。** 调用 `$hcu-infer-analyze-and-optimize`，交付当前最佳快照、固定 workload、prefill/decode/PD、rank 组、trace 或采集入口及私有输出目录。由它调用 `llm-torch-profiler-analysis`，按问题使用 TraceLens，并通过本仓 `prof-analyze` 产生当前 analysis。接收 trace 原件、窗口/shape/覆盖、上游报告与辅助工具回执后，再提交循环的 `profile` 请求。模型优化 Skill 不直接绕过该分析入口调用参考工程的 profiler 脚本。
+3. **建立基线并核查原生能力。** 运行无 profiler 基线；启动、加载或质量失败先交 `$hcu-infer-diagnose-and-fix` 保存首错、重放和定位；明确缺模型支持或算子时转 `$hcu-infer-model-adapt`，修复/适配通过后重新测基线。原生能力检查按 [推理机制选择](references/inference-mechanisms.md) 覆盖调度、attention/KV、编译/graph、MoE、通信和 host 路径。区分已命中、未启用、依赖缺口、在途 PR 与不适用；候选改动必须有当前 Prof/源码依据，不在基线后无记录地打开一组开关。
+4. **Prof 明确交给本仓分析 Skill。** 调用 `$hcu-infer-analyze`，交付当前最佳快照、固定 workload、prefill/decode/PD、rank 组、trace 或采集入口及私有输出目录。由它调用 `llm-torch-profiler-analysis`，按问题使用 TraceLens，并通过本仓 `prof-analyze` 产生当前 analysis。接收 trace 原件、窗口/shape/覆盖、上游报告与辅助工具回执后，再提交循环的 `profile` 请求。模型优化 Skill 不直接绕过该分析入口调用参考工程的 profiler 脚本。
 5. **按贡献、因果与可兑现空间排序。** 依据 [迭代决策](references/iteration-decisions.md) 维护“热点—源码—上限”“依赖—重叠”“融合—契约”关联记录。墙钟、GPU 服务时间和区间并集分开，保留通信、空泡和未知项。高贡献但上限未知先补证；当前首要热点已足够明确即可推进，不等全部表格填满。说明跳过更高项的理由，完整任务交代约定覆盖目标及其缺口。
-6. **低成本筛选，逐层实施。** 在 `optimization-plan` 记录 observation/hypothesis/target/validation、引用原件和停止点。先筛适用性与容量，再局部编译、正确性、dispatch 和短时对照；有希望保留的候选才做正式场景回归。同一假设内允许有界试参，内部试参留实验记录，选出的候选进入循环 evaluate 与独立复核。融合、Triton/TileLang/HIP、GEMM 交 `$hcu-infer-operator-develop`；原生配置与系统路径由 `$hcu-infer-analyze-and-optimize` 承接。缺失库/算子补齐后返回原生选项及相关组合验证，初版融合仍需评估剩余空间。
+6. **低成本筛选，逐层实施。** 在 `optimization-plan` 记录 observation/hypothesis/target/validation、引用原件和停止点。先筛适用性与容量，再局部编译、正确性、dispatch 和短时对照；有希望保留的候选才做正式场景回归。同一假设内允许有界试参，内部试参留实验记录，选出的候选进入循环 evaluate 与独立复核。融合、Triton/TileLang/HIP、GEMM 交 `$hcu-infer-operator-develop`；原生配置、引擎和系统路径由本 Skill 实施；分析 Skill 仅返回证据与建议。缺失库/算子补齐后返回原生选项及相关组合验证，初版融合仍需评估剩余空间。
 7. **模型内外同条件对照。** 恢复真实 shape/dtype/stride、phase/rank/call、mask/路由/量化 scale、完整 API 的分配/copy/同步及实际 kernel。独立算子正常而模型内变慢时，先查并发竞争、提交/等待和拓扑；独立也低效时再按匹配上限优化实现。shape 相同的随机输入不能替代动态路由/稀疏数据。复用契约、ABI 和实现未变的已有资格，仅补受影响测试；每个正式新循环按当前 API 刷新 analysis。
 8. **质量与正式性能双门禁。** 对初始 oracle 验固定请求、logits/token 或任务质量及必需服务特性；覆盖改变的长上下文、动态 batch、空专家、graph/fallback、流式和 KV 生命周期。质量失败不得以吞吐抵消，不临时放宽容差。默认每场景一次匹配的 profiler-off 性能测量，需要更强置信度时显式使用三次或更多重复并必要时 A/B/A 复查漂移；报告实际次数和有限重复限制。同时比较当前最佳与初始基线，逐场景核 SLA/尾部/显存，不能只看平均收益。任务要求的完整质量集在稳定里程碑复验，小测试通过不等于全模型质量达标。
 9. **复核、保留或恢复。** `model-loop-step` 的 evaluate 请求只产生待复核决定，随后 `optimization-check`、独立 `flow-submit/review/advance`，通过后以 keep 更新最佳。失败或复核拒绝先恢复最佳，并提交本轮新执行的回退验证；旧基线记录不可代替恢复。代码/库/形状/调度/融合改变后由本仓 Prof Skill 刷新受影响证据，重排热点；组合候选在共同快照整体重测，独立收益不能相加。
@@ -49,3 +49,20 @@ description: 在固定 HCU 卡数和服务负载下，协调知识检索、并�
 每步使用本仓循环自动生成的私有 `REPORT.md` 和不可变 JSON。Agent 在既有任务报告/BOARD 补充知识与源码依据、因果假设、覆盖缺口、是否命中、内存/功能代价、内部试参及实际停止原因；当前自动报告不会凭空生成这些解释。保留初始基线、最佳快照、失败候选、原始 Prof、数值与恢复证据，清理仅针对已核销的可重建缓存。
 
 完整 `full` 任务还需交回主控完成约定的部署/扩容/服务观察；独立优化按其目标交付。共享知识仅整理经验证、可复用的适用条件和最终里程碑，逐轮调参留私有工作区。脚本成功、计划生成、来源审阅和 CPU 协议测试均不能冒充 HCU 模型精度或性能实测。
+
+## 按瓶颈读取模块文档
+
+原分析 Skill 的优化参考已迁至本目录；Prof 工具指引继续由分析 Skill 维护。每个模块单独成文，按当前热点读取，不为完成清单运行全部实验。
+
+| 决策/卡点 | 模块文档 |
+| --- | --- |
+| 高贡献热点、可达上限、融合收益与停止 | [热点与上限](references/profile-and-ceilings.md) |
+| 原生配置、后端选择、调度与 KV 路径 | [推理机制](references/inference-mechanisms.md)、[原生引擎调优](references/native-engine-tuning.md) |
+| TP/EP/PD 暴露通信、异步与通算融合 | [通信优化](references/communication-optimization.md) |
+| 真实 GEMM/卷积描述符、调优与命中 | [数学库调优](references/math-library-tuning.md) |
+| 依赖锁、ABI、构建与框架集成 | [HCU 库接入](references/hcu-library-integration.md) |
+| 单算子快而模型慢、完整 API 和真实输入对照 | [模型内外对照](references/operator-comparison.md) |
+| Torch compile、Graph、动态 shape、缓存 | [Torch 推理执行](references/torch-inference.md) |
+| 证据不足、数值失败、hang/崩溃的交接 | [验证与异常](references/validation-diagnostics.md) |
+
+迁移取舍、参考版本和未引入的训练内容见工程 `docs/trainflow-alignment.md`。

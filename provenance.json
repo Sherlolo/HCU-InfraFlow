@@ -84,5 +84,95 @@
       }
     ],
     "runtime_reference_checkout_required": false
+  },
+  "skill_responsibility_revision": {
+    "date": "2026-11-12",
+    "scope": "Prof-only analysis; model-owned optimization; incident diagnosis and repair; inference-specific modular references",
+    "migration_decisions": "docs/trainflow-alignment.md",
+    "sources": [
+      {
+        "name": "HCU-TrainFlow",
+        "revision": "0f2e883b101fc1cebf627d9203b03068827a6a5a",
+        "resources": [
+          {
+            "path": "skills/hcu-train-analyze-and-optimize/references/evidence-driven-loop.md",
+            "sha256": "5c481a3ace2524e8e9b43986c570f8d2dc9d741821eee9fa249d77de1d9048b2"
+          },
+          {
+            "path": "skills/hcu-train-analyze-and-optimize/references/math-library-tuning.md",
+            "sha256": "265491529356d59d2a383be9e3408435319437e1761d9bcd16be5ccc82a0dca5"
+          },
+          {
+            "path": "skills/hcu-train-analyze-and-optimize/references/validation-diagnostics.md",
+            "sha256": "b81c933034e62dee109ea86e5e4af679a5873f434a33f144953386473b117d50"
+          },
+          {
+            "path": "skills/hcu-train-analyze-and-optimize/references/hcu-library-integration.md",
+            "sha256": "550386ea1ad17b70aeb97a6787eea2c7973fa48a897ec59fc47fb7b3cff0b913"
+          },
+          {
+            "path": "skills/hcu-train-analyze-and-optimize/references/operator-ceiling-iteration.md",
+            "sha256": "023844dc7559ea834984fdbe948b039c35b03d14c9adf2531311e3d64f42a218"
+          },
+          {
+            "path": "skills/hcu-train-analyze-and-optimize/references/operator-comparison.md",
+            "sha256": "78ece8a7d5efdb7badfeb02d2bedaaa7defc9e510acb85697d8a84bc7c7d26b3"
+          },
+          {
+            "path": "skills/hcu-train-analyze-and-optimize/references/workflow.md",
+            "sha256": "705132be039664c57ac5405abc14fc1699f29ed7f3dea95a660b0f34f75afc6e"
+          },
+          {
+            "path": "skills/hcu-train-analyze-and-optimize/references/communication-optimization.md",
+            "sha256": "c6c50023c5e4277c4df80c405295e16be75744c9b585ecbfb97b8d546441e9b5"
+          },
+          {
+            "path": "skills/hcu-train-analyze-and-optimize/references/native-engine-tuning.md",
+            "sha256": "8d37d75cfc5435a0cdadc99842c9aeaaf8dee2d319e2367c8019222c2d16a357"
+          },
+          {
+            "path": "skills/hcu-train-analyze-and-optimize/references/torch-native-training.md",
+            "sha256": "d24ef1bb29ba0a46b44ef716669def9cd59efee28413ae1962e5ea1e051ead82"
+          }
+        ]
+      },
+      {
+        "name": "dcu-infer-pilot",
+        "revision": "76fef8c73eb1e7aa5882eeeb29ac2b604b2adfc3",
+        "resources": [
+          {
+            "path": "skills/sglang-prod-incident-triage/SKILL.md",
+            "sha256": "7f0cfc4c682909a0ea2506357a62fdf6348571fd5dd074a2c685d25476041af5"
+          },
+          {
+            "path": "skills/llm-torch-profiler-analysis/SKILL.md",
+            "sha256": "640ec6d43090193b1d921d34493e3a3739d829ef62884703e2ea46a59490c282"
+          }
+        ]
+      },
+      {
+        "name": "hcu-knowledge",
+        "revision": "d5ba70e31fc48d6e252f2c4da9ddbf9f16338158",
+        "resources": [
+          {
+            "path": "knowledge/projects/moonep/knowledgebase/local/guides/moonep-release-contract.md",
+            "sha256": "1a3480589895a8c6b0cb36507ae6296c133138d4afd8f422b96aeded2b77a2ae"
+          },
+          {
+            "path": "knowledge/projects/aiter/knowledgebase/local/cases/aiter-int8-fp8-collective-contract.md",
+            "sha256": "5e22a541ea4453b54b91ddc044f6722b8828a9a766e23fea9d439aa113b83bcc"
+          },
+          {
+            "path": "knowledge/projects/sglang/knowledgebase/local/cases/sglang-deepep-shared-layout-graph-lifecycle.md",
+            "sha256": "a82a9ebfe73b2be5f9b99cf5cd1553b3023406f3933fb8dc214586d652291a6f"
+          },
+          {
+            "path": "knowledge/projects/sglang/knowledgebase/local/guides/sglang-hcu-engineering.md",
+            "sha256": "74eac03964ae36dc9ac3a705d9a2d8686b2056400d1dca009e062ba02e9568a2"
+          }
+        ]
+      }
+    ],
+    "validation_scope": "Source/documentation and CPU workflow checks; no new HCU model performance or recovery claim"
   }
 }

@@ -29,6 +29,11 @@ def test_install_has_binding_and_refuses_existing_target(tmp_path):
     result=m.install(tmp_path/'skills')
     from hcu_infra_agent.skill_registry import WORKFLOW_SKILLS
     assert set(result['installed']) == {*WORKFLOW_SKILLS, 'hcu-infra-agent-install'}
+    assert len(result['installed']) == 10
+    assert len(WORKFLOW_SKILLS) == len(set(WORKFLOW_SKILLS))
+    assert (tmp_path/'skills/hcu-infer-analyze/references/profiler-and-tracelens.md').is_file()
+    assert (tmp_path/'skills/hcu-infer-model-optimize/references/profile-and-ceilings.md').is_file()
+    assert (tmp_path/'skills/hcu-infer-diagnose-and-fix/references/accuracy-diagnosis.md').is_file()
     binding=json.loads((tmp_path/'skills/hcu-infra-agent/workspace.json').read_text())
     assert Path(binding['project_root']).joinpath('pyproject.toml').is_file()
     with pytest.raises(ValueError):m.install(tmp_path/'skills')

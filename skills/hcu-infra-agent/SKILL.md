@@ -40,10 +40,10 @@ description: 统一编排 HCU 大模型推理部署、性能优化、扩容和�
 
 保持一个主控和三个阶段；专业模块是阶段内的能力，不另起竞争主控。
 
-- **部署：** `$hcu-infer-check-and-deploy`。核对真实容器/DTK、设备、拓扑、依赖和用户启动配方，查适用 Cookbook，验证完整模型容量、KV cache、图池、工作区及最坏 rank。仿真后用真实请求校准；进程存活或健康接口成功不等于输出质量通过。运行不通转 `$hcu-infer-model-adapt`，按 `model-adapt-plan/run/check` 处理结构、权重、框架与缺失算子，回到部署建立基线。
-- **分析与优化：** `$hcu-infer-analyze-and-optimize`。用当前负载的真实 Prof 分清 prefill/decode、计算/通信/空泡与 rank 覆盖；按其 Prof/TraceLens 参考执行。先核对引擎原生能力、实际 dispatch、配置和消费者，再决定调参、布局/通信或算子开发。`prof-analyze` → `optimization-plan` → 实验 → `optimization-check` 保存分析、假设和验收，工具成功不代表收益成立。
+- **部署：** `$hcu-infer-check-and-deploy`。核对真实容器/DTK、设备、拓扑、依赖和用户启动配方，查适用 Cookbook，验证完整模型容量、KV cache、图池、工作区及最坏 rank。仿真后用真实请求校准；进程存活或健康接口成功不等于输出质量通过。运行失败先交故障 Skill 定位；明确缺模型/算子支持时转 `$hcu-infer-model-adapt`，按 `model-adapt-plan/run/check` 处理结构、权重、框架与缺失算子，回到部署建立基线。
+- **模型优化：** `$hcu-infer-model-optimize` 统一管理原生调参、实现、候选验收与迭代，并调用 `$hcu-infer-analyze` 完成 Prof 分析。用当前负载的真实 Prof 分清 prefill/decode、计算/通信/空泡与 rank 覆盖；按其 Prof/TraceLens 参考执行。先核对引擎原生能力、实际 dispatch、配置和消费者，再决定调参、布局/通信或算子开发。`prof-analyze` → `optimization-plan` → 实验 → `optimization-check` 保存分析、假设和验收，工具成功不代表收益成立。
 - **算子与模型循环：** 需要融合、Triton/TileLang/HIP 或 GEMM 时调用 `$hcu-infer-operator-develop`，使用 `operator-plan/dispatch/integrate`，传入真实 shape/dtype/phase、调用契约和 profile。指定卡数持续优化调用 `$hcu-infer-model-optimize` 的 `model-loop-start/step/status/report`，保留最初基线、已复核最佳与待审核候选；被拒候选回退并验证后再继续。专项外部 Skill 从真实 binding 定位，不猜机器路径。
-- **扩容与运维：** `$hcu-infer-scale-and-operate`。按 `docs/operations.md` 对真实 TP/EP/DP、PD 分离和服务 member 验证容量、质量、SLA 与持续请求进展。`observe` 记录观测，`inbox` 处理事件；唯一恢复负责人实施已授权恢复，其他成员提供证据。端口可达、watcher 心跳和控制器在线不能代替实际服务观测。
+- **故障诊断与恢复：** `$hcu-infer-diagnose-and-fix` 处理运行失败、hang/卡死、崩溃/OOM、精度异常，先保留首错和失败请求，再重放、定向定位、修复并回归。扩容配方和拓扑验收交部署 Skill，主控按 `docs/operations.md` 协调持续服务观察。`observe` 记录观测，`inbox` 处理事件；唯一恢复负责人实施已授权恢复，其他成员提供证据。端口可达、watcher 心跳和控制器在线不能代替实际服务观测。
 
 `simulate` 的结果必须带模型/硬件/并行假设、默认值和覆盖范围，仅用于选策略。引擎升级、量化改变或新库接入后核对实际消费者、布局、ABI、异步生命周期与 fallback，重新确定受影响回归。已有能力在源码中存在不表示在当前服务生效。
 
@@ -236,7 +236,7 @@ prof report list --id PROF_ID
 
 ## 故障交接、维护与交付
 
-部署失败回部署/适配，数值与性能异常回优化，卡住、泄漏、服务中断回运维；复用问题和证据，由当前 `recovery_owner` 统一恢复。扩容、更换配置或恢复 attempt 时核对全部必需 member 的服务身份、日志/观测覆盖、心跳与退出回执，保留旧游标和原件；不能只改 parser 路径或删除观察状态。
+运行失败、精度异常、卡住和崩溃统一交故障诊断；明确支持缺口再交适配，健康服务的性能瓶颈交模型优化；复用问题和证据，由当前 `recovery_owner` 统一恢复。扩容、更换配置或恢复 attempt 时核对全部必需 member 的服务身份、日志/观测覆盖、心跳与退出回执，保留旧游标和原件；不能只改 parser 路径或删除观察状态。
 
 `flow-watch` 只采集文件变化，`observe` 只产生事件；没有真实在线 Agent 或已部署的唤醒设施就不能自动推理、回答或接管。交接记录主控/成员会话、活跃和未知 operation、当前基线/最佳/待审候选、资源持有者、待处理消息及下一步；恢复先核对现场再重放事件。
 

@@ -5,7 +5,7 @@
 
 ## 本仓 Skill 协作与优化方法
 
-模型循环由 `$hcu-infer-model-optimize` 协调；**Prof 采集与分析调用本仓 `$hcu-infer-analyze-and-optimize`**，由该 Skill 对接上游 profiler 和 TraceLens，返回当前 analysis/capture/原件。模型循环不调用 TrainFlow 的脚本或 `tracelens-report` 等外仓 CLI。
+模型循环由 `$hcu-infer-model-optimize` 协调；**Prof 采集与分析调用本仓 `$hcu-infer-analyze`**，由该 Skill 对接上游 profiler 和 TraceLens，返回当前 analysis/capture/原件。模型循环不调用 TrainFlow 的脚本或 `tracelens-report` 等外仓 CLI。
 
 HCU 适配、性能或故障问题先使用 `$hcu-knowledge-search` 的检索流程，再核当前分支的消费者、父依赖锁和真实加载制品。执行检索使用本仓 `knowledge-bind/query/read`，只将 HCU-Knowledge 的资料目录作为输入；不要求其 `kb.py` 或其他工作流 checkout。适用证据复用，版本/问题变化才重查；不自动更新大库。见 [知识与源码](../skills/hcu-infer-model-optimize/references/knowledge-and-source.md)。
 
@@ -128,3 +128,5 @@ hcu-infra-agent --workspace "$WORK" model-loop-report TASK
 ## 验证范围
 
 `tests/test_model_loop.py`、`tests/test_model_loop_limited_repeats.py` 和 `tests/test_model_loop_dp_attention.py` 使用显式构造的合成协议数据，覆盖真实 flow API 的复核状态转移、不可变 oracle、选型与设备数、基线失败转适配、回退和预算、有限重复授权、验收预留窗口及过期证据。它们验证协议行为，不是任何模型在 HCU 上的性能或精度结果。真实任务还必须运行对应模型、算子和多卡验证。
+
+原生配置与系统路径的 `native` 路由、Prof 返回后的 `plan-and-implement` 均交 `hcu-infer-model-optimize`；采集当前最佳或候选 Prof 的步骤仍交分析 Skill。故障先交诊断 Skill，已确认的模型支持缺口继续使用既有 adaptation 状态与验收接口。

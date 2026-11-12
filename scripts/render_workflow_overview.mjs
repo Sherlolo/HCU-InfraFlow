@@ -82,13 +82,13 @@ text(32, 58, 'HCU Infra Agent', 43, 800, navy);
 text(34, 96, '面向 HCU 大模型推理的智能体协同工作流', 24, 600, navy);
 rect(1124, 25, 444, 41, '#F2F7FE', '#B7D0EC', 9);
 text(1346, 53, `SGLang · vLLM · v${version}`, 21, 600, navy, 'middle');
-text(1346, 96, '部署 · 优化 · 扩容 · 独立分析', 19, 500, body, 'middle');
+text(1346, 96, '部署 · 模型优化 · Prof · 故障诊断', 19, 500, body, 'middle');
 
 rect(32, 122, 1536, 92, '#F5F9FF', '#9FC3E8', 12, 1.4);
 icon('agent', 61, 150, colors.blue.accent, 1.1);
 text(120, 160, '统一主控 Agent', 28, 750, navy);
 text(120, 190, '按证据拆解任务 · 按需协作 · 组织集成与独立复核', 18, 400, body);
-['环境 / 部署', '分析 / 优化', '服务 / 运维'].forEach((label, i) => {
+['环境 / 部署', '模型优化 / Prof', '诊断 / 恢复'].forEach((label, i) => {
   rect(970 + i * 194, 138, 180, 37, '#FFFFFF', '#B6D0ED', 8);
   text(1060 + i * 194, 163, label, 18, 600, navy, 'middle');
 });
@@ -96,23 +96,23 @@ text(1254, 199, '按范围选择模块 · 共享资源计时统一协调', 16, 4
 for (const x of [272, 800, 1328]) line(`M${x} 214v20`, '#7FAAD4', 1.8, 'arrow-blue');
 
 stage(32, 'blue', '01', '环境检查与模型部署', '核对现场与适用配方，建立可复现起点', [
-  ['monitor', '核对环境与资源', ['容器 / DTK / 框架 / 卡型与拓扑', '设备占用 · 依赖 · 目录与权限']],
+  ['monitor', '核对环境与资源', ['容器 / DTK / 框架 / 卡型与拓扑', '设备占用 · 依赖 · 部署 / 扩容验收']],
   ['book', '检索配方与容量仿真', ['Cookbook · HCU-Knowledge', 'DCUSim：并行 / KV / 显存假设']],
   ['layers', '加载模型与适配缺口', ['架构 / 权重 / tokenizer / 量化', '缺模型支持或算子 → 适配与回归']],
   ['check', '冻结质量与性能基线', ['模型 · 请求 · 并发 · Cache · 版本', 'TTFT · TPOT · P95 · 吞吐（关闭Prof）']],
 ], '输出：启动配方 · 数值参考 · 基线结果');
 
-stage(560, 'teal', '02', '性能分析与优化', '问题驱动 · 有界迭代 · 验证后保留', [
-  ['search', 'Prof + TraceLens 定位瓶颈', ['Prefill / Decode · 多rank', '热点 · 通信 · 空泡 · 真实shape']],
+stage(560, 'teal', '02', '模型优化闭环', '优化统一负责 · Prof 分析按需调用', [
+  ['search', '调用 Prof Skill 定位瓶颈', ['Prefill / Decode · 多rank', '热点 · 通信 · 空泡 · 真实shape']],
   ['tune', '核查原生能力与优化假设', ['引擎 / 后端 / 通信 / KV路径', '配置调优 · 复用库 · 补齐算子能力']],
   ['code', '逐次探索与实现', ['独立候选 · 改动说明 · 原始证据', 'LightOp · Triton · TileLang · HIP · GEMM']],
-  ['shield', '精度、性能与候选Prof验证', ['短 / 长输入 × 单请求 / 并发', '关闭Prof ≥3次对照 · 优化后Prof']],
+  ['shield', '精度、性能与候选Prof验证', ['短 / 长输入 × 单请求 / 并发', '关闭Prof 匹配对照 · 优化后Prof']],
 ], '独立复核：保留 / 回退 / 再迭代');
 
-stage(1088, 'violet', '03', '扩容验证与服务运维', '基于已验证配置扩展，观察真实服务状态', [
-  ['network', '扩容与服务验收', ['TP / EP / DP / PD · 部署配置', '质量 · SLA · 扩展效率 · 资源']],
-  ['refresh', '故障诊断与受控恢复', ['卡住 / OOM / 泄漏 / 服务中断', '恢复责任明确 · 恢复后重新验证']],
-  ['chart', '持续观察与事件处置', ['请求推进 · 吞吐 / 时延 / 失败率', '记录事件 → Agent处理 → 复核']],
+stage(1088, 'violet', '03', '故障诊断与服务可靠性', '现场 → 重放 → 定位 → 修复与回归', [
+  ['network', '失败现场与请求重放', ['版本 / 配置 / 首错 / 全部rank', '原请求 · Cache / KV状态 · 隔离重放']],
+  ['refresh', '定向诊断与修复', ['运行失败 · Hang · 崩溃 · 精度', '源码 / 依赖 / 通信 / 数值 / 生命周期']],
+  ['chart', '原用例回归与受控恢复', ['原场景 · 质量 / 特性 · 请求进展', '唯一恢复负责人 · 核清未知执行']],
   ['archive', '交付与经验整理', ['代码 · 配方 · 质量/性能 · 回退', '可复用结论沉淀，过程证据归档']],
 ], '达到目标或有依据停止 → 报告与交接');
 
@@ -156,7 +156,7 @@ const markers = Object.entries({...colors, orange: {accent: '#DA9A45'}}).map(([n
 const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="title desc">
 <title id="title">HCU Infra Agent 工作流总览</title>
-<desc id="desc">统一主控协调环境检查与模型部署、性能分析与优化、扩容验证与服务运维。知识、工具、原始证据和独立复核贯穿全程；每轮输出探索、精度、性能和优化后的Prof，外层总报告持续更新。</desc>
+<desc id="desc">统一主控协调环境检查与模型部署、模型优化闭环、故障诊断与服务可靠性。知识、工具、原始证据和独立复核贯穿全程；每轮输出探索、精度、性能和优化后的Prof，外层总报告持续更新。</desc>
 <defs><linearGradient id="page" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#F7FAFE"/></linearGradient>${markers}</defs>
 <style>text{font-family:'Noto Sans CJK SC','Microsoft YaHei','PingFang SC','Heiti SC',sans-serif}svg{shape-rendering:geometricPrecision;text-rendering:optimizeLegibility}</style>
 ${elements.join('\n')}

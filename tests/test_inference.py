@@ -92,3 +92,17 @@ def test_service_incident_dedup_and_claim(tmp_path):
     event=messages[0]['event_id'];inbox(s,'claim',event,'agent')
     with pytest.raises(FlowError):inbox(s,'complete',event,'other')
     assert inbox(s,'complete',event,'agent')['status']=='complete'
+
+
+@pytest.mark.parametrize('mode,expected', [
+    ('analyze', 'hcu-infer-analyze'),
+    ('optimize', 'hcu-infer-model-optimize'),
+    ('diagnose', 'hcu-infer-diagnose-and-fix'),
+    ('operate', 'hcu-infer-diagnose-and-fix'),
+])
+def test_scope_routes_analysis_optimization_and_incidents(tmp_path, mode, expected):
+    store = Store(tmp_path / mode)
+    store.create({'schema_version': 1, 'task_id': 'route', 'mode': mode,
+                  'objective': 'Exercise public flow routing', 'context': {'model': 'fixture'}})
+    flow.start(store, 'route', {'acceptance': {'scope': 'requested mode'}})
+    assert flow.next_step(store, 'route')['skill'] == expected

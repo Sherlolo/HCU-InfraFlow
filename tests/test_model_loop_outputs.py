@@ -101,7 +101,7 @@ def test_faster_candidate_without_post_profile_is_incomplete(store, tmp_path):
     assert state['pending']['quality']['status'] == 'pass'
     assert state['next']['action'] == 'capture-candidate-profile'
     assert state['next']['snapshot'] == state['pending']['snapshot'] != state['best']['snapshot']
-    assert state['next']['skill'] == 'hcu-infer-analyze-and-optimize'
+    assert state['next']['skill'] == 'hcu-infer-analyze'
     manifest = json.loads((output_root(store)/'iterations/0001/manifest.json').read_text())
     assert manifest['effective'] is False
     assert '+20.00%' in (output_root(store)/'iterations/0001/REPORT.md').read_text()

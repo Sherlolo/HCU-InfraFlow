@@ -13,7 +13,7 @@
 | 针对性计数器/回放 | 回答选定热点的访存、资源或指令假设；replay 会扰动缓存/并发，collective 不能脱离 peer 任意执行 |
 | profiler-off 重复测量 | 判断实际收益、SLA 和回退；关闭昂贵审计、debug 同步、trace hook 和密集库日志 |
 
-Prof 的取得与解读统一交给 `$hcu-infer-analyze-and-optimize`。接收其 analysis、trace hashes、rank/group、窗口、capture 与原始报告；上游三张 triage 表和 TraceLens 结果用于推理，不自动证明优化结论。
+Prof 的取得与解读统一交给 `$hcu-infer-analyze`。接收其 analysis、trace hashes、rank/group、窗口、capture 与原始报告；上游三张 triage 表和 TraceLens 结果用于推理，不自动证明优化结论。
 
 ## 三张关联记录
 

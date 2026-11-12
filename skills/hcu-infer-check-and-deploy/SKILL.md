@@ -27,3 +27,7 @@ description: 检查 HCU 推理环境，适配或部署大模型服务，并建�
 ## 按问题补充阅读
 
 首次环境与容量判断、固定执行基线或性能异常时读取 [环境与容量](references/environment-and-capacity.md)。模型 registry、权重或算子缺口交给 `$hcu-infer-model-adapt`（工程 `docs/model-adaptation.md`）；得到 ready_for_baseline 后重新测真实服务基线。完整模型优化按 `$hcu-infer-model-optimize` 先比较指定卡数的仿真策略，部署阶段负责验证实际映射和校准。
+
+## 扩容与故障分工
+
+主控要求扩容时由本 Skill 核实际 TP/EP/DP/PP、PD 映射、模型/权重、容量与服务成员，按工程 `docs/operations.md` 重验固定输出、必需功能、TTFT/TPOT/P95、吞吐及最坏 rank 资源。拓扑变化建立新 context，旧单卡结果不能外推。性能取舍交模型优化；运行失败、hang、崩溃或精度异常交故障 Skill，明确缺模型/算子支持后再交适配。

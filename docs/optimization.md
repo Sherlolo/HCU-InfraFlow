@@ -1,5 +1,7 @@
 # Profile 驱动推理优化
 
+模型优化统一由 `hcu-infer-model-optimize` 负责；它调用 `hcu-infer-analyze` 获取 Prof 归因和证据，再选择原生调参或算子实施。分析入口不再负责优化实验。模块参考见 [模型优化 Skill](../skills/hcu-infer-model-optimize/SKILL.md)。
+
 先测固定无 profiler 基线，再捕获有代表性 prefill/decode、并发/长度、TP/EP/PP/PD rank 证据。
 保留实际采集端点、全部命令、trace 文件哈希与 rank 覆盖；输出目录存在不证明 trace 成功，CPU-only trace 不证明 GPU 已采集。
 主分析使用 [hcu-infer-pilot](https://github.com/Sherlolo/hcu-infer-pilot) 的 [llm-torch-profiler-analysis Skill](https://github.com/Sherlolo/hcu-infer-pilot/blob/main/skills/llm-torch-profiler-analysis/SKILL.md)，辅助复核使用 [TraceLens](https://github.com/AMD-AGI/TraceLens)。分别保留实际调用和输出；原始报告、推理分析和实际服务验证分别成立。
@@ -21,7 +23,7 @@ TTFT 是首个非空文本 chunk 到达时间；TPOT 是首末文本 chunk 间�
 
 ## Prof Skill 与 TraceLens 的配合
 
-从 [联合分析指引](../skills/hcu-infer-analyze-and-optimize/references/profiler-and-tracelens.md) 进入。Agent 实际读取绑定版本的上游 Skill，默认用其 `scripts/run_triage_report.py` 分析已有 Prof，并将 Markdown、命令记录和原始输出写入私有工作区。外部来源使用任务选定的 revision 和可配置路径，不依赖作者机器上的目录。
+从 [联合分析指引](../skills/hcu-infer-analyze/references/profiler-and-tracelens.md) 进入。Agent 实际读取绑定版本的上游 Skill，默认用其 `scripts/run_triage_report.py` 分析已有 Prof，并将 Markdown、命令记录和原始输出写入私有工作区。外部来源使用任务选定的 revision 和可配置路径，不依赖作者机器上的目录。
 
 TraceLens 根据问题补充 eager/推理图报告、通信偏斜和前后比较；核对 graph capture、窗口、rank 组、shape 与当前 HCU 的性能建模参考。两种工具结果需要按相同时间分母和覆盖范围复核；缺失组件或解析失败保持可见。
 
