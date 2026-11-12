@@ -6,5 +6,7 @@
   "metric": "throughput_tok_s",
   "min_gain": 0.01,
   "max_regression": 0.0,
+  "performance_repeats": 1,
+  "acceptance_reserve_seconds": 0,
   "sla": {"ttft_ms": 1000, "tpot_ms": 50, "latency_p95_ms": 10000}
 }

@@ -55,8 +55,8 @@ def validate_profile(profile):
         if not profile.get(key): raise FlowError('Missing measurement identity: ' + key)
     if not isinstance(profile['identities'],dict) or any(not isinstance(profile['identities'].get(k),str) or not profile['identities'][k] for k in IDENTITIES):
         raise FlowError('Freeze all model/tokenizer/quantization/workload/driver identities')
-    if type(profile.get('repeats')) is not int or not 3 <= profile['repeats'] <= 100:
-        raise FlowError('Use 3..100 measurement repeats')
+    if type(profile.get('repeats')) is not int or not 1 <= profile['repeats'] <= 100:
+        raise FlowError('Use 1..100 measurement repeats')
     scenarios = profile.get('scenarios')
     if not isinstance(scenarios, list) or not scenarios: raise FlowError('Declare scenarios')
     seen = set()

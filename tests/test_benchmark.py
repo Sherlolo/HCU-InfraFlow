@@ -29,7 +29,10 @@ def test_actual_stream_measurement_and_fixed_scenarios(endpoint):
     r=measure(p)
     assert r['executed']==6 and len(r['scenarios']['decode']['throughput_tok_s'])==3
     assert r['raw']['decode'][0]['requests'][0]['text']=='hello world'
-    p['repeats']=2
+    p['repeats']=1
+    single=measure(p)
+    assert single['executed']==2 and len(single['scenarios']['decode']['throughput_tok_s'])==1
+    p['repeats']=0
     with pytest.raises(FlowError):measure(p)
 
 

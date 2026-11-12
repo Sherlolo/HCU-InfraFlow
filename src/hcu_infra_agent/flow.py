@@ -433,7 +433,7 @@ def submit(store, tid, candidate):
     if candidate.get('experiment'):
         inputs = artifact_json(store, candidate['experiment'])
         required = {'context', 'correctness', 'baseline_times', 'candidate_times'}
-        if required - inputs.keys() or set(inputs) - (required | {'max_regression'}) or not isinstance(inputs['correctness'], dict):
+        if required - inputs.keys() or set(inputs) - (required | {'max_regression', 'min_repeats'}) or not isinstance(inputs['correctness'], dict):
             raise FlowError('Experiment must follow the iteration-check input contract')
     sha = retain(store, candidate)
     with store.db() as db:

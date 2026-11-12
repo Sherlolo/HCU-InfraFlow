@@ -72,6 +72,8 @@ simulation → baseline → profile → candidate → review → profile
 
 流程按 `max_iterations` 和连续无收益 `max_no_gain` 有界停止。常规 `stop` 必须说明原因，未处置候选先拒绝并验证回退。用户明确要求中断时，先停止并核清实际执行，再提交 `interrupt`：verification artifact 必须含 task/context/context_epoch、当前 loop_revision、status=stopped、execution_stopped=true 和非空原始 evidence；仍有 started/unknown operation 时拒绝。中断记录保留为 incomplete/interrupted，不声称已恢复最佳服务，不自动再启动实验。预算耗尽不能用 interrupt 绕过回退验证。
 
+`performance_repeats` 冻结每场景性能测量次数，默认 1，以减少基线和候选评估的等待；需要更强置信度时显式设为 3 或更高。测量合同通过 `min_repeats` 记录同一数值，初筛和有限重复不能表述为统计显著性或生产就绪。`acceptance_reserve_seconds` 为非负预留时间，配合任务 `budget.max_seconds` 使用；进入预留窗口后禁止新的 `explore`，但允许当前候选完成评估、回退和导出。`model-loop-status` 的 `execution_budget` 返回剩余秒数和预留窗口状态。
+
 ## CLI 与请求
 
 ```bash
@@ -87,13 +89,13 @@ hcu-infra-agent --workspace "$WORK" model-loop-report TASK
 
 1. 固定健康设备数量、模型身份、输入/输出长度、batch/并发、KV/计算 dtype；用已有 `simulate` 对有依据的并行候选逐个预测。
 2. `action=select-strategy`，`candidates` 每项为 `{artifact, prefill_devices, decode_devices}`。artifact 必须是完成的 `simulate` 结果，包含成功 backend execution 和留存 stdout/stderr；程序从原始 stdout 重新核对 backend_output、评分/显存字段及实际生效参数，不能修改 summary 后沿用旧执行回执。设备用完整物理身份如 `node-a:0`，不能用重复的本地卡号掩盖跨节点差异。
-3. 两阶段设备集合的并集大小必须等于起始 `gpu_count`；重合表示共享设备，互斥表示分离部署。当前拓扑适配按每阶段 `TP*DP*PP` 计卡、EP 为整除子组，CP 仅支持 1。其他引擎拓扑需要先实现适配器，不猜测乘法关系。
+3. 两阶段设备集合的并集大小必须等于起始 `gpu_count`；重合表示共享设备，互斥表示分离部署。普通拓扑按每阶段 `TP*DP*PP` 计卡；SGLang DP-attention 拓扑由 attention DP rank 共享 `TP*PP` 物理设备，且要求 TP 可被 DP 整除。EP 为整除子组，CP 仅支持 1。其他引擎拓扑需要先实现适配器，不猜测乘法关系。
 4. 只有 `memory_feasible=true` 的候选参与排序，未知显存可行性不自动通过。默认 `simulation_metric=throughput_tok_s`，也支持 prefill/decode latency；tail latency 必须实测。
 5. 输出只是“已仿真候选中的预测最优”，不是全空间最优。显存峰值、最差 rank 余量、通信及 KV 分布须用真实短跑校准。启动配置必须实现选中的并行策略。
 
 ### 基线与适配
 
-`action=baseline` 提交 `quality_inputs`、`performance_inputs`、`deployment` 三个 artifact。前两者使用现有 quality-check/performance-check 的输入结构，额外要求每条测量 `hardware_executed=true`，禁止 synthetic、缺失原件或预测充当运行。初始性能 baseline/candidate 必须为同一测量；质量可对独立参考输出。性能 policy 中 metric、max_regression、sla 固定，初始 min_gain=0，后续 min_gain 使用 loop policy。
+`action=baseline` 提交 `quality_inputs`、`performance_inputs`、`deployment` 三个 artifact。前两者使用现有 quality-check/performance-check 的输入结构，额外要求每条测量 `hardware_executed=true`，禁止 synthetic、缺失原件或预测充当运行。初始性能 baseline/candidate 必须为同一测量；质量可对独立参考输出。性能 policy 中 metric、max_regression、sla 固定，初始 min_gain=0，后续 min_gain 使用 loop policy。基线默认每场景一次；需要更高置信度时把 `performance_repeats` 显式设为 3 或更高。合同以 `min_repeats` 冻结相同次数，报告不得隐藏有限重复的限制。
 
 `deployment` 记录 `{context,candidate_snapshot,simulation,prefill_devices,decode_devices,evidence}`：simulation 是已选候选的 artifact，设备分配必须与选型一致；evidence 是实际配置/加载及启动日志的留存原件，不能只有计划。Agent 检查日志里的生效并行组与预测输入一致。
 
@@ -107,13 +109,13 @@ hcu-infra-agent --workspace "$WORK" model-loop-report TASK
 
 实施方向使用 `route=native|fusion|triton|tilelang|hip|gemm`；native 调用阶段优化 skill，其余调用 `hcu-infer-operator-develop`。先用 `action=explore` 登记 plan、route、candidate_snapshot、summary、changes 和 evidence。changes 每项含 path/description，可加 symbol；notes 保留假设、尝试、失败及适用范围。一个正式候选内可多次 explore，各次记录和旧快照都保留，当前评估必须对应最后登记的候选。示例见 [loop-explore.json](../examples/modules/loop-explore.json)。
 
-可选 screening 指向初筛 artifact：包含 context/candidate_snapshot、hardware_executed、candidate_path_exercised、profiler_off、executed、status、evidence，以及 metrics 数组。每行用 scope=model 或 operator，前者支持四项 serving metric，后者只用 time_ms；同时给 scenario、baseline/candidate 的配对数组。可保留单次值，报告明确标为 unverified-screening。它不能替代精度、三次正式性能或 Prof，局部算子加速也不能当模型收益。
+可选 screening 指向初筛 artifact：包含 context/candidate_snapshot、hardware_executed、candidate_path_exercised、profiler_off、executed、status、evidence，以及 metrics 数组。每行用 scope=model 或 operator，前者支持四项 serving metric，后者只用 time_ms；同时给 scenario、baseline/candidate 的配对数组。可保留单次值，报告明确标为 unverified-screening。它不能替代精度、合同规定次数的正式性能或 Prof，局部算子加速也不能当模型收益。
 
 实现后还需采集该候选的 Prof。调用 `prof-analyze` 时提供 candidate_snapshot，模块将其登记为 `candidate-analysis`，不会替换产生原计划的优化前 analysis。随后 retain capture：包含 context/context_epoch/candidate_snapshot/analysis、hardware_executed=true、candidate_path_exercised=true、executed>0、status=complete 和全部 rank trace/采集日志 evidence；不能有失败或跳过的必需项。见 [candidate-prof.json](../examples/modules/candidate-prof.json) 和 [candidate-capture.json](../examples/modules/candidate-capture.json)。
 
 `action=evaluate` 提交 plan、route、quality_inputs、performance_inputs、candidate_analysis 和 candidate_capture。质量/性能同一候选快照，质量对初始 oracle，performance baseline 对当前最佳，合同及覆盖要求冻结。优化后 Prof 必须匹配当前快照和最新 candidate-analysis、原有 rank/group 覆盖；不能拿优化前或此前迭代的 trace 字节重新贴标签。
 
-缺优化后 Prof 时会保留本次评估和数据，但留在 candidate/incomplete，不能进入 review/keep。质量或性能失败进入 rollback；质量通过和 Prof 齐备只是有效性的必要条件，最终还要满足性能和独立 review。正式性能仍至少三次 profiler-off 配对重复，保留 TTFT、TPOT、P95、吞吐和 SLA；初筛数值不纳入正式收益。另算相对初始基线的累计指标，累计回退也拒绝。
+缺优化后 Prof 时会保留本次评估和数据，但留在 candidate/incomplete，不能进入 review/keep。质量或性能失败进入 rollback；质量通过和 Prof 齐备只是有效性的必要条件，最终还要满足性能和独立 review。正式性能默认使用一次 profiler-off 测量；需要更强置信度时使用三次或更多匹配重复。始终保留 TTFT、TPOT、P95、吞吐、SLA、实际重复次数和有限重复说明。初筛数值不纳入正式收益。另算相对初始基线的累计指标，累计回退也拒绝。
 
 ### 接受、拒绝和继续
 
@@ -125,4 +127,4 @@ hcu-infra-agent --workspace "$WORK" model-loop-report TASK
 
 ## 验证范围
 
-`tests/test_model_loop.py` 使用显式构造的合成协议数据，覆盖真实 flow API 的复核状态转移、不可变 oracle、选型与设备数、基线失败转适配、回退和预算、过期证据。它验证协议行为，不是任何模型在 HCU 上的性能或精度结果。真实任务还必须运行对应模型、算子和多卡验证。
+`tests/test_model_loop.py`、`tests/test_model_loop_limited_repeats.py` 和 `tests/test_model_loop_dp_attention.py` 使用显式构造的合成协议数据，覆盖真实 flow API 的复核状态转移、不可变 oracle、选型与设备数、基线失败转适配、回退和预算、有限重复授权、验收预留窗口及过期证据。它们验证协议行为，不是任何模型在 HCU 上的性能或精度结果。真实任务还必须运行对应模型、算子和多卡验证。

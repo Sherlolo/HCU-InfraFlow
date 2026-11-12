@@ -90,8 +90,8 @@ def compare_performance(contract, baseline, candidate):
         raise FlowError('SLA must declare supported latency bounds')
     if contract.get('metric') not in {'throughput_tok_s', 'ttft_ms', 'tpot_ms', 'latency_p95_ms'}:
         raise FlowError('Unknown primary performance metric')
-    repeats = contract.get('min_repeats', 3)
-    if type(repeats) is not int or repeats < 3: raise FlowError('Use at least three repeats')
+    repeats = contract.get('min_repeats', 1)
+    if type(repeats) is not int or repeats <= 0: raise FlowError('Repeat count must be a positive integer')
     regression = number(contract.get('max_regression', 0), 'max_regression')
     gain_floor = number(contract.get('min_gain', 0), 'min_gain')
     if min(regression, gain_floor) < 0: raise FlowError('Gain/regression limits cannot be negative')
@@ -123,9 +123,12 @@ def compare_performance(contract, baseline, candidate):
             for bound_name, bound in contract.get('sla', {}).items():
                 if metric == bound_name and mb > number(bound, 'SLA'): failures.append('sla:' + name + ':' + metric)
             results[name + ':' + metric] = {'baseline_median': ma, 'candidate_median': mb, 'relative_gain': gain,
-                                           'baseline_stdev': statistics.stdev(a), 'candidate_stdev': statistics.stdev(b)}
-    return {'status': 'fail' if failures else 'pass', 'executed': len(results), 'failures': failures, 'metrics': results,
-            'limits': 'Matched repetitions, not a statistical-significance or production-readiness claim.'}
+                                           'baseline_stdev': statistics.stdev(a) if len(a) > 1 else 0.0,
+                                           'candidate_stdev': statistics.stdev(b) if len(b) > 1 else 0.0}
+    return {'status': 'fail' if failures else 'pass', 'executed': len(results), 'failures': failures,
+            'metrics': results, 'min_repeats': repeats, 'limited_repeats': repeats < 3,
+            'limits': f'Matched repetitions={repeats}; not a statistical-significance or production-readiness claim.' +
+                      (' Limited repeats were explicitly authorized by the measurement contract.' if repeats < 3 else '')}
 
 
 def validate_stage_report(store, report):
@@ -158,13 +161,17 @@ def validate_performance_report(store, report):
     return result
 
 
-def assess_iteration(correctness, baseline_times, candidate_times, context, max_regression=0.0):
+def assess_iteration(correctness, baseline_times, candidate_times, context, max_regression=0.0,
+                     min_repeats=1):
     """Generic local operator timing screen; serving acceptance is separately gated."""
+    if type(min_repeats) is not int or min_repeats <= 0:
+        raise FlowError('min_repeats must be a positive integer')
     reasons = validate_measurement(correctness, context)
     if correctness.get('profiler_off') is not True or not correctness.get('measurement_protocol'):
         reasons.append('profiler-off-and-protocol-required')
     if not isinstance(baseline_times, list) or not isinstance(candidate_times, list): raise FlowError('Repetitions must be arrays')
-    if len(baseline_times) < 3 or len(baseline_times) != len(candidate_times): reasons.append('need-three-matched-repeats')
+    if len(baseline_times) < min_repeats or len(baseline_times) != len(candidate_times):
+        reasons.append('need-matched-repeats')
     if reasons: return {'status': 'incomplete', 'reasons': reasons}
     for x in baseline_times + candidate_times: number(x, 'time', True)
     limit = number(max_regression, 'max_regression')

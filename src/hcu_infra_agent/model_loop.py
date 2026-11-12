@@ -5,8 +5,8 @@ never runs a model, invents a measurement or changes a production deployment.
 """
 import copy
 import json
-import math
 import statistics
+from datetime import datetime, timezone
 from .core import FlowError, atomic_write, context_epoch, utc, write_json
 from .evidence import current_analysis, retain, candidate_profile
 from .optimization import require_scope
@@ -75,7 +75,8 @@ def _save_locked(store, task, state, previous):
 def start(store, tid, request):
     task = store.task(tid)
     require_scope(task)
-    fields = {'gpu_count', 'max_iterations', 'max_no_gain', 'metric', 'min_gain', 'max_regression', 'sla', 'quality_coverage'}
+    fields = {'gpu_count', 'max_iterations', 'max_no_gain', 'metric', 'min_gain', 'max_regression', 'sla', 'quality_coverage',
+              'performance_repeats', 'acceptance_reserve_seconds'}
     if set(request) - fields or {'gpu_count', 'max_iterations', 'max_no_gain'} - set(request):
         raise FlowError('Declare gpu_count, max_iterations and max_no_gain; optional metric/min_gain/max_regression/sla')
     for key in ('gpu_count', 'max_iterations', 'max_no_gain'):
@@ -92,9 +93,16 @@ def start(store, tid, request):
         raise FlowError('Unsupported SLA metric')
     for key, value in sla.items():
         quality.number(value, key, positive=True)
+    performance_repeats = request.get('performance_repeats', 1)
+    if type(performance_repeats) is not int or performance_repeats <= 0:
+        raise FlowError('performance_repeats must be a positive integer')
+    reserve = quality.number(request.get('acceptance_reserve_seconds', 0), 'acceptance_reserve_seconds')
+    if reserve < 0:
+        raise FlowError('acceptance_reserve_seconds cannot be negative')
     _table(store)
     state = {'schema_version': 2, 'task': tid, 'context': task['context'], 'context_epoch': task['context_epoch'],
-             'stage': 'simulation', 'policy': {'metric': metric, 'min_gain': 0, 'max_regression': 0, 'sla': {}, **request,
+             'stage': 'simulation', 'policy': {'metric': metric, 'min_gain': 0, 'max_regression': 0, 'sla': {},
+                                               'performance_repeats': 1, 'acceptance_reserve_seconds': 0, **request,
                                               'quality_coverage': quality_coverage.policy(request.get('quality_coverage'))},
              'initial': None, 'best': None, 'pending': None, 'iterations': [], 'no_gain': 0,
              'next': {'action': 'simulate-and-select', 'skill': 'hcu-infer-model-optimize'}}
@@ -108,10 +116,47 @@ def _fresh(store, tid, state):
     return task
 
 
+def _execution_budget(task, state):
+    """Expose time left and prevent new candidates inside the acceptance reserve."""
+    budget = task['spec'].get('budget') or {}
+    max_seconds = budget.get('max_seconds')
+    if max_seconds is None:
+        return {'remaining_seconds': None, 'acceptance_reserve_active': False}
+    max_seconds = quality.number(max_seconds, 'budget.max_seconds', positive=True)
+    created = datetime.fromisoformat(task['created'].replace('Z', '+00:00'))
+    if created.tzinfo is None:
+        created = created.replace(tzinfo=timezone.utc)
+    elapsed = (datetime.now(timezone.utc) - created).total_seconds()
+    remaining = max(0.0, max_seconds - elapsed)
+    reserve = state['policy'].get('acceptance_reserve_seconds', 0)
+    return {'remaining_seconds': round(remaining, 3),
+            'acceptance_reserve_seconds': reserve,
+            'acceptance_reserve_active': remaining <= reserve}
+
+
 def status(store, tid, request=None):
     state = _load(store, tid)
     _fresh(store, tid, state)
-    return {'status': 'complete', **state}
+    return {'status': 'complete', **state,
+            'execution_budget': _execution_budget(_fresh(store, tid, state), state)}
+
+
+def _phase_world(args, phase):
+    """Return physical phase devices for the verified SGLang topology.
+
+    Ordinary TP/DP/PP ranks occupy TP*DP*PP devices. With DP attention,
+    attention DP ranks share the TP/PP device set instead of adding replicas;
+    DCUSim applies the same rule and requires TP to be divisible by DP.
+    """
+    tp, dp, pp = (args[phase + '_' + axis] for axis in ('tp', 'dp', 'pp'))
+    dp_attention = args.get(phase + '_dp_attention')
+    if dp_attention is None:
+        dp_attention = args.get('dp_attention', False)
+    if dp_attention:
+        if tp % dp:
+            raise FlowError('DP attention requires TP divisible by DP')
+        return tp * pp
+    return tp * dp * pp
 
 
 def _select(store, state, request):
@@ -158,16 +203,16 @@ def _select(store, state, request):
             expected_args['model'] = pinned_args['model']
         if pinned_args != expected_args or any(output.get('effective_arguments', {}).get(key) != val for key, val in pinned_args.items()):
             raise FlowError('Simulation inputs differ from retained backend effective arguments')
-        # DCUSim TP/DP/PP define phase world size; EP is a subgroup. CP>1
-        # needs a site topology adapter, not a silently guessed multiplication.
+        # Ordinary DCUSim TP/DP/PP ranks occupy TP*DP*PP devices; DP attention
+        # shares the TP/PP device set. EP is a subgroup and CP needs an adapter.
         groups = []
         for phase in ('prefill', 'decode'):
             devices = candidate.get(phase + '_devices')
             if not isinstance(devices, list) or not devices or any(not isinstance(d, str) or not d for d in devices) or len(set(devices)) != len(devices):
                 raise FlowError('Declare distinct physical device identities for each phase')
-            world = math.prod(args[phase + '_' + axis] for axis in ('tp', 'dp', 'pp'))
+            world = _phase_world(args, phase)
             if args[phase + '_cp'] != 1 or world != len(devices) or world % args[phase + '_ep']:
-                raise FlowError('Topology mismatch: TP*DP*PP must match devices; EP must divide it; CP>1 requires an adapter')
+                raise FlowError('Topology mismatch: physical devices must match the phase topology; EP must divide them; CP>1 requires an adapter')
             groups.append(set(devices))
         if len(groups[0] | groups[1]) != state['policy']['gpu_count']:
             raise FlowError('Strategy must use exactly the fixed physical GPU count')
@@ -209,6 +254,8 @@ def _measurements(store, state, request, baseline=False):
             raise FlowError('Performance policy cannot change between iterations: ' + key)
     if contract.get('min_gain', 0) != (0 if baseline else policy['min_gain']):
         raise FlowError('Performance gain threshold mismatch')
+    if contract.get('min_repeats', 1) != policy['performance_repeats']:
+        raise FlowError('Performance repeat count must match the frozen loop policy')
     if baseline:
         deployment = _object(store, request['deployment'])
         _evidence(store, deployment)
@@ -298,6 +345,8 @@ def advance(store, tid, request):
         if db.execute("SELECT 1 FROM operations WHERE task=? AND status IN ('started','unknown')", (tid,)).fetchone():
             raise FlowError('Reconcile unresolved execution before advancing the loop')
     action, stage = request.get('action'), state['stage']
+    if action == 'explore' and _execution_budget(task, state)['acceptance_reserve_active']:
+        raise FlowError('Acceptance reserve active: finish or roll back the current candidate; do not start another optimization point')
     if action == 'interrupt':
         if not isinstance(request.get('reason'), str) or not request['reason'].strip():
             raise FlowError('Record the explicit user interruption reason')
@@ -524,7 +573,9 @@ def _report_state(store, state, artifact, directory=None, force=False):
              'Objective: ' + optimization_output.text(store.task(tid)['spec']['objective']),
              'Stage: ' + state['stage'], 'Stop reason: ' + state.get('stop_reason', 'not stopped'),
              'Runtime disposition: ' + state.get('runtime_state', 'see execution/rollback evidence'),
-             'Validation: evidence protocol; no hardware execution is implied by this report.', '',
+             'Validation: evidence protocol; no hardware execution is implied by this report.',
+             'Performance repeats per scenario: ' + str(state['policy'].get('performance_repeats', 1)),
+             'Acceptance reserve seconds: ' + str(state['policy'].get('acceptance_reserve_seconds', 0)), '',
              '| Iteration | Direction | Assessment / decision | Quality | After Prof | Effective | Incremental primary metric | Cumulative primary metric |',
              '| --- | --- | --- | --- | --- | --- | --- | --- |']
     def metrics(value):
